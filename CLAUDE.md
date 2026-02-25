@@ -46,7 +46,7 @@ Obsidian 볼트 경로: `/Users/ctoti/Obsidian/Obsidian_Work/`
 |------|------|------|
 | 프로젝트 | lowercase-kebab-case | `auth-api-refactor` |
 | 리서치 | YYYY-MM-DD_topic-slug.md | `2026-02-23_mcp-comparison.md` |
-| 스킬 설계 | name.skill.md | `wtis-v2.skill.md` |
+| 스킬 설계 | name.skill.md | `wtis.skill.md` |
 | 에이전트 설계 | name.agent.md | `code-reviewer.agent.md` |
 
 ## Multi-Agent Architecture

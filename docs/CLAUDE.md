@@ -4,7 +4,7 @@
 실제 실행 파일은 `.claude/skills/`와 `.claude/agents/`에 있다.
 
 ## Naming
-- 스킬 설계: `name.skill.md` (예: `wtis-v2.skill.md`)
+- 스킬 설계: `name.skill.md` (예: `wtis.skill.md`)
 - 에이전트 설계: `name.agent.md` (예: `code-reviewer.agent.md`)
 
 ## Rules

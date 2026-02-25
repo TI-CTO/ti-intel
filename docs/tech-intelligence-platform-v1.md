@@ -488,8 +488,7 @@ file_path: (저장한 파일의 절대 경로)
   ├── docs/
   │   ├── tech-intelligence-platform-v1.md         # ← 이 문서
   │   ├── agent-design-template.md                 # 범용 설계 템플릿
-  │   ├── wtis-v3.skill.md                         # 기존 (아카이브)
-  │   └── wtis-v2.skill.md                         # 기존 (아카이브)
+  │   └── command-reference.md                     # 팀원용 커맨드 레퍼런스
   └── .mcp.json                                    # MCP 서버 등록 (3개 추가)
 ```
 

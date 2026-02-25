@@ -59,7 +59,6 @@ LG U+ 도메인 설정: `/Users/ctoti/Project/ClaudeCode/.claude/skills/wtis/ref
 - `validator` 에이전트 → `.claude/agents/validator.md`
 
 ## Reference Documents
-- 분석 프레임워크: `/Users/ctoti/Project/ClaudeCode/docs/wtis-v3.skill.md`
 - 기존 리서치: `/Users/ctoti/Project/ClaudeCode/outputs/reports/`
 
 ---
