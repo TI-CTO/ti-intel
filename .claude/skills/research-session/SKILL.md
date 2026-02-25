@@ -1,6 +1,6 @@
 ---
 name: research-session
-description: "구조화된 리서치 세션을 시작한다. 주제를 조사하고 결과를 research/sessions/에 저장한다."
+description: "구조화된 리서치 세션을 시작한다. 주제를 조사하고 결과를 outputs/reports/에 저장한다."
 user-invokable: true
 argument-hint: "[topic to research]"
 ---
@@ -16,7 +16,7 @@ argument-hint: "[topic to research]"
 
 ### Phase 1: 기존 지식 확인
 - 워크스페이스에서 관련 기존 노트/코드 검색
-- `research/sessions/`와 `research/summaries/`에서 기존 리서치 확인
+- `outputs/reports/`와 `outputs/summaries/`에서 기존 리서치 확인
 - 이미 알려진 것과 조사가 필요한 것 구분
 
 ### Phase 2: 심층 조사
@@ -68,6 +68,6 @@ status: completed|needs-followup
 
 ### Phase 4: 저장
 결과를 다음 경로에 저장:
-`/Users/ctoti/Project/ClaudeCode/research/sessions/{YYYY-MM-DD}_{topic-slug}.md`
+`/Users/ctoti/Project/ClaudeCode/outputs/reports/{YYYY-MM-DD}_{topic-slug}.md`
 
 저장 완료 후 Obsidian 볼트 동기화가 필요하면 `/obsidian-bridge` 스킬 사용을 안내한다.

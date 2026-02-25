@@ -60,7 +60,7 @@ LG U+ 도메인 설정: `/Users/ctoti/Project/ClaudeCode/.claude/skills/wtis/ref
 
 ## Reference Documents
 - 분석 프레임워크: `/Users/ctoti/Project/ClaudeCode/docs/wtis-v3.skill.md`
-- 기존 리서치: `/Users/ctoti/Project/ClaudeCode/research/sessions/`
+- 기존 리서치: `/Users/ctoti/Project/ClaudeCode/outputs/reports/`
 
 ---
 
@@ -74,18 +74,18 @@ LG U+ 도메인 설정: `/Users/ctoti/Project/ClaudeCode/.claude/skills/wtis/ref
     ├─ [1] SKILL-0 실행 (subagent_type: researcher, model: sonnet)
     │   └─ 프롬프트: skill-0-proposal.md 로드
     │   └─ 제안서 파싱 → Analysis Brief 생성
-    │   └─ 결과 파일: research/sessions/{date}_wtis-proposal-{slug}-skill0.md
+    │   └─ 결과 파일: outputs/reports/{date}_wtis-proposal-{slug}-skill0.md
     │
     ├─ [2] research-deep 에이전트 호출 (Layer 2 위임)
     │   └─ 입력: SKILL-0 결과 파일 경로 + 도메인 파라미터
     │   └─ 지시: "WTIS 제안서 분석을 위한 심층 리서치. domain-params.md의 소스 우선순위 준수"
-    │   └─ 결과 파일: research/sessions/{date}_wtis-proposal-{slug}-research.md
+    │   └─ 결과 파일: outputs/reports/{date}_wtis-proposal-{slug}-research.md
     │
     ├─ [3] SKILL-1 실행 (subagent_type: researcher, model: opus)
     │   └─ 프롬프트: skill-1-selection.md 로드
     │   └─ 입력: SKILL-0 Brief 파일 + research-deep 결과 파일 (경로 2개 전달)
     │   └─ 선정검증 + 3B 전략 제언
-    │   └─ 결과 파일: research/sessions/{date}_wtis-proposal-{slug}-skill1.md
+    │   └─ 결과 파일: outputs/reports/{date}_wtis-proposal-{slug}-skill1.md
     │   └─ status: fail → 파이프라인 중단, "부적합" 사유 보고
     │
     ├─ [4] validator 에이전트 호출 (Layer 2 위임)
@@ -93,7 +93,7 @@ LG U+ 도메인 설정: `/Users/ctoti/Project/ClaudeCode/.claude/skills/wtis/ref
     │   └─ status: fail → SKILL-1 1회 재실행 후 재검증
     │
     └─ [5] 최종 보고서 생성
-        └─ 경로: research/sessions/{date}_wtis-proposal-{slug}-final.md
+        └─ 경로: outputs/reports/{date}_wtis-proposal-{slug}-final.md
 ```
 
 ### Quick Mode
@@ -128,11 +128,11 @@ LG U+ 도메인 설정: `/Users/ctoti/Project/ClaudeCode/.claude/skills/wtis/ref
     │
     ├─ [1] discover 스킬 호출 (Layer 2 위임) — SKILL-3 대체
     │   └─ 입력: 도메인 + domain-params.md의 competitors, taxonomy 전달
-    │   └─ 결과 파일: research/sessions/{date}_discover-{domain}.md
+    │   └─ 결과 파일: outputs/reports/{date}_discover-{domain}.md
     │
     ├─ [2] research-deep 에이전트 호출 (Layer 2 위임) — SKILL-4 대체
     │   └─ 입력: discover 결과 파일 + 도메인 파라미터
-    │   └─ 결과 파일: research/sessions/{date}_research-{topic}.md
+    │   └─ 결과 파일: outputs/reports/{date}_research-{topic}.md
     │
     ├─ [3] SKILL-1 실행 (subagent_type: researcher, model: opus)
     │   └─ discover + research-deep 결과를 입력으로 전달
@@ -233,7 +233,7 @@ total_references: {N}
 보고서 저장 완료 후:
 1. Obsidian 동기화 필요 시 `/obsidian-bridge` 안내
 2. 후속 모니터링 필요 시 `/monitor [topic]` 사용 제안
-3. 이전 WTIS 세션이 있으면 (`research/sessions/` 검색) 변화 추이 언급
+3. 이전 WTIS 세션이 있으면 (`outputs/reports/` 검색) 변화 추이 언급
 
 ## Announcement
 실행 시작 전 사용자에게 판정 결과를 먼저 보여준다:

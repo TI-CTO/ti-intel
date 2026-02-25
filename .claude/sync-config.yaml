@@ -3,7 +3,7 @@ vault_path: /Users/ctoti/Obsidian/Obsidian_Work
 
 mappings:
   research:
-    source: research/sessions/
+    source: outputs/reports/
     destination: 70-Research/Sessions/
     frontmatter:
       tags: [claude-code, research]

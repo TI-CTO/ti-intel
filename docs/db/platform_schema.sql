@@ -1,22 +1,22 @@
 -- Tech Intelligence Platform — Full Schema
 -- Supabase project: tech-intel (ref: wzkmucknomctkyygciof)
 -- Last updated: 2026-02-25
--- Tables: 15 total
+-- Tables: 17 total (migration 002 추가: key_highlights + source_refs)
 --
 -- KEEP (telco-factbook — real data, no changes):
 --   carriers, source_documents, parse_issues, collection_runs, financial_metrics
 --
 -- SHARED:
---   topics
+--   topics, source_refs, source_ref_topics
 --
 -- TREND-TRACKER (migrated to FK in 002_topic_fk.sql):
---   watch_topics, news_items, trend_snapshots
+--   watch_topics, news_items (+ key_highlights), trend_snapshots
 --
 -- RESEARCH-HUB:
---   papers, paper_topics, paper_stats
+--   papers (+ key_highlights), paper_topics, paper_stats
 --
 -- PATENT-INTEL:
---   patents, patent_topics, patent_stats
+--   patents (+ key_highlights), patent_topics, patent_stats
 
 -- ── SHARED ──────────────────────────────────────────────────────────────────
 
@@ -41,6 +41,7 @@ CREATE TABLE IF NOT EXISTS papers (
     authors JSONB DEFAULT '[]'::jsonb,
     published_date DATE,
     abstract TEXT DEFAULT '',
+    key_highlights TEXT,
     citation_count INTEGER DEFAULT 0,
     reliability_tag CHAR(1) DEFAULT 'A' CHECK (reliability_tag IN ('A', 'B', 'C', 'D')),
     raw_url TEXT,
@@ -85,6 +86,7 @@ CREATE TABLE IF NOT EXISTS patents (
     publication_date DATE,
     ipc_codes JSONB DEFAULT '[]'::jsonb, -- IPC classification codes
     abstract TEXT DEFAULT '',
+    key_highlights TEXT,
     reliability_tag CHAR(1) DEFAULT 'A' CHECK (reliability_tag IN ('A', 'B', 'C', 'D')),
     raw_url TEXT,
     created_at TIMESTAMPTZ DEFAULT NOW()
@@ -115,3 +117,38 @@ CREATE TABLE IF NOT EXISTS patent_stats (
 );
 
 CREATE INDEX IF NOT EXISTS idx_patent_stats_topic_id ON patent_stats(topic_id, stat_year DESC, stat_quarter DESC);
+
+-- ── SHARED: source_refs (migration 002) ─────────────────────────────────────
+-- Covers source types not handled by domain-specific tables:
+-- whitepapers, standards (3GPP/ITU), internal docs, general URLs
+-- key_highlights: Claude's analyst notes on what's notable in the source
+
+CREATE TABLE IF NOT EXISTS source_refs (
+    id              BIGSERIAL PRIMARY KEY,
+    source_type     TEXT NOT NULL
+                    CHECK (source_type IN ('whitepaper', 'standard', 'internal', 'url', 'report')),
+    title           TEXT NOT NULL,
+    organization    TEXT,
+    url             TEXT,
+    file_path       TEXT,           -- references/ 상대경로 (파일인 경우)
+    published_date  DATE,
+    abstract        TEXT,           -- 원문 개요
+    key_highlights  TEXT,           -- Claude 분석 주목 포인트
+    reliability_tag CHAR(1) DEFAULT 'B'
+                    CHECK (reliability_tag IN ('A', 'B', 'C', 'D')),
+    created_at      TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_source_refs_type ON source_refs(source_type);
+CREATE INDEX IF NOT EXISTS idx_source_refs_published ON source_refs(published_date DESC);
+
+CREATE TABLE IF NOT EXISTS source_ref_topics (
+    source_ref_id   BIGINT NOT NULL REFERENCES source_refs(id) ON DELETE CASCADE,
+    topic_id        BIGINT NOT NULL REFERENCES topics(id) ON DELETE CASCADE,
+    PRIMARY KEY (source_ref_id, topic_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_source_ref_topics_topic_id ON source_ref_topics(topic_id);
+
+-- ── NOTE: news_items key_highlights ─────────────────────────────────────────
+-- Added via migration 002: ALTER TABLE news_items ADD COLUMN key_highlights TEXT;

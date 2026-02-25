@@ -76,6 +76,6 @@ design-system MCP의 `render_pptx` 도구를 호출한다:
 ## 예시
 
 ```
-/slides research/sessions/2026-02-24_wtis-proposal-self-evolving-agent-final.md
+/slides outputs/reports/2026-02-24_wtis-proposal-self-evolving-agent-final.md
 ```
-→ `research/sessions/2026-02-24_wtis-proposal-self-evolving-agent-final.professional.pptx` 생성
+→ `outputs/reports/2026-02-24_wtis-proposal-self-evolving-agent-final.professional.pptx` 생성

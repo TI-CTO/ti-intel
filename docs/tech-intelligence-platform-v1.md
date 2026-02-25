@@ -87,7 +87,7 @@
 │                                                                          │
 │  ┌──────────────────────────────────────────────────────────────────┐    │
 │  │  공유 인프라                                                      │    │
-│  │  • 파일 핸드오프 프로토콜 (research/sessions/)                    │    │
+│  │  • 파일 핸드오프 프로토콜 (outputs/reports/)                    │    │
 │  │  • Evidence Chain 표준 ([A/B/C/D] 신뢰도)                        │    │
 │  │  • Obsidian 동기화 (/obsidian-bridge)                             │    │
 │  └──────────────────────────────────────────────────────────────────┘    │
@@ -198,7 +198,7 @@
      ↓
 5. [스크립트] 결과 저장
      ├── trend-tracker DB: 새 스냅샷 저장
-     ├── 파일: research/sessions/{date}_monitor-{topic}.md
+     ├── 파일: outputs/reports/{date}_monitor-{topic}.md
      └── (조건부) Obsidian 동기화
 ```
 
@@ -238,7 +238,7 @@
      └── 즉시착수 / 역량확보후 / 검토 / 보류
      ↓
 5. [스크립트] 결과 저장
-     └── 파일: research/sessions/{date}_discover-{domain}.md
+     └── 파일: outputs/reports/{date}_discover-{domain}.md
 ```
 
 **성공 기준**: 최소 5개 기회 후보 식별, 각 후보에 전략가치/실행가능성 점수 + 출처
@@ -274,7 +274,7 @@
 2. [스크립트 + LLM] 다중 소스 수집 (병렬)
      ├── [스크립트] 관련 MCP 서버 도구 호출
      ├── [LLM: haiku] WebSearch/WebFetch
-     └── [스크립트] 기존 research/sessions/ 검색 (중복 방지)
+     └── [스크립트] 기존 outputs/reports/ 검색 (중복 방지)
      ↓
 3. [LLM: sonnet] 종합 분석
      ├── Evidence Chain 적용 (출처+날짜+신뢰도)
@@ -282,7 +282,7 @@
      └── 신뢰도 평가 (High/Medium/Low)
      ↓
 4. [스크립트] 결과 저장
-     └── 파일: research/sessions/{date}_research-{topic}.md
+     └── 파일: outputs/reports/{date}_research-{topic}.md
 ```
 
 **성공 기준**: 연구 질문에 대한 답변이 Evidence Chain으로 뒷받침됨
@@ -310,7 +310,7 @@
 
 **변경 사항:**
 - MCP 도구 소스 추가 (기존 WebSearch만 → research-hub, patent-intel, trend-tracker 추가)
-- 기존 지식 검색 범위 확대 (research/sessions/ + trend-tracker DB)
+- 기존 지식 검색 범위 확대 (outputs/reports/ + trend-tracker DB)
 - 나머지 로직은 유지 (4-Phase 리서치 사이클, YAML frontmatter 노트 포맷)
 
 ---
@@ -403,7 +403,7 @@ analysis_frameworks:
 
 **명명 규칙:**
 ```
-research/sessions/{YYYY-MM-DD}_{capability}-{topic-slug}.md
+outputs/reports/{YYYY-MM-DD}_{capability}-{topic-slug}.md
 ```
 
 예시:
@@ -484,7 +484,7 @@ file_path: (저장한 파일의 절대 경로)
   │   ├── telco-factbook/                          # 기존 유지
   │   └── design-system/                           # 기존 유지
   │
-  ├── research/sessions/                           # 모든 Layer 2 산출물 저장
+  ├── outputs/reports/                           # 모든 Layer 2 산출물 저장
   ├── docs/
   │   ├── tech-intelligence-platform-v1.md         # ← 이 문서
   │   ├── agent-design-template.md                 # 범용 설계 템플릿

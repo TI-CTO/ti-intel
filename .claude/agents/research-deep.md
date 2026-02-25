@@ -44,7 +44,7 @@ Collect data from all available sources:
 - WebFetch for specific documents when URL is known
 
 **Existing Knowledge:**
-- Search `research/sessions/` for previous research on the topic
+- Search `outputs/reports/` for previous research on the topic
 - Glob for any relevant workspace documents
 
 ### Step 3: Evidence Chain Synthesis
@@ -66,7 +66,7 @@ Apply Evidence Chain standard to all collected information:
 ### Step 4: Save Report
 
 Save to:
-`/Users/ctoti/Project/ClaudeCode/research/sessions/{YYYY-MM-DD}_research-{topic-slug}.md`
+`/Users/ctoti/Project/ClaudeCode/outputs/reports/{YYYY-MM-DD}_research-{topic-slug}.md`
 
 ## Output Format
 

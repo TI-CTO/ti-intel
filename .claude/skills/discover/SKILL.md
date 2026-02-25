@@ -69,7 +69,7 @@ WTIS SKILL-3(발굴)의 범용화 버전 — 특정 도메인에 종속되지 �
 
 ### Phase 5: 저장
 결과를 저장:
-`/Users/ctoti/Project/ClaudeCode/research/sessions/{YYYY-MM-DD}_discover-{domain-slug}.md`
+`/Users/ctoti/Project/ClaudeCode/outputs/reports/{YYYY-MM-DD}_discover-{domain-slug}.md`
 
 ## Output Format
 

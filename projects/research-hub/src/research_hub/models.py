@@ -27,6 +27,7 @@ class Paper(BaseModel):
     authors: list[str] = Field(default_factory=list)
     published_date: date | None = None
     abstract: str = ""
+    key_highlights: str | None = None
     citation_count: int = 0
     reliability_tag: ReliabilityTag = ReliabilityTag.OFFICIAL
     raw_url: str | None = None

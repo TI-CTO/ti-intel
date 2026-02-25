@@ -57,7 +57,7 @@ argument-hint: "[topic-slug | all]"
 각 토픽별:
 1. `trend-tracker`: `upsert_snapshot(...)` — 새 스냅샷 DB 저장
 2. 🟡/🔴 토픽에 대해 파일 저장:
-   `/Users/ctoti/Project/ClaudeCode/research/sessions/{YYYY-MM-DD}_monitor-{topic-slug}.md`
+   `/Users/ctoti/Project/ClaudeCode/outputs/reports/{YYYY-MM-DD}_monitor-{topic-slug}.md`
 3. 종합 요약 출력
 
 ## Output Format

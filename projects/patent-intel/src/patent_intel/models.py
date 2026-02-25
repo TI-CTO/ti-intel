@@ -29,6 +29,7 @@ class Patent(BaseModel):
     publication_date: date | None = None
     ipc_codes: list[str] = Field(default_factory=list)  # IPC classification codes
     abstract: str = ""
+    key_highlights: str | None = None
     reliability_tag: ReliabilityTag = ReliabilityTag.OFFICIAL
     raw_url: str | None = None
 

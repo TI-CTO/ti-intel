@@ -6,7 +6,8 @@ Claude Code를 활용한 개발/리서치 통합 워크스페이스.
 
 ```
 projects/     활성 코드 프로젝트
-research/     리서치 산출물 (sessions, summaries, references)
+outputs/      스킬/에이전트 산출물 (reports, summaries)
+references/   리포트 참조 파일 (PDF, 사내 문서 등)
 docs/         에이전트/스킬 설계 문서
 .claude/      런타임 (skills, agents, hooks, settings)
 ```
@@ -41,7 +42,7 @@ docs/         에이전트/스킬 설계 문서
 /wtis standard SecureAI
 
 # Obsidian으로 동기화
-/obsidian-bridge research/sessions/2026-02-23_vector-db.md research
+/obsidian-bridge outputs/reports/2026-02-23_vector-db.md research
 ```
 
 ## Obsidian Integration
@@ -50,6 +51,6 @@ Vault: `/Users/ctoti/Obsidian/Obsidian_Work/`
 
 | Workspace | Vault |
 |-----------|-------|
-| research/sessions/ | 70-Research/Sessions/ |
+| outputs/reports/ | 70-Research/Sessions/ |
 | projects/ logs | 60-ClaudeCode/Implementations/ |
 | Q&A sessions | 80-QA-Log/YYYY/MM/ |

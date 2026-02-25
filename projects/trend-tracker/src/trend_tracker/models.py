@@ -28,6 +28,7 @@ class NewsItem(BaseModel):
     collected_date: date = Field(default_factory=date.today)
     topic_id: int
     summary: str = ""
+    key_highlights: str | None = None
     reliability_tag: ReliabilityTag = ReliabilityTag.INDICATIVE
     keywords: list[str] = Field(default_factory=list)
 

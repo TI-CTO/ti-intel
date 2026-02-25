@@ -24,7 +24,8 @@ ctoti의 Claude Code 개발/리서치 워크스페이스.
 
 ## Workspace Structure
 - `projects/` — 활성 코드 프로젝트
-- `research/` — 리서치 산출물 (sessions, summaries, references)
+- `outputs/` — 스킬/에이전트 산출물 (reports/, summaries/)
+- `references/` — 리포트 작성 시 참조한 로컬 파일 (PDF, 사내 보고서 등)
 - `docs/` — 에이전트/스킬 설계 문서 (*.skill.md, *.agent.md)
 - `.claude/` — Claude Code 런타임 (skills, agents, hooks, settings)
 
