@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+
+# Environment
+.env
+.env.local
+*.local.json
+
+# IDE
+.vscode/settings.json
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Node (for MCP servers)
+node_modules/
+
+# Data files
+*.db
+*.sqlite
+*.duckdb
+data/raw/
+
+# Claude Code local overrides
+.claude/settings.local.json
+.claude/plans/
+
+# MCP config (contains API tokens)
+.mcp.json

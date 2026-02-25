@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Read",
+      "Glob",
+      "Grep",
+      "Bash(git *)",
+      "Bash(uv *)",
+      "Bash(pytest *)",
+      "Bash(python *)",
+      "Bash(ruff *)",
+      "Bash(npm *)",
+      "Bash(node *)",
+      "Bash(pip *)",
+      "Bash(ls *)",
+      "Bash(mkdir *)",
+      "Bash(cp *)",
+      "Bash(mv *)"
+
+    ],
+    "deny": [
+      "Bash(rm -rf *)",
+      "Bash(sudo *)"
+    ]
+  },
+  "env": {
+    "UV_PYTHON": "3.11",
+    "OBSIDIAN_VAULT_PATH": "/Users/ctoti/Obsidian/Obsidian_Work"
+  }
+}

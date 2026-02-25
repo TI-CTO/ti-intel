@@ -1,0 +1,25 @@
+{
+  "$description": "Dark theme — dark background with light text and vibrant accents",
+  "name": "dark",
+  "display_name": "Dark",
+  "description": "다크 테마. 어두운 배경에 밝은 텍스트, 선명한 포인트 색상.",
+  "color": {
+    "primary":        { "$value": "#E879F9" },
+    "secondary":      { "$value": "#818CF8" },
+    "accent":         { "$value": "#38BDF8" },
+    "background":     { "$value": "#0F172A" },
+    "surface":        { "$value": "#1E293B" },
+    "text":           { "$value": "#F1F5F9" },
+    "text_secondary": { "$value": "#94A3B8" },
+    "border":         { "$value": "#334155" },
+    "success":        { "$value": "#34D399" },
+    "warning":        { "$value": "#FBBF24" },
+    "error":          { "$value": "#FB7185" }
+  },
+  "typography": {
+    "font_family":     { "$value": "Pretendard" },
+    "title_size":      { "$value": 38 },
+    "heading_size":    { "$value": 28 },
+    "body_size":       { "$value": 16 }
+  }
+}

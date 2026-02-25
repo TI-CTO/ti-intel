@@ -1,0 +1,37 @@
+{
+  "$schema": "https://design-tokens.github.io/community-group/format/",
+  "$description": "Base design tokens — default values before theme override",
+  "color": {
+    "primary":        { "$value": "#C50063", "$type": "color" },
+    "secondary":      { "$value": "#6B21A8", "$type": "color" },
+    "accent":         { "$value": "#0EA5E9", "$type": "color" },
+    "background":     { "$value": "#FFFFFF", "$type": "color" },
+    "surface":        { "$value": "#F8FAFC", "$type": "color" },
+    "text":           { "$value": "#1F2937", "$type": "color" },
+    "text_secondary": { "$value": "#6B7280", "$type": "color" },
+    "border":         { "$value": "#E5E7EB", "$type": "color" },
+    "success":        { "$value": "#10B981", "$type": "color" },
+    "warning":        { "$value": "#F59E0B", "$type": "color" },
+    "error":          { "$value": "#EF4444", "$type": "color" }
+  },
+  "typography": {
+    "font_family":      { "$value": "Pretendard",    "$type": "fontFamily" },
+    "font_family_mono": { "$value": "JetBrains Mono","$type": "fontFamily" },
+    "title_size":       { "$value": 36, "$type": "dimension" },
+    "heading_size":     { "$value": 28, "$type": "dimension" },
+    "subheading_size":  { "$value": 20, "$type": "dimension" },
+    "body_size":        { "$value": 16, "$type": "dimension" },
+    "caption_size":     { "$value": 12, "$type": "dimension" },
+    "title_weight":     { "$value": 700, "$type": "fontWeight" },
+    "heading_weight":   { "$value": 600, "$type": "fontWeight" },
+    "body_weight":      { "$value": 400, "$type": "fontWeight" }
+  },
+  "spacing": {
+    "xs":  { "$value": 4,  "$type": "dimension" },
+    "sm":  { "$value": 8,  "$type": "dimension" },
+    "md":  { "$value": 16, "$type": "dimension" },
+    "lg":  { "$value": 32, "$type": "dimension" },
+    "xl":  { "$value": 48, "$type": "dimension" },
+    "xxl": { "$value": 64, "$type": "dimension" }
+  }
+}

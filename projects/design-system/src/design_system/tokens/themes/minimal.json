@@ -1,0 +1,22 @@
+{
+  "$description": "Minimal theme — clean black-and-white with single accent color",
+  "name": "minimal",
+  "display_name": "Minimal",
+  "description": "미니멀 흑백 테마. 깔끔한 타이포그래피 중심, 최소한의 색상 사용.",
+  "color": {
+    "primary":        { "$value": "#18181B" },
+    "secondary":      { "$value": "#3F3F46" },
+    "accent":         { "$value": "#2563EB" },
+    "background":     { "$value": "#FFFFFF" },
+    "surface":        { "$value": "#FAFAFA" },
+    "text":           { "$value": "#18181B" },
+    "text_secondary": { "$value": "#71717A" },
+    "border":         { "$value": "#E4E4E7" }
+  },
+  "typography": {
+    "font_family":     { "$value": "Pretendard" },
+    "title_size":      { "$value": 36 },
+    "heading_size":    { "$value": 26 },
+    "body_size":       { "$value": 15 }
+  }
+}

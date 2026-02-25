@@ -1,0 +1,22 @@
+{
+  "$description": "Professional theme — corporate style with LG U+ magenta accent",
+  "name": "professional",
+  "display_name": "Professional",
+  "description": "기업 프레젠테이션용 프로페셔널 테마. 마젠타 포인트 색상, 깔끔한 레이아웃.",
+  "color": {
+    "primary":        { "$value": "#C50063" },
+    "secondary":      { "$value": "#1E3A5F" },
+    "accent":         { "$value": "#0EA5E9" },
+    "background":     { "$value": "#FFFFFF" },
+    "surface":        { "$value": "#F1F5F9" },
+    "text":           { "$value": "#0F172A" },
+    "text_secondary": { "$value": "#475569" },
+    "border":         { "$value": "#CBD5E1" }
+  },
+  "typography": {
+    "font_family":     { "$value": "Pretendard" },
+    "title_size":      { "$value": 40 },
+    "heading_size":    { "$value": 30 },
+    "body_size":       { "$value": 16 }
+  }
+}

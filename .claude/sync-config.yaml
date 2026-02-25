@@ -1,0 +1,36 @@
+# Obsidian Vault Sync Configuration
+vault_path: /Users/ctoti/Obsidian/Obsidian_Work
+
+mappings:
+  research:
+    source: research/sessions/
+    destination: 70-Research/Sessions/
+    frontmatter:
+      tags: [claude-code, research]
+      fields: [topic, confidence, status]
+
+  implementation:
+    source: projects/
+    destination: 60-ClaudeCode/Implementations/
+    frontmatter:
+      tags: [claude-code, implementation]
+      fields: [project, complexity, status]
+
+  qa:
+    source: null  # manually created
+    destination: 80-QA-Log/{year}/{month}/
+    frontmatter:
+      tags: [claude-code, qa]
+      fields: [topic, quality]
+
+  config:
+    source: null  # manually created
+    destination: 60-ClaudeCode/Configs/
+    frontmatter:
+      tags: [claude-code, config]
+      fields: [scope, language]
+
+naming:
+  date_prefix: true
+  format: "{YYYY-MM-DD}_{slug}.md"
+  slug_style: lowercase-kebab-case

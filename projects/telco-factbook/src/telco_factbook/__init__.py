@@ -1,0 +1,1 @@
+"""Telco competitor earnings factbook."""
