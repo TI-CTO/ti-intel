@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ topic }} — WTIS Report</title>
+  <style>{{ css | safe }}</style>
+</head>
+<body>
+<div class="report-wrapper">
+
+  <!-- ══ HEADER ══════════════════════════════════════════════════ -->
+  <div class="report-header no-break">
+    <span class="wtis-badge">WTIS v4.0</span>
+    <h1>{{ topic }}</h1>
+    <div class="report-meta">
+      <span>{{ date }}</span>
+      {% if confidence %}
+      <span class="meta-sep">|</span>
+      <span>신뢰도: <strong class="confidence-{{ confidence }}">{{ confidence | upper }}</strong></span>
+      {% endif %}
+      {% if sources_count > 0 %}
+      <span class="meta-sep">|</span>
+      <span>출처 {{ sources_count }}건</span>
+      {% endif %}
+      {% if status %}
+      <span class="meta-sep">|</span>
+      <span>{{ status }}</span>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- ══ BODY ════════════════════════════════════════════════════ -->
+  <div class="report-body">
+
+    <!-- Executive Summary callout box -->
+    {% if executive_summary_html %}
+    <div class="callout-box no-break">
+      <div class="callout-title">경영진 요약</div>
+      {{ executive_summary_html | safe }}
+    </div>
+    {% endif %}
+
+    <!-- Meta info grid (date / confidence / status) -->
+    <div class="meta-grid">
+      <div class="meta-card">
+        <div class="meta-label">분석일</div>
+        <div class="meta-value">{{ date if date else "—" }}</div>
+      </div>
+      <div class="meta-card">
+        <div class="meta-label">신뢰도</div>
+        <div class="meta-value highlight confidence-{{ confidence }}">
+          {{ confidence | upper if confidence else "—" }}
+        </div>
+      </div>
+      <div class="meta-card">
+        <div class="meta-label">상태</div>
+        <div class="meta-value">{{ status if status else "—" }}</div>
+      </div>
+    </div>
+
+    <!-- ── Main Sections ────────────────────────────────────────── -->
+    {% for section in main_sections %}
+    <div class="no-break">
+      <h2 class="section-title">
+        {% if section.number %}
+        <span class="section-number">{{ section.number }}</span>
+        {% endif %}
+        {{ section.clean_title }}
+      </h2>
+      <div class="section-content">
+        {{ section.html | safe }}
+      </div>
+    </div>
+    {% if not loop.last %}
+    <hr class="section-divider">
+    {% endif %}
+    {% endfor %}
+
+  </div><!-- end .report-body -->
+
+  <!-- ══ REFERENCES PAGE ════════════════════════════════════════ -->
+  {% if references_html %}
+  <div class="page-break"></div>
+  <div class="references-section">
+    <h2>References</h2>
+    {{ references_html | safe }}
+  </div>
+  {% endif %}
+
+  <!-- ══ FOOTER ══════════════════════════════════════════════════ -->
+  <div class="report-footer">
+    <div class="footer-metric">
+      <div class="metric-label">신뢰도</div>
+      <div class="metric-value accent confidence-{{ confidence }}">
+        {{ confidence | upper if confidence else "—" }}
+      </div>
+    </div>
+    <div class="footer-divider"></div>
+    <div class="footer-metric">
+      <div class="metric-label">분석 기관</div>
+      <div class="metric-value">LG U+</div>
+    </div>
+    <div class="footer-divider"></div>
+    <div class="footer-metric">
+      <div class="metric-label">시스템</div>
+      <div class="metric-value">WTIS v4.0</div>
+    </div>
+    <div class="footer-divider"></div>
+    <div class="footer-metric">
+      <div class="metric-label">분석일</div>
+      <div class="metric-value">{{ date if date else "—" }}</div>
+    </div>
+  </div>
+
+</div><!-- end .report-wrapper -->
+</body>
+</html>

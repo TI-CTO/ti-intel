@@ -65,6 +65,29 @@ async def list_tools() -> list[Tool]:
                 "required": ["markdown_path"],
             },
         ),
+        Tool(
+            name="render_pdf",
+            description="WTIS 마크다운 리포트를 컨설팅 스타일 PDF로 변환합니다. LG U+ 마젠타(#C50063) 브랜드 색상 적용.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "markdown_path": {
+                        "type": "string",
+                        "description": "변환할 마크다운 리포트 파일의 절대 경로",
+                    },
+                    "theme": {
+                        "type": "string",
+                        "description": "적용할 테마 이름 (기본: professional)",
+                        "default": "professional",
+                    },
+                    "output_path": {
+                        "type": "string",
+                        "description": "출력 PDF 파일 경로 (생략 시 마크다운과 같은 디렉토리에 .pdf로 생성)",
+                    },
+                },
+                "required": ["markdown_path"],
+            },
+        ),
     ]
 
 
@@ -124,6 +147,32 @@ def _dispatch(name: str, args: dict) -> dict:
             "output_path": str(result.output_path),
             "theme": result.theme,
             "slide_count": result.slide_count,
+            "format": result.format,
+        }
+
+    elif name == "render_pdf":
+        from design_system.renderers.pdf import PdfRenderer
+
+        md_path = Path(args["markdown_path"])
+        if not md_path.exists():
+            return {"error": f"File not found: {md_path}"}
+
+        theme_name = args.get("theme", "professional")
+        theme = load_theme(theme_name)
+
+        output = args.get("output_path")
+        if output:
+            output_path = Path(output)
+        else:
+            output_path = md_path.with_suffix(f".{theme_name}.pdf")
+
+        renderer = PdfRenderer()
+        result = renderer.render_markdown(md_path, theme, output_path)
+
+        return {
+            "status": "success",
+            "output_path": str(result.output_path),
+            "theme": result.theme,
             "format": result.format,
         }
 

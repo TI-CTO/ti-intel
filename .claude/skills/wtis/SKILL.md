@@ -99,8 +99,10 @@ LG U+ 도메인 설정: `/Users/ctoti/Project/ClaudeCode/.claude/skills/wtis/ref
     │   └─ SKILL-1 재실행하지 않음 (보강 데이터는 다음 파이프라인에서 반영)
     │   └─ 최대 1회만 실행 (무한 루프 방지)
     │
-    └─ [5] 최종 보고서 생성
+    └─ [5] 최종 보고서 생성 + PDF 변환
         └─ 경로: outputs/reports/{date}_wtis-proposal-{slug}-final.md
+        └─ design-system MCP → render_pdf(markdown_path=위 경로) 자동 실행
+        └─ PDF: outputs/reports/{date}_wtis-proposal-{slug}-final.professional.pdf
 ```
 
 ### Quick Mode
@@ -108,9 +110,11 @@ LG U+ 도메인 설정: `/Users/ctoti/Project/ClaudeCode/.claude/skills/wtis/ref
 ```
 사용자: 트렌드/현황 질문
     │
-    └─ research-deep 에이전트 호출 (Layer 2 위임)
-        └─ 입력: 질문 + 도메인 파라미터 (간략 수집 지시)
-        └─ 결과를 사용자에게 바로 반환 (파일 저장 선택사항)
+    ├─ research-deep 에이전트 호출 (Layer 2 위임)
+    │   └─ 입력: 질문 + 도메인 파라미터 (간략 수집 지시)
+    │   └─ 결과 파일 저장
+    │
+    └─ [자동] design-system MCP → render_pdf(결과 파일 경로)
 ```
 
 ### Standard Mode
@@ -125,7 +129,9 @@ LG U+ 도메인 설정: `/Users/ctoti/Project/ClaudeCode/.claude/skills/wtis/ref
     │
     ├─ validator 에이전트 호출 (Layer 2 위임)
     │
-    └─ 최종 보고서 생성
+    ├─ 최종 보고서 생성
+    │
+    └─ [자동] design-system MCP → render_pdf(최종 보고서 경로)
 ```
 
 ### Deep Mode
@@ -146,7 +152,9 @@ LG U+ 도메인 설정: `/Users/ctoti/Project/ClaudeCode/.claude/skills/wtis/ref
     │
     ├─ [4] validator 에이전트 호출 (Layer 2 위임) — SKILL-5 대체
     │
-    └─ [5] 최종 보고서 생성
+    ├─ [5] 최종 보고서 생성
+    │
+    └─ [6] [자동] design-system MCP → render_pdf(최종 보고서 경로)
 ```
 
 ---
@@ -239,7 +247,22 @@ total_references: {N}
 
 ## Post-Report
 
-보고서 저장 완료 후:
+보고서 저장 완료 후 **자동으로** 다음 순서로 실행한다:
+
+### Step A: PDF 자동 생성 (필수)
+최종 보고서 마크다운을 PDF로 변환한다.
+
+```
+design-system MCP → render_pdf(
+  markdown_path = "<최종 보고서 절대경로>",
+  theme = "professional"
+)
+```
+
+- 성공 시: `{date}_wtis-*-final.professional.pdf` 생성, 경로 사용자에게 보고
+- 실패 시: 오류 메시지 출력 후 마크다운 파일 경로를 대신 안내 (파이프라인 중단 없음)
+
+### Step B: 후속 안내 (선택)
 1. Obsidian 동기화 필요 시 `/obsidian-bridge` 안내
 2. 후속 모니터링 필요 시 `/monitor [topic]` 사용 제안
 3. 이전 WTIS 세션이 있으면 (`outputs/reports/` 검색) 변화 추이 언급
