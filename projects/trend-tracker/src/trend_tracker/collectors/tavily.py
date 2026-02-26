@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import logging
 import time
-from datetime import date, timedelta
 
 import httpx
 
@@ -14,6 +13,10 @@ logger = logging.getLogger(__name__)
 
 _BASE_URL = "https://api.tavily.com"
 _REQUEST_DELAY = 0.5  # seconds between requests
+
+
+class QuotaExhaustedError(Exception):
+    """Raised when Tavily monthly quota (free: 1,000 req/mo) is exhausted."""
 
 
 def collect(
@@ -31,6 +34,9 @@ def collect(
 
     Returns:
         List of normalised news item dicts ready for DB upsert.
+
+    Raises:
+        QuotaExhaustedError: When monthly API quota is exceeded (HTTP 429).
     """
     api_key = settings.tavily_api_key
     if not api_key:
@@ -52,8 +58,15 @@ def collect(
     try:
         with httpx.Client(timeout=30.0) as client:
             resp = client.post(f"{_BASE_URL}/search", json=payload)
+            if resp.status_code == 429:
+                logger.warning("Tavily quota exhausted (HTTP 429). Falling back to GDELT.")
+                raise QuotaExhaustedError(
+                    "Tavily monthly quota exceeded. Use GDELT as fallback."
+                )
             resp.raise_for_status()
             data = resp.json()
+    except QuotaExhaustedError:
+        raise
     except httpx.HTTPStatusError as e:
         logger.error("Tavily API error: %s %s", e.response.status_code, e.response.text[:200])
         return []

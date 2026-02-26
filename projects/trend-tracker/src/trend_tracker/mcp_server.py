@@ -210,19 +210,29 @@ def collect_news(
         Dict with collection results per source and total stored count.
     """
     from trend_tracker.collectors import tavily, gdelt
+    from trend_tracker.collectors.tavily import QuotaExhaustedError
 
     repo = _get_repo()
     topic_id = repo._require_topic_id(topic)
 
     results: dict = {"topic": topic, "query": query, "sources": {}}
     all_items: list[dict] = []
+    tavily_quota_hit = False
 
     if source in ("tavily", "all"):
-        tavily_items = tavily.collect(query, since_days=since_days, limit=limit)
-        results["sources"]["tavily"] = {"fetched": len(tavily_items)}
-        all_items.extend(tavily_items)
+        try:
+            tavily_items = tavily.collect(query, since_days=since_days, limit=limit)
+            results["sources"]["tavily"] = {"fetched": len(tavily_items)}
+            all_items.extend(tavily_items)
+        except QuotaExhaustedError:
+            tavily_quota_hit = True
+            results["sources"]["tavily"] = {"fetched": 0, "error": "quota_exhausted"}
+            if source == "tavily":
+                # Tavily-only request but quota hit → auto-fallback to GDELT
+                source = "gdelt"
+                results["fallback"] = "tavily quota exhausted, falling back to gdelt"
 
-    if source in ("gdelt", "all"):
+    if source in ("gdelt", "all") or tavily_quota_hit:
         gdelt_items = gdelt.collect(query, since_days=since_days, limit=limit)
         results["sources"]["gdelt"] = {"fetched": len(gdelt_items)}
         all_items.extend(gdelt_items)
