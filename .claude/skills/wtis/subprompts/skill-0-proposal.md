@@ -11,15 +11,21 @@ You do NOT analyze, validate, or recommend. You only parse and prepare.
 
 ### 1. Read & Comprehend
 If given a file path, read it. If given raw text, parse it directly.
+The proposal may follow `docs/wtis-proposal-template.md` format (structured) or be free-form text.
+
 Extract these elements (mark "unspecified" if absent):
 
 - **Project name** and one-line description
 - **Technology domain** (map to LG U+ taxonomy below)
 - **Customer segment** and their pain point
 - **Current solution** in market
+- **Core technologies** and their roles
 - **Success metrics** (KPIs, targets, timeline)
 - **Budget/scale** constraints
 - **Key assumptions** the proposal makes
+- **Known competitors** (user-specified, may be "에이전트 판단에 위임")
+- **Differentiation** claimed by the proposal
+- **Reference documents** (internal files provided by the user)
 
 **LG U+ Technology Taxonomy:**
 ```
@@ -62,6 +68,16 @@ Based on proposal complexity, recommend:
 - **Standard**: Validation needed (specific KPIs, competitive claims)
 - **Deep**: Strategic decision (new domain, large investment, multi-technology)
 
+### 6. Process Internal References (I-xx)
+If the proposal includes "참고 자료" (Section 6 of the template), or if the user provides additional internal files:
+1. Read each referenced file
+2. Assign `I-xx` codes (I-01, I-02, ...)
+3. Extract key claims and page references from each document
+4. Include in the Analysis Brief's "내부 자료 목록" section
+5. Pass to research-deep so it can include them in the References table
+
+If no internal references are provided, skip this step.
+
 ## Output Format
 
 ```markdown
@@ -103,6 +119,10 @@ Based on proposal complexity, recommend:
 
 ### 특허/논문
 - query 1
+
+## 내부 자료 목록 (I-xx)
+| 번호 | 자료명 | 파일경로 | 핵심 내용 요약 |
+|------|--------|---------|--------------|
 
 ## SKILL-1 입력 데이터
 > (선정검증에 직접 전달할 구조화된 필드)
