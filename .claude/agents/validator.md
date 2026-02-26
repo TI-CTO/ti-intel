@@ -85,6 +85,16 @@ verified_at: (YYYY-MM-DD)
 | 수치 | 소스 수 | 판정 |
 |------|---------|------|
 
+## 보강 필요 항목 (reinforcement_needed)
+(단일 소스 항목이 없으면 이 섹션을 생략한다)
+
+```yaml
+reinforcement_needed:
+  - claim: "the claim text"
+    current_sources: 1
+    suggested_keywords: ["keyword1", "keyword2"]
+```
+
 ## 3. 논리 검증
 - (논리적 도약 발견 시 인용)
 - PASS / 이슈 목록

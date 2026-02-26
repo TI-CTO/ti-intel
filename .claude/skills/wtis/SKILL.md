@@ -91,6 +91,14 @@ LG U+ 도메인 설정: `/Users/ctoti/Project/ClaudeCode/.claude/skills/wtis/ref
     │   └─ 입력: SKILL-1 결과 파일 경로 (독립 검증, Black-box)
     │   └─ status: fail → SKILL-1 1회 재실행 후 재검증
     │
+    ├─ [4-1] 보강 루프 (Reinforcement Loop) — 조건부 실행
+    │   └─ 조건: validator status가 "partial" 또는 "uncertain"이고 "단일 소스" 항목 존재
+    │   └─ research-deep 재호출: validator가 식별한 단일 소스 주장만 타겟 검색
+    │   └─ 지시: "다음 주장들에 대해 독립 소스 1개 이상 추가 확보: {claims list}"
+    │   └─ 결과: 기존 research 파일에 보강 섹션 추가 (별도 파일 아님)
+    │   └─ SKILL-1 재실행하지 않음 (보강 데이터는 다음 파이프라인에서 반영)
+    │   └─ 최대 1회만 실행 (무한 루프 방지)
+    │
     └─ [5] 최종 보고서 생성
         └─ 경로: outputs/reports/{date}_wtis-proposal-{slug}-final.md
 ```
@@ -226,6 +234,8 @@ total_references: {N}
 | SKILL-1: "부적합" 판정 | 파이프라인 중단, 사유 보고 |
 | research-deep: 유의미한 데이터 없음 | 사용자에게 키워드 조정 요청 |
 | validator: 2회 연속 FAIL | 사용자에게 판단 위임 |
+| validator: partial + 단일 소스 ≤ 3건 | 보강 루프 [4-1] 실행 |
+| validator: partial + 단일 소스 > 3건 | 보강 루프 [4-1] 실행 + 최종 보고서에 경고 |
 
 ## Post-Report
 
