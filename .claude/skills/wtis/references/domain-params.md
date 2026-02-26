@@ -64,8 +64,44 @@ analysis_frameworks:
 ```yaml
 data_source_priority:
   1: telco-factbook MCP  # SKT/KT IR 공시 (신뢰도 A)
-  2: research-hub MCP    # 학술 논문 (신뢰도 A)
-  3: patent-intel MCP    # USPTO 특허 (신뢰도 A)
-  4: trend-tracker MCP   # 뉴스/트렌드 (신뢰도 B~C)
-  5: WebSearch           # 최신 뉴스/보고서 (신뢰도 B~D)
+  2: research-hub MCP    # 학술 논문 — Semantic Scholar (신뢰도 A)
+  3: patent-intel MCP    # 특허 — USPTO, KIPRIS(P1) (신뢰도 A)
+  4: trend-tracker MCP   # 뉴스/트렌드 — Tavily, GDELT (신뢰도 B~C)
+  5: WebSearch           # 최후 fallback (신뢰도 B~D)
+```
+
+## 출처 기호 체계
+```yaml
+source_codes:
+  G-xx: "글로벌 웹 검색 (WebSearch, Tavily)"
+  N-xx: "뉴스/동향 (trend-tracker MCP, GDELT)"
+  E-xx: "기업 발언/보도자료 (실적발표, IR)"
+  P-xx: "학술 논문 (research-hub MCP, Semantic Scholar)"
+  T-xx: "특허 (patent-intel MCP, USPTO, KIPRIS)"
+  I-xx: "내부 자료 (사내 보고서, 제안서 원문)"
+```
+
+## 외부 API 설정
+```yaml
+external_apis:
+  tavily:
+    env_key: TAVILY_API_KEY
+    cost: "$0 (무료 1,000건/월) ~ $30/월"
+    rate_limit: "0.5s delay"
+    reliability: "B"
+  gdelt:
+    env_key: null  # 키 불필요
+    cost: "$0 (완전 무료)"
+    rate_limit: "1.0s delay"
+    reliability: "C"
+  kipris:  # P1
+    env_key: KIPRIS_API_KEY
+    cost: "$0 (공공데이터포털)"
+    rate_limit: "1,000건/월"
+  dart:  # P1
+    env_key: DART_API_KEY
+    cost: "$0 (FSS)"
+  sec_edgar:  # P1
+    env_key: null  # User-Agent만 필요
+    cost: "$0"
 ```
