@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import sys
 from datetime import date
 
 from mcp.server.fastmcp import FastMCP
@@ -10,7 +11,7 @@ from mcp.server.fastmcp import FastMCP
 from research_hub.collectors import semantic_scholar
 from research_hub.db.repository import PaperRepository
 
-logging.basicConfig(level=logging.WARNING)
+logging.basicConfig(level=logging.WARNING, stream=sys.stderr)
 logger = logging.getLogger(__name__)
 
 mcp = FastMCP("research-hub")

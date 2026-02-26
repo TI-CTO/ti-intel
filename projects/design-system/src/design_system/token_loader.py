@@ -32,8 +32,7 @@ def _extract_values(group: dict) -> dict:
 def load_base_tokens() -> DesignTokens:
     """Load base design tokens from base.json."""
     base_path = TOKENS_DIR / "base.json"
-    with open(base_path, encoding="utf-8") as f:
-        raw = json.load(f)
+    raw = json.loads(base_path.read_text(encoding="utf-8"))
 
     return DesignTokens(
         color=ColorTokens(**_extract_values(raw.get("color", {}))),
@@ -56,8 +55,7 @@ def load_theme(name: str) -> ThemeInfo:
     if not theme_path.exists():
         raise FileNotFoundError(f"Theme not found: {name} (looked at {theme_path})")
 
-    with open(theme_path, encoding="utf-8") as f:
-        theme_raw = json.load(f)
+    theme_raw = json.loads(theme_path.read_text(encoding="utf-8"))
 
     base = load_base_tokens()
     base_dict = base.model_dump()
@@ -93,8 +91,7 @@ def list_themes() -> list[dict[str, str]]:
     """List all available themes with metadata."""
     themes = []
     for path in sorted(THEMES_DIR.glob("*.json")):
-        with open(path, encoding="utf-8") as f:
-            raw = json.load(f)
+        raw = json.loads(path.read_text(encoding="utf-8"))
         themes.append(
             {
                 "name": raw.get("name", path.stem),

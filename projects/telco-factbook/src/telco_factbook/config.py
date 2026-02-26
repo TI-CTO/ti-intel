@@ -18,7 +18,6 @@ class Settings(BaseSettings):
 
     # Scraping
     http_timeout: int = 30
-    max_retries: int = 3
 
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
 

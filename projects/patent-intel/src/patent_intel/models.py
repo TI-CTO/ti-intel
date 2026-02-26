@@ -9,7 +9,12 @@ from pydantic import BaseModel, Field
 
 
 class ReliabilityTag(str, Enum):
-    """Source reliability classification."""
+    """Source reliability classification.
+
+    NOTE: Intentionally duplicated in trend-tracker and research-hub models.
+    Projects are architecturally isolated (no cross-project Python imports);
+    keep all three definitions in sync.
+    """
 
     OFFICIAL = "A"
     REPUTABLE = "B"

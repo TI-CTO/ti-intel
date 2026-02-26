@@ -87,8 +87,6 @@ def _normalise(raw: dict) -> dict | None:
             pass
 
     domain = raw.get("domain", "")
-    source_country = raw.get("sourcecountry", "")
-    language = raw.get("language", "")
 
     return {
         "title": title,

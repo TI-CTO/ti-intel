@@ -46,14 +46,6 @@ _CONCEPT_MAP: dict[str, list[str]] = {
     ],
 }
 
-# Map quarter label ("Q1"…"Q4") used in fp field to integer
-_FP_TO_QUARTER: dict[str, int] = {
-    "Q1": 1,
-    "Q2": 2,
-    "Q3": 3,
-    "Q4": 4,
-}
-
 
 # ---------------------------------------------------------------------------
 # Public API

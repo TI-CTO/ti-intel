@@ -3,10 +3,11 @@
 from __future__ import annotations
 
 import logging
+import sys
 
 from mcp.server.fastmcp import FastMCP
 
-logging.basicConfig(level=logging.WARNING)
+logging.basicConfig(level=logging.WARNING, stream=sys.stderr)
 logger = logging.getLogger(__name__)
 
 mcp = FastMCP("trend-tracker")

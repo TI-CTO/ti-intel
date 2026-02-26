@@ -4,13 +4,14 @@ from __future__ import annotations
 
 import json
 import logging
+import sys
 from pathlib import Path
 
 from mcp.server import Server
 from mcp.server.stdio import stdio_server
 from mcp.types import TextContent, Tool
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO, stream=sys.stderr)
 logger = logging.getLogger(__name__)
 
 server = Server("design-system")

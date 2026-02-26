@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import sys
 from datetime import date
 
 from mcp.server.fastmcp import FastMCP
@@ -10,7 +11,7 @@ from mcp.server.fastmcp import FastMCP
 from patent_intel.collectors import patents_view
 from patent_intel.db.repository import PatentRepository
 
-logging.basicConfig(level=logging.WARNING)
+logging.basicConfig(level=logging.WARNING, stream=sys.stderr)
 logger = logging.getLogger(__name__)
 
 mcp = FastMCP("patent-intel")

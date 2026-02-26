@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import calendar
 import json
 from collections import Counter
 
@@ -125,8 +126,9 @@ class PatentRepository:
         # Determine date range for the quarter
         q_start_month = (quarter - 1) * 3 + 1
         q_end_month = quarter * 3
+        last_day = calendar.monthrange(year, q_end_month)[1]
         start_date = f"{year}-{q_start_month:02d}-01"
-        end_date = f"{year}-{q_end_month:02d}-31"
+        end_date = f"{year}-{q_end_month:02d}-{last_day:02d}"
 
         result = (
             self._client.table("patent_topics")

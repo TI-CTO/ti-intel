@@ -210,14 +210,7 @@ class PptxRenderer(BaseRenderer):
             p.font.name = tokens.typography.font_family
             p.space_after = Pt(tokens.spacing.sm)
             p.level = 0
-            # Bullet character
-            p.text = f"  {bullet}"
-            run = p.runs[0]
-            run.font.size = Pt(tokens.typography.body_size)
-
-            # Add bullet indicator
-            bullet_run = p.runs[0]
-            bullet_run.text = f"\u2022  {bullet}"
+            p.runs[0].text = f"\u2022  {bullet}"
 
     def _render_table(self, slide, content: SlideContent, tokens: DesignTokens) -> None:
         """Table slide."""
