@@ -37,9 +37,11 @@ argument-hint: "[topic to research]"
 ## Process
 
 ### Phase 1: 기존 지식 확인
-- 워크스페이스에서 관련 기존 노트/코드 검색
-- `outputs/reports/`와 `outputs/summaries/`에서 기존 리서치 확인
-- 이미 알려진 것과 조사가 필요한 것 구분
+- `outputs/reports/` Glob으로 파일 목록 조회
+- 파일명 kebab-case 토큰 또는 frontmatter `topic` 필드로 키워드 매칭
+- 매칭 파일의 frontmatter(`topic`, `date`, `confidence`) + 경영진 요약 첫 5줄 발췌
+- 발견 시: Phase 2에서 동일 결론 반복하지 않고 변화/추가 사항에 집중
+- 없으면: 전체 조사 실행 (기본 흐름)
 
 ### Phase 2: 심층 조사
 - 관련 소스 파일, 문서, 레퍼런스 읽기
