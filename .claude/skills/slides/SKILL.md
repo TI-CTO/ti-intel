@@ -1,8 +1,8 @@
 ---
 name: slides
 description: 마크다운 파일을 디자인 테마가 적용된 PPTX 프레젠테이션으로 변환한다.
-user_invocable: true
-arguments: "[theme] <file_path>"
+user-invokable: true
+argument-hint: "[theme] <file_path>"
 ---
 
 # /slides — Markdown to Presentation
@@ -78,4 +78,10 @@ design-system MCP의 `render_pptx` 도구를 호출한다:
 ```
 /slides outputs/reports/2026-02-24_wtis-proposal-self-evolving-agent-final.md
 ```
-→ `outputs/reports/2026-02-24_wtis-proposal-self-evolving-agent-final.professional.pptx` 생성
+
+**완료 시:**
+```
+PPTX 생성 완료
+파일: outputs/reports/2026-02-24_wtis-proposal-self-evolving-agent-final.professional.pptx
+슬라이드: 12장  테마: professional
+```

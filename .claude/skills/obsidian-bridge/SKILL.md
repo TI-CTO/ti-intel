@@ -9,6 +9,22 @@ argument-hint: "[file-path] [type: research|implementation|project]"
 
 워크스페이스 파일을 Obsidian 볼트에 동기화한다.
 
+## 빠른 시작
+
+```
+/obsidian-bridge outputs/reports/2026-02-26_research-secure-ai.md research
+```
+
+**완료 시:**
+```
+동기화 완료
+소스: outputs/reports/2026-02-26_research-secure-ai.md
+대상: .../70-Research/Sessions/2026-02-26_research-secure-ai.md
+추가된 frontmatter: tags, created, updated, topic, confidence, status
+```
+
+---
+
 ## Arguments
 - 첫 번째 인자: 소스 파일 경로
 - 두 번째 인자: 노트 타입 (destination 결정)

@@ -10,6 +10,30 @@ argument-hint: "[domain or technology area]"
 주어진 도메인에서 신기술/기회를 체계적으로 탐색하고 2×2 우선순위 매트릭스로 정리한다.
 WTIS SKILL-3(발굴)의 범용화 버전 — 특정 도메인에 종속되지 않는다.
 
+## 빠른 시작
+
+```
+/discover edge AI for telecom
+```
+
+**실행 중:**
+```
+도메인 분석 → 키워드: AI-RAN, edge inference, on-device LLM, MEC ...
+MCP 병렬 탐색: research-hub(논문 20건), patent-intel(특허 18건), trend-tracker(뉴스 20건)
+기회 분석 → 8개 후보 도출 → 우선순위 매트릭스 생성
+```
+
+**완료 시:**
+```
+즉시착수 (2건): AI-RAN 자원 최적화, 에지 추론 가속
+역량확보후 (3건): on-device 번역, 실시간 이상탐지, 프라이버시보존 AI
+검토 (2건): ...  보류 (1건): ...
+
+저장: outputs/reports/2026-02-26_discover-edge-ai-telecom.md
+```
+
+---
+
 ## Arguments
 - `domain`: 탐색할 기술 도메인 (예: "edge AI", "quantum networking", "6G")
 - `portfolio` (선택): 기존 보유 과제/기술 목록 (중복 방지용)

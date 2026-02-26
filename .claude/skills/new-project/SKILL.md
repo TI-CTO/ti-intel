@@ -9,6 +9,23 @@ argument-hint: "[project-name]"
 
 워크스페이스에 새 프로젝트를 스캐폴딩한다.
 
+## 빠른 시작
+
+```
+/new-project telco-analyzer
+```
+
+**완료 시:**
+```
+projects/telco-analyzer/ 생성 완료
+├── CLAUDE.md
+├── pyproject.toml
+├── src/__init__.py
+└── tests/__init__.py
+```
+
+---
+
 ## Arguments
 - 첫 번째 인자: 프로젝트 이름 (lowercase-kebab-case)
 - 실험적 프로젝트는 날짜 접두사 사용 (예: `2026-02-agent-test`)

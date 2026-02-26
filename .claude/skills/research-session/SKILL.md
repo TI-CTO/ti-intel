@@ -9,6 +9,28 @@ argument-hint: "[topic to research]"
 
 주어진 주제에 대해 체계적인 리서치 세션을 수행한다.
 
+## 빠른 시작
+
+```
+/research-session MCP 서버 성능 최적화 방법
+```
+
+**실행 중:**
+```
+기존 리서치 확인: 관련 파일 없음
+심층 조사: WebSearch 12건, research-hub 5건 수집 중...
+```
+
+**완료 시:**
+```
+리서치 완료 — 핵심 발견 6건
+신뢰도: medium (WebSearch 중심)
+저장: outputs/reports/2026-02-26_mcp-performance-optimization.md
+→ Obsidian 동기화: /obsidian-bridge [경로] research
+```
+
+---
+
 ## Arguments
 - 리서치할 주제 (자유 형식)
 

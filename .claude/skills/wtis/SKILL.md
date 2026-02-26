@@ -11,6 +11,25 @@ LG U+ Winning Tech Intelligence System의 오케스트레이터.
 v4.0: SKILL-3/4/5를 Tech Intelligence Platform Layer 2 핵심 역량에 위임한다.
 도메인 전용 로직(SKILL-0/1/2)은 내부 유지, 범용 역량(발굴/리서치/검증)은 외부 위임.
 
+## 빠른 시작 — 모드별 치트시트
+
+| 모드 | 언제 쓰나 | 호출 예시 | 소요 시간 |
+|------|-----------|-----------|----------|
+| **quick** | 동향/뉴스 파악 | `/wtis 6G mmWave 최신 동향` | ~2분 |
+| **standard** | 과제 타당성 검증 | `/wtis AI-RAN 과제 Go/No-Go 검증` | ~5분 |
+| **deep** | 신규 기회 발굴 | `/wtis edge AI 기회 탐색 및 전략 비교` | ~10분 |
+| **proposal** | 제안서 전체 분석 | `/wtis proposal.md` | ~15분 |
+
+**자동 모드 감지 키워드:**
+- `동향 / 트렌드 / 뉴스` → quick
+- `검증 / 타당성 / Go/No-Go` → standard
+- `발굴 / 탐색 / 전략 / 비교` → deep
+- `제안서` 또는 `.md` 파일 경로 → proposal
+
+**PDF 자동 생성:** 모든 모드에서 최종 리포트 완료 후 PDF가 함께 생성됩니다.
+
+---
+
 ## v3.0 → v4.0 변경점
 
 | 스킬 | v3.0 | v4.0 |

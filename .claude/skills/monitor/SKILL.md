@@ -10,6 +10,33 @@ argument-hint: "[topic-slug | all]"
 등록된 토픽 목록(watch_topics)을 스캔하고, 이전 스냅샷과 비교하여 변화를 감지·보고한다.
 변화의 중요도에 따라 🟢 유지 / 🟡 주목 / 🔴 긴급으로 분류한다.
 
+## 빠른 시작
+
+```
+/monitor              → 모든 watch_topics 스캔 (8개 토픽)
+/monitor ai-network   → 특정 토픽만 스캔
+```
+
+**실행 중:**
+```
+[1/8] ai-network 스캔 중...  [2/8] 6g 스캔 중...  ...
+```
+
+**완료 시:**
+```
+=== Monitor Run: 2026-02-26 ===
+총 스캔: 8개 토픽
+🟢 변화 없음: 6개
+🟡 주목:      2개 — ai-network, llm-telecom
+🔴 긴급:      0개
+
+저장된 보고서:
+- outputs/reports/2026-02-26_monitor-ai-network.md
+- outputs/reports/2026-02-26_monitor-llm-telecom.md
+```
+
+---
+
 ## Arguments
 - (없음): 모든 watch_topics 스캔
 - `[topic-slug]`: 특정 토픽만 스캔 (예: `ai-network`, `6g`)

@@ -56,6 +56,13 @@ render_pdf(
 /report-pdf outputs/reports/2026-02-25_research-secure-ai.md
 ```
 
+**완료 시:**
+```
+PDF 생성 완료
+파일: outputs/reports/2026-02-25_research-secure-ai.professional.pdf
+테마: professional  용지: A4
+```
+
 또는 WTIS 완료 후 자동 후속 작업으로:
 
 ```
