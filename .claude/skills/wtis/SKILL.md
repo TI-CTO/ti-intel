@@ -18,13 +18,14 @@ v4.1: L2 단위 분석 + 포트폴리오 구조 전환.
 
 | 모드 | 언제 쓰나 | 호출 예시 | 소요 시간 |
 |------|-----------|-----------|----------|
-| **quick** | 동향/뉴스 파악 | `/wtis 6G mmWave 최신 동향` | ~2분 |
-| **standard** | 과제 타당성 검증 | `/wtis AI-RAN 과제 Go/No-Go 검증` | ~5분 |
-| **deep** | 신규 기회 발굴 | `/wtis edge AI 기회 탐색 및 전략 비교` | ~10분 |
-| **proposal** | 제안서 전체 분석 | `/wtis proposal.md` | ~15분 |
+| **standard** | 과제 타당성 검증 | `/wtis AI-RAN 과제 Go/No-Go 검증` | ~10분 |
+| **deep** | 신규 기회 발굴 | `/wtis edge AI 기회 탐색 및 전략 비교` | ~15분 |
+| **proposal** | 제안서 전체 분석 | `/wtis proposal.md` | ~20분 |
+
+> **동향/트렌드 파악**은 `/weekly-monitor {domain}`을 사용하세요 (quick 모드 대체).
 
 **자동 모드 감지 키워드:**
-- `동향 / 트렌드 / 뉴스` → quick
+- `동향 / 트렌드 / 뉴스` → `/weekly-monitor`로 안내
 - `검증 / 타당성 / Go/No-Go` → standard
 - `발굴 / 탐색 / 전략 / 비교` → deep
 - `제안서` 또는 `.md` 파일 경로 → proposal
@@ -62,13 +63,14 @@ v4.1: L2 단위 분석 + 포트폴리오 구조 전환.
 | Mode | Trigger | Description |
 |------|---------|-------------|
 | **proposal** | 과제 제안서 입력 (텍스트 or 파일 경로) | 제안서 파싱 → 심층 리서치 → 선정검증 → 교차검증 |
-| **quick** | 단순 현황/트렌드 질문 | research-deep 단독 (빠른 수집) |
 | **standard** | 과제 검증 요청, 정기 보고 | research-deep + SKILL-1 or 2 + validator |
 | **deep** | 신규 과제 발굴, 전략적 의사결정 | discover + research-deep + SKILL-1 + validator |
 
+> **quick 모드 폐지 (v4.1)**: 기존 quick의 역할(동향/현황 파악)은 `/weekly-monitor`의 Tier 2 심층 리서치가 대체한다. "동향", "트렌드" 질문은 → `/weekly-monitor {domain}` 안내.
+
 사용자가 모드를 지정하지 않으면 입력 내용으로 자동 판정한다:
 - "제안서", "proposal", 파일 경로 포함 → **proposal**
-- "동향", "트렌드", "뉴스", 단순 질문 → **quick**
+- "동향", "트렌드", "뉴스", 단순 질문 → `/weekly-monitor`로 안내
 - "검증", "타당성", "Go/No-Go" → **standard**
 - "발굴", "탐색", "전략", "비교" → **deep**
 
@@ -227,20 +229,10 @@ outputs/reports/{domain}/portfolio.md       # 포트폴리오 종합
         └─ design-system MCP → render_pdf(portfolio.md) → portfolio.professional.pdf
 ```
 
-### Quick Mode
+### Quick Mode — 폐지 (v4.1)
 
-```
-사용자: 트렌드/현황 질문
-    │
-    ├─ [0] Phase 0: 기존 리서치 확인 (outputs/reports/{domain}/ 검색)
-    │   └─ prior_reports 있으면 "변화점 집중" 지시 추가
-    │
-    ├─ research-deep 에이전트 호출 (Layer 2 위임)
-    │   └─ 입력: 질문 + 도메인 파라미터 + prior_reports (있으면)
-    │   └─ 결과 파일: outputs/reports/{domain}/{date}_{slug}/research.md
-    │
-    └─ [자동] design-system MCP → render_pdf(결과 파일 경로)
-```
+> `/weekly-monitor {domain}`의 Tier 2 심층 리서치로 대체됨.
+> 사용자가 "동향", "트렌드" 질문 시 `/weekly-monitor`로 안내한다.
 
 ### Standard Mode
 
