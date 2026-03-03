@@ -16,7 +16,7 @@ The proposal may follow `docs/wtis-proposal-template.md` format (structured) or 
 Extract these elements (mark "unspecified" if absent):
 
 - **Project name** and one-line description
-- **Technology domain** (map to LG U+ taxonomy below)
+- **Technology domain** (map to L1 domain below) and **L2 technology** (see L2 Classification)
 - **Customer segment** and their pain point
 - **Current solution** in market
 - **Core technologies** and their roles
@@ -36,6 +36,36 @@ B2B/Enterprise│ PrivateNet, AI DX, smart factory, cloud MSP
 Security      │ network security, zero trust, AI governance
 ESG/New Biz   │ energy efficiency, digital health, V2X
 ```
+
+### 1-A. L2 분류 (필수)
+
+입력에서 다음을 식별한다:
+- **domain**: L1 도메인 슬러그 (`secure-ai` / `agentic-ai` / `axops`)
+- **l2_topic**: 해당 L1 아래 L2 기술 슬러그 (아래 매핑 참조)
+
+**L1 → L2 매핑:**
+```
+secure-ai:
+  5. OnDevice AI       → ondevice-ai
+  6. 스팸/피싱/탐지     → spam-phishing
+  7. 양자동형암호       → quantum-he
+
+agentic-ai:
+  1. 의도파악기술       → intent-understanding
+  2. Multi-Agent       → multi-agent
+  3. Self Evolving Agent → self-evolving-agent
+  4. 관계추론기술       → relationship-reasoning
+
+axops:
+  8. FeedBackOps/EvalOps → feedbackops-evalops
+  9. ML/LLMOps          → ml-llmops
+```
+
+- 제안서가 L2 하나에 매핑되면 → 단일 L2 분석
+- 여러 L2에 걸치면 → 가장 핵심인 L2 하나를 primary로, 나머지를 related로 표기
+- 식별 불가 시 → Analysis Brief에 `l2_topic: unidentified`로 표기하고, 사용자에게 L2 선택 요청
+
+**Analysis Brief에 `domain`, `l2_topic` 필드를 반드시 포함한다.**
 
 ### 2. Identify Verifiable Claims
 List every factual claim in the proposal that needs evidence:
@@ -82,6 +112,14 @@ If no internal references are provided, skip this step.
 
 ```markdown
 # Analysis Brief: {project_name}
+
+## L2 분류
+| 항목 | 값 |
+|------|-----|
+| domain | {L1 slug: secure-ai / agentic-ai / axops} |
+| l2_topic | {L2 slug} |
+| l2_name | {L2 한글명} |
+| related_l2 | {관련 L2 — 없으면 생략} |
 
 ## 과제 개요
 | 항목 | 내용 |

@@ -35,7 +35,7 @@ ctoti의 Claude Code 개발/리서치 워크스페이스.
 컨텍스트 흐름: root → folder → project (구체적일수록 우선)
 
 ## Obsidian Integration
-Obsidian 볼트 경로: `/Users/ctoti/Obsidian/Obsidian_Work/`
+Obsidian 볼트 경로: `/Users/ctoti/Obsidian/Obsidian_Work/` (env: `$OBSIDIAN_VAULT_PATH`)
 - 프로젝트 → `10-Projects/`
 - 구현 기록 → `60-ClaudeCode/Implementations/`
 - 리서치 세션 → `70-Research/Sessions/`

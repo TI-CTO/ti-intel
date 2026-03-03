@@ -32,7 +32,8 @@ argument-hint: "[file-path] [type: research|implementation|project]"
 ## Destination Mapping
 | Type           | Obsidian Vault Path                                          |
 |----------------|--------------------------------------------------------------|
-| research       | /Users/ctoti/Obsidian/Obsidian_Work/70-Research/Sessions/    |
+| research       | /Users/ctoti/Obsidian/Obsidian_Work/70-Research/Reports/     |
+| weekly         | /Users/ctoti/Obsidian/Obsidian_Work/70-Research/Reports/weekly/ |
 | implementation | /Users/ctoti/Obsidian/Obsidian_Work/60-ClaudeCode/Implementations/ |
 | project        | /Users/ctoti/Obsidian/Obsidian_Work/10-Projects/             |
 

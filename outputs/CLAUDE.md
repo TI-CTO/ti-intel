@@ -3,7 +3,8 @@
 스킬과 에이전트가 생성하는 분석 리포트, 요약본.
 
 ## Structure
-- `reports/` — 개별 실행 결과 (YYYY-MM-DD_topic-slug.md)
+- `reports/` — 비정기 분석 리포트 (YYYY-MM-DD_topic-slug.md)
+- `reports/weekly/` — 주간 기술 동향 리포트 (YYYY-MM-DD_weekly-{domain}.md)
 - `summaries/` — 여러 리포트를 종합한 정리 (summary_topic-slug.md)
 
 ## Rules
@@ -19,3 +20,4 @@
 | `/discover` | `outputs/reports/YYYY-MM-DD_discover-{domain}.md` |
 | `/monitor` | `outputs/reports/YYYY-MM-DD_monitor-{topic}.md` |
 | `research-deep` agent | `outputs/reports/YYYY-MM-DD_deep-{slug}.md` |
+| `/weekly-monitor` | `outputs/reports/weekly/YYYY-MM-DD_weekly-{domain}.md` |
