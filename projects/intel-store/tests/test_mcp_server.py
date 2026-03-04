@@ -66,6 +66,7 @@ async def test_mcp_tools_registered():
         "collect_papers",
         "collect_patents",
         "collect_news",
+        "collect_arxiv",
         "collect_all",
         "get_intel_stats",
     }

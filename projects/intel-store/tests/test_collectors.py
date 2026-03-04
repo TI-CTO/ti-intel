@@ -1,6 +1,6 @@
 """Tests for collector _normalise functions (no network calls)."""
 
-from intel_store.collectors import gdelt, patents_view, semantic_scholar, tavily
+from intel_store.collectors import arxiv, gdelt, patents_view, semantic_scholar, tavily
 
 
 class TestTavilyNormalise:
@@ -74,6 +74,49 @@ class TestSemanticScholarNormalise:
     def test_no_paper_id(self):
         raw = {"title": "Test"}
         assert semantic_scholar._normalise(raw) is None
+
+
+class TestArxivNormalise:
+    def test_valid_entry(self):
+        entry = {
+            "id": "http://arxiv.org/abs/2301.12345v2",
+            "title": "Fully Homomorphic Encryption Survey",
+            "authors": [{"name": "Alice"}, {"name": "Bob"}],
+            "summary": "A comprehensive survey on FHE schemes.",
+            "published": "2023-01-30T18:00:00Z",
+            "tags": [{"term": "cs.CR"}, {"term": "cs.AI"}],
+        }
+        result = arxiv._normalise(entry)
+        assert result is not None
+        assert result["external_id"] == "arxiv:2301.12345"
+        assert result["title"] == "Fully Homomorphic Encryption Survey"
+        assert result["authors"] == ["Alice", "Bob"]
+        assert result["published_date"] == "2023-01-30"
+        assert result["venue"] == "cs.CR, cs.AI"
+        assert result["reliability_tag"] == "A"
+        assert result["source"] == "arxiv"
+
+    def test_no_id(self):
+        entry = {"id": "", "title": "Test"}
+        assert arxiv._normalise(entry) is None
+
+    def test_no_title(self):
+        entry = {"id": "http://arxiv.org/abs/2301.99999v1", "title": ""}
+        assert arxiv._normalise(entry) is None
+
+
+class TestArxivExtractId:
+    def test_standard_url(self):
+        assert arxiv._extract_arxiv_id("http://arxiv.org/abs/2301.12345v2") == "2301.12345"
+
+    def test_no_version(self):
+        assert arxiv._extract_arxiv_id("http://arxiv.org/abs/2301.12345") == "2301.12345"
+
+    def test_five_digit_id(self):
+        assert arxiv._extract_arxiv_id("http://arxiv.org/abs/2301.00001v1") == "2301.00001"
+
+    def test_invalid_url(self):
+        assert arxiv._extract_arxiv_id("https://example.com") is None
 
 
 class TestPatentsViewNormalise:

@@ -452,6 +452,59 @@ def collect_news(
     return results
 
 
+@mcp.tool()
+def collect_arxiv(
+    topic: str,
+    query: str,
+    since_year: int | None = None,
+    limit: int = 10,
+    generate_embedding: bool = True,
+) -> dict:
+    """Collect papers from arXiv, store in DB, and link to topic.
+
+    Args:
+        topic: Topic slug to associate papers with.
+        query: arXiv search query (e.g. 'all:homomorphic encryption').
+        since_year: Filter papers published on or after this year.
+        limit: Maximum papers to collect (default 10).
+        generate_embedding: Generate embeddings for collected papers.
+
+    Returns:
+        Dict with fetched, stored counts and paper titles.
+    """
+    from intel_store.collectors import arxiv
+    from intel_store.models import paper_from_collector
+
+    repo = _get_repo()
+    repo._require_topic_id(topic)
+
+    raw_papers = arxiv.search_papers(query, limit=limit, since_year=since_year)
+
+    models = []
+    for raw in raw_papers:
+        model = paper_from_collector(raw)
+        if generate_embedding:
+            from intel_store import embeddings
+
+            model.embedding = embeddings.embed_passage(model.embedding_input())
+        models.append(model)
+
+    results = repo.upsert_items(models)
+
+    item_ids = [row["id"] for row in results if row.get("id")]
+    if item_ids:
+        repo.batch_link_topic(item_ids, topic)
+
+    return {
+        "topic": topic,
+        "query": query,
+        "source": "arxiv",
+        "fetched": len(raw_papers),
+        "stored": len(results),
+        "titles": [r.get("title", "") for r in results],
+    }
+
+
 # ── orchestration tools ──────────────────────────────────────────
 
 
@@ -465,12 +518,12 @@ def collect_all(
     limit: int = 10,
     generate_embedding: bool = True,
 ) -> dict:
-    """Collect papers, patents, and news in one call, store and link to topic.
+    """Collect papers, arxiv, patents, and news in one call, store and link to topic.
 
     Args:
         topic: Topic slug to associate all items with.
         query: Default search query (used when queries dict does not specify a source).
-        queries: Per-source query overrides, e.g. {"papers": "...", "news": "...", "patents": "..."}.
+        queries: Per-source query overrides, e.g. {"papers": "...", "arxiv": "...", "news": "...", "patents": "..."}.
         since_days: Look-back days for news (default 7).
         since_year: Filter papers/patents published on or after this year.
         limit: Max results per source (default 10).
@@ -484,6 +537,10 @@ def collect_all(
 
     source_calls = [
         ("papers", lambda q: collect_papers(
+            topic=topic, query=q, since_year=since_year,
+            limit=limit, generate_embedding=generate_embedding,
+        )),
+        ("arxiv", lambda q: collect_arxiv(
             topic=topic, query=q, since_year=since_year,
             limit=limit, generate_embedding=generate_embedding,
         )),
