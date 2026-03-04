@@ -2,11 +2,12 @@
 
 > **상태**: 설계 확정 — 이종 도메인 추가 시점에 실행
 > **작성일**: 2026-03-03
+> **갱신일**: 2026-03-04 (intel-store 통합 반영, dead project 정리)
 > **트리거**: 새 도메인 프로젝트(예: 주식매매) 추가가 필요해지는 시점
 
 ## Context
 
-현재 `/Users/ctoti/Project/ClaudeCode/`는 단일 git root에 5개 MCP 프로젝트 + 10개 스킬 + 5개 에이전트가 공존한다. 모든 자산이 "LG U+ 기술전략 인텔리전스" 도메인에 특화되어 있어, 이종 도메인(주식매매 등) 프로젝트 추가 시 컨텍스트 오염, MCP 서버 전역 노출, git history 혼재 문제가 발생한다.
+현재 `/Users/ctoti/Project/ClaudeCode/`는 단일 git root에 4개 MCP 프로젝트 + 10개 스킬 + 5개 에이전트가 공존한다. 모든 자산이 "LG U+ 기술전략 인텔리전스" 도메인에 특화되어 있어, 이종 도메인(주식매매 등) 프로젝트 추가 시 컨텍스트 오염, MCP 서버 전역 노출, git history 혼재 문제가 발생한다.
 
 **목표**: 향후 이종 도메인 프로젝트 추가 시 즉시 적용 가능한 구조 설계안을 확정한다. 지금 당장 실행하지 않고, 필요한 시점에 참조하여 마이그레이션한다.
 
@@ -21,12 +22,15 @@
 | hook | validate-no-secrets, post-edit-format | `.claude/hooks/` |
 | project | design-system | `projects/design-system/` |
 
-### 도메인 특화 (Tech-Intel) — 10개
+### 도메인 특화 (Tech-Intel) — 8개
 | 유형 | 자산 |
 |------|------|
 | agent | research-deep, validator |
 | skill | wtis, discover, monitor, weekly-monitor |
-| project | telco-factbook, research-hub, patent-intel, trend-tracker |
+| project | intel-store, trend-tracker, telco-factbook |
+
+> **참고**: `research-hub`, `patent-intel`은 `intel-store`로 통합 완료 (2026-03-04).
+> 폴더는 잔존하나 `.mcp.json`에서 제거됨. 마이그레이션 시점에 폴더 삭제 예정.
 
 ## 권장 구조
 
@@ -56,7 +60,7 @@
 │   │       └── weekly-monitor/    (도메인 전용)
 │   ├── .mcp.json                   (tech-intel MCP만)
 │   ├── CLAUDE.md                   (LG U+ 도메인 컨텍스트)
-│   └── projects/                   (기존 5개)
+│   └── projects/                   (intel-store, trend-tracker, telco-factbook, design-system)
 │
 └── {NewDomain}/                    ← 향후 새 도메인
     ├── .claude/
@@ -114,7 +118,10 @@ cd /Users/ctoti/Project/claude-common && git init
 ### Phase 2: TechIntel 마이그레이션
 ```bash
 mv /Users/ctoti/Project/ClaudeCode /Users/ctoti/Project/TechIntel
+rm -rf /Users/ctoti/Project/TechIntel/projects/research-hub
+rm -rf /Users/ctoti/Project/TechIntel/projects/patent-intel
 ```
+- dead project 폴더 삭제 (research-hub, patent-intel → intel-store로 통합 완료)
 - `.claude/rules/` → 기존 파일 삭제 후 `ln -s ../../claude-common/rules/ .claude/rules`
 - `.claude/hooks/` → 동일
 - `.claude/agents/{researcher,implementer,reviewer}.md` → 개별 심링크

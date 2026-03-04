@@ -36,9 +36,10 @@ ctoti의 Claude Code 개발/리서치 워크스페이스.
 
 ## Obsidian Integration
 Obsidian 볼트 경로: `/Users/ctoti/Obsidian/Obsidian_Work/` (env: `$OBSIDIAN_VAULT_PATH`)
-- 프로젝트 → `10-Projects/`
-- 구현 기록 → `60-ClaudeCode/Implementations/`
-- 리서치 세션 → `70-Research/Sessions/`
+- 가이드/사용법 → `10-Guide/`
+- 목표 추적 → `20-Goals/`
+- 리포트 (WTIS/리서치) → `30-Reports/`, 주간 → `30-Reports/weekly/`
+- 작업 로그 → `40-DevLog/`, 설계 문서 → `40-DevLog/Designs/`
 동기화: `/obsidian-bridge` 스킬 사용
 
 ## Naming Conventions
@@ -61,10 +62,10 @@ Obsidian 볼트 경로: `/Users/ctoti/Obsidian/Obsidian_Work/` (env: `$OBSIDIAN_
 ### 협력 구조
 ```
 스킬 (오케스트레이터)
-  → projects/telco-factbook MCP  (경쟁사 데이터)
-  → projects/trend-tracker MCP   (기술 트렌드)
-  → projects/startup-intel MCP   (스타트업 정보)
-  → 스킬: pptx-generator         (장표 생성)
+  → projects/intel-store MCP     (논문/뉴스/특허 수집·검색)
+  → projects/trend-tracker MCP   (트렌드 스냅샷)
+  → projects/telco-factbook MCP  (경쟁사 IR 데이터)
+  → projects/design-system MCP   (PDF/PPTX 렌더링)
 ```
 
 ## Agent Model Selection

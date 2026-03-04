@@ -30,7 +30,7 @@ argument-hint: "[update]"
 - `update`: 기존 일지에 이후 진행한 내용만 추가 (명시적 업데이트)
 
 ## Configuration
-- **저장 경로**: `/Users/ctoti/Obsidian/Obsidian_Work/60-ClaudeCode/WorkLogs/`
+- **저장 경로**: `/Users/ctoti/Obsidian/Obsidian_Work/40-DevLog/`
 - **파일명**: `{YYYY-MM-DD}_daily-log.md`
 - **태그**: `claude-code`, `work-log`
 
@@ -38,7 +38,7 @@ argument-hint: "[update]"
 
 ### 1. 기존 일지 확인
 오늘 날짜의 일지 파일이 존재하는지 Read로 확인한다:
-- 경로: `/Users/ctoti/Obsidian/Obsidian_Work/60-ClaudeCode/WorkLogs/{YYYY-MM-DD}_daily-log.md`
+- 경로: `/Users/ctoti/Obsidian/Obsidian_Work/40-DevLog/{YYYY-MM-DD}_daily-log.md`
 
 ### 2. 대화 컨텍스트 분석
 현재 세션에서 수행한 작업을 분석한다:
