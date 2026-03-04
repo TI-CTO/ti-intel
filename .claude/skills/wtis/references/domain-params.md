@@ -132,20 +132,19 @@ analysis_frameworks:
 ```yaml
 data_source_priority:
   1: telco-factbook MCP  # SKT/KT IR 공시 (신뢰도 A)
-  2: research-hub MCP    # 학술 논문 — Semantic Scholar (신뢰도 A)
-  3: patent-intel MCP    # 특허 — USPTO, KIPRIS(P1) (신뢰도 A)
-  4: trend-tracker MCP   # 뉴스/트렌드 — Tavily, GDELT (신뢰도 B~C)
-  5: WebSearch           # 최후 fallback (신뢰도 B~D)
+  2: intel-store MCP     # 통합 인텔리전스 — 논문/특허/뉴스 (신뢰도 A~C)
+  3: trend-tracker MCP   # 스냅샷/트렌드 비교 (신뢰도 B~C)
+  4: WebSearch           # 최후 fallback (신뢰도 B~D)
 ```
 
 ## 출처 기호 체계
 ```yaml
 source_codes:
-  G-xx: "글로벌 웹 검색 (WebSearch, Tavily)"
-  N-xx: "뉴스/동향 (trend-tracker MCP, GDELT)"
+  G-xx: "글로벌 웹 검색 (WebSearch)"
+  N-xx: "뉴스/동향 (intel-store: news, GDELT, Tavily)"
   E-xx: "기업 발언/보도자료 (실적발표, IR)"
-  P-xx: "학술 논문 (research-hub MCP, Semantic Scholar)"
-  T-xx: "특허 (patent-intel MCP, USPTO, KIPRIS)"
+  P-xx: "학술 논문 (intel-store: papers, Semantic Scholar)"
+  T-xx: "특허 (intel-store: patents, USPTO, KIPRIS)"
   I-xx: "내부 자료 (사내 보고서, 제안서 원문)"
 ```
 

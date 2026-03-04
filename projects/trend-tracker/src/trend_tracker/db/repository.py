@@ -255,18 +255,9 @@ class TrendRepository:
                 "error": f"Topic not found: '{topic}'",
             }
         snapshot = self.get_latest_snapshot(topic)
-        today = date.today().isoformat()
-        recent_news = (
-            self._client.table("news_items")
-            .select("id", count="exact")
-            .eq("topic_id", topic_id)
-            .gte("collected_date", today)
-            .execute()
-        )
         return {
             "topic": topic,
             "latest_snapshot": snapshot,
-            "recent_news_count": recent_news.count or 0,
         }
 
 

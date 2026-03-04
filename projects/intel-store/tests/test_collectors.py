@@ -1,0 +1,100 @@
+"""Tests for collector _normalise functions (no network calls)."""
+
+from intel_store.collectors import gdelt, patents_view, semantic_scholar, tavily
+
+
+class TestTavilyNormalise:
+    def test_valid_result(self):
+        raw = {
+            "title": "Test Article",
+            "url": "https://www.example.com/article",
+            "content": "This is the article content for testing.",
+            "published_date": "2026-03-01T12:00:00Z",
+        }
+        result = tavily._normalise(raw)
+        assert result is not None
+        assert result["title"] == "Test Article"
+        assert result["source"] == "example.com"
+        assert result["published_date"] == "2026-03-01"
+        assert result["reliability_tag"] == "B"
+        assert result["collector"] == "tavily"
+
+    def test_missing_title(self):
+        raw = {"url": "https://example.com"}
+        assert tavily._normalise(raw) is None
+
+    def test_missing_url(self):
+        raw = {"title": "Test"}
+        assert tavily._normalise(raw) is None
+
+
+class TestGdeltNormalise:
+    def test_valid_article(self):
+        raw = {
+            "title": "Global News",
+            "url": "https://news.example.com/article",
+            "seendate": "20260301T120000Z",
+            "domain": "news.example.com",
+        }
+        result = gdelt._normalise(raw)
+        assert result is not None
+        assert result["title"] == "Global News"
+        assert result["published_date"] == "2026-03-01"
+        assert result["source"] == "news.example.com"
+        assert result["reliability_tag"] == "C"
+
+    def test_empty_seendate(self):
+        raw = {"title": "No Date", "url": "https://example.com", "seendate": ""}
+        result = gdelt._normalise(raw)
+        assert result is not None
+        assert result["published_date"] is None
+
+
+class TestSemanticScholarNormalise:
+    def test_valid_paper(self):
+        raw = {
+            "paperId": "abc123",
+            "title": "PQC Survey Paper",
+            "authors": [{"name": "Alice"}, {"name": "Bob"}],
+            "year": 2026,
+            "publicationDate": "2026-01-15",
+            "citationCount": 42,
+            "abstract": "A comprehensive survey.",
+            "externalIds": {"ArXiv": "2026.12345"},
+            "url": "https://api.semanticscholar.org/abc123",
+        }
+        result = semantic_scholar._normalise(raw)
+        assert result is not None
+        assert result["external_id"] == "ss:abc123"
+        assert result["title"] == "PQC Survey Paper"
+        assert result["authors"] == ["Alice", "Bob"]
+        assert result["citation_count"] == 42
+        assert result["reliability_tag"] == "A"
+
+    def test_no_paper_id(self):
+        raw = {"title": "Test"}
+        assert semantic_scholar._normalise(raw) is None
+
+
+class TestPatentsViewNormalise:
+    def test_valid_patent(self):
+        raw = {
+            "patent_id": "12345678",
+            "patent_title": "Method for Quantum Key Distribution",
+            "patent_abstract": "A novel method.",
+            "patent_date": "2026-01-01",
+            "app_date": "2025-06-01",
+            "patent_number": "US12345678B2",
+            "assignees": [{"assignee_organization": "Samsung", "assignee_country": "KR"}],
+            "ipcs": [{"ipc_subgroup_id": "H04L9/00"}],
+        }
+        result = patents_view._normalise(raw)
+        assert result is not None
+        assert result["external_id"] == "uspto:US12345678B2"
+        assert result["applicant"] == "Samsung (KR)"
+        assert result["ipc_codes"] == ["H04L9/00"]
+        assert result["reliability_tag"] == "A"
+
+    def test_no_title(self):
+        raw = {"patent_id": "123", "patent_title": ""}
+        assert patents_view._normalise(raw) is None

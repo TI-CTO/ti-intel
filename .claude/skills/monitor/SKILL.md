@@ -52,12 +52,12 @@ argument-hint: "[topic-slug | all]"
 각 토픽에 대해 다음을 수집한다 (MCP 도구 호출):
 
 **뉴스/트렌드:**
-- `trend-tracker`: `search_news(topic=slug, query=slug, limit=20)` — 최신 뉴스
+- `intel-store`: `search_intel(query=slug, topic=slug, types=["news"], limit=20)` — 최신 뉴스
 - `trend-tracker`: `get_topic_summary(topic=slug)` — 현재 상태 요약
 
 **학술/특허 (중요도 높은 토픽에만):**
-- `research-hub`: `get_trending_papers(topic=slug, since=last_30_days, limit=10)`
-- `patent-intel`: `get_recent_patents(topic=slug, limit=10)`
+- `intel-store`: `search_intel(query=slug, topic=slug, types=["paper"], since=last_30_days, limit=10)`
+- `intel-store`: `search_intel(query=slug, topic=slug, types=["patent"], limit=10)`
 
 ### Phase 3: 스냅샷 비교
 - `trend-tracker`: `compare_snapshots(topic=slug)` — 이전 스냅샷과 비교

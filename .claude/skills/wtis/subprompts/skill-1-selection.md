@@ -18,8 +18,8 @@ You receive:
 - `[G-xx]`: 글로벌 웹 검색 출처 (WebSearch, Tavily 등)
 - `[N-xx]`: 뉴스/동향 출처 (trend-tracker, GDELT, Event Registry)
 - `[E-xx]`: 기업 발언/보도자료 출처 (실적발표, CEO 발언, IR)
-- `[P-xx]`: 학술 논문 출처 (research-hub MCP, Semantic Scholar)
-- `[T-xx]`: 특허 출처 (patent-intel MCP, USPTO, KIPRIS)
+- `[P-xx]`: 학술 논문 출처 (intel-store MCP, Semantic Scholar)
+- `[T-xx]`: 특허 출처 (intel-store MCP, USPTO, KIPRIS)
 - `[I-xx]`: 내부 자료 출처 (사내 보고서, 제안서 원문)
 
 research-deep의 References 테이블에 이미 분류된 기호를 그대로 사용한다.

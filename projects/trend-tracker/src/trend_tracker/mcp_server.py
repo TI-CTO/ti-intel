@@ -1,4 +1,8 @@
-"""Trend Tracker MCP server — exposes news/trend tracking tools via FastMCP."""
+"""Trend Tracker MCP server — snapshot comparison and watch topic management.
+
+NOTE: News search, upsert, and collection have moved to intel-store.
+This server retains only snapshot/timeline and watch_topics tools.
+"""
 
 from __future__ import annotations
 
@@ -19,28 +23,7 @@ def _get_repo():
     return TrendRepository()
 
 
-# ── search & read tools ──────────────────────────────────────
-
-
-@mcp.tool()
-def search_news(
-    topic: str | None = None,
-    keyword: str | None = None,
-    since: str | None = None,
-    limit: int = 20,
-) -> list[dict]:
-    """Search stored news items by topic, keyword, or date.
-
-    Args:
-        topic: Filter by topic slug (e.g. 'ai-network').
-        keyword: Search keyword in news titles.
-        since: Filter news from this date (YYYY-MM-DD).
-        limit: Maximum number of results (default 20).
-
-    Returns:
-        List of matching news items sorted by published date descending.
-    """
-    return _get_repo().search_news(topic=topic, keyword=keyword, since=since, limit=limit)
+# ── snapshot & timeline tools ────────────────────────────────────
 
 
 @mcp.tool()
@@ -91,20 +74,6 @@ def compare_snapshots(topic: str, date_a: str, date_b: str) -> dict:
 
 
 # ── write tools ──────────────────────────────────────────────
-
-
-@mcp.tool()
-def upsert_news(items: list[dict]) -> dict:
-    """Store or update news items in the database.
-
-    Args:
-        items: List of news item objects. Each needs: title, source, url, topic.
-
-    Returns:
-        Dict with upserted count.
-    """
-    count = _get_repo().upsert_news(items)
-    return {"upserted": count}
 
 
 @mcp.tool()
@@ -185,77 +154,6 @@ def manage_watch_topics(
         deleted = repo.delete_watch_topic(topic)
         return {"deleted": deleted, "topic": topic}
     return {"error": f"Unknown action: {action}"}
-
-
-# ── collect_news: external API collection ─────────────────────
-
-
-@mcp.tool()
-def collect_news(
-    topic: str,
-    query: str,
-    since_days: int = 7,
-    limit: int = 20,
-    source: str = "all",
-) -> dict:
-    """Collect news from external APIs (Tavily, GDELT) and store in DB.
-
-    Args:
-        topic: Topic slug to associate collected news with (e.g. 'quantum-comm').
-        query: Search query string (e.g. '양자암호 통신사').
-        since_days: Look back this many days (default 7).
-        limit: Max results per source (default 20).
-        source: Which collector to use: 'tavily', 'gdelt', or 'all' (default).
-
-    Returns:
-        Dict with collection results per source and total stored count.
-    """
-    from trend_tracker.collectors import tavily, gdelt
-    from trend_tracker.collectors.tavily import QuotaExhaustedError
-
-    repo = _get_repo()
-    topic_id = repo._require_topic_id(topic)
-
-    results: dict = {"topic": topic, "query": query, "sources": {}}
-    all_items: list[dict] = []
-    tavily_quota_hit = False
-
-    if source in ("tavily", "all"):
-        try:
-            tavily_items = tavily.collect(query, since_days=since_days, limit=limit)
-            results["sources"]["tavily"] = {"fetched": len(tavily_items)}
-            all_items.extend(tavily_items)
-        except QuotaExhaustedError:
-            tavily_quota_hit = True
-            results["sources"]["tavily"] = {"fetched": 0, "error": "quota_exhausted"}
-            if source == "tavily":
-                # Tavily-only request but quota hit → auto-fallback to GDELT
-                source = "gdelt"
-                results["fallback"] = "tavily quota exhausted, falling back to gdelt"
-
-    if source in ("gdelt", "all") or tavily_quota_hit:
-        gdelt_items = gdelt.collect(query, since_days=since_days, limit=limit)
-        results["sources"]["gdelt"] = {"fetched": len(gdelt_items)}
-        all_items.extend(gdelt_items)
-
-    # Deduplicate by URL
-    seen_urls: set[str] = set()
-    unique_items: list[dict] = []
-    for item in all_items:
-        url = item.get("url", "")
-        if url and url not in seen_urls:
-            seen_urls.add(url)
-            item["topic_id"] = topic_id
-            unique_items.append(item)
-
-    stored = 0
-    if unique_items:
-        stored = repo.upsert_news(unique_items)
-
-    results["total_fetched"] = len(all_items)
-    results["unique_items"] = len(unique_items)
-    results["stored"] = stored
-    return results
 
 
 if __name__ == "__main__":

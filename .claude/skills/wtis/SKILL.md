@@ -311,7 +311,7 @@ outputs/reports/{domain}/portfolio.md       # 포트폴리오 종합
 주요 제약:
 - 경쟁사: SKT, KT (국내 직접), NTT/Verizon/AT&T (글로벌 벤치마크)
 - MCP 토픽 우선 사용 (ai-network, 6g, network-slicing, edge-computing 등)
-- 데이터 소스 우선순위: telco-factbook > research-hub > patent-intel > trend-tracker > WebSearch
+- 데이터 소스 우선순위: telco-factbook > intel-store > trend-tracker > WebSearch
 - 분석 결과는 LG U+ 전략 관점에서 해석
 
 ## 이전 분석 컨텍스트 (prior_reports가 있는 경우에만 포함)

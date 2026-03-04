@@ -18,7 +18,7 @@ argument-hint: "[topic to research]"
 **실행 중:**
 ```
 기존 리서치 확인: 관련 파일 없음
-심층 조사: WebSearch 12건, research-hub 5건 수집 중...
+심층 조사: WebSearch 12건, intel-store 5건 수집 중...
 ```
 
 **완료 시:**
@@ -50,9 +50,10 @@ argument-hint: "[topic to research]"
 - 필요 시 WebSearch/WebFetch로 외부 정보 수집
 
 **MCP 데이터 소스 활용 (주제가 기술 트렌드/논문/특허 관련인 경우):**
-- `research-hub`: `search_papers(topic=..., query=..., limit=10)` — 관련 학술 논문
-- `patent-intel`: `search_patents(topic=..., query=..., limit=10)` — 관련 특허
-- `trend-tracker`: `search_news(topic=..., query=..., limit=10)` — 최신 뉴스/동향
+- `intel-store`: `search_intel(query=..., topic=..., mode="semantic", limit=10)` — 통합 검색 (뉴스+논문+특허)
+- `intel-store`: `collect_papers(topic=..., query=..., limit=10)` — Semantic Scholar 논문 수집+저장
+- `intel-store`: `collect_news(topic=..., query=..., limit=10)` — Tavily/GDELT 뉴스 수집+저장
+- `intel-store`: `find_similar(text=..., limit=5)` — 시맨틱 유사 아이템 탐색
 - 등록된 토픽 슬러그: `ai-network`, `6g`, `network-slicing`, `edge-computing`, `quantum-comm`, `llm-telecom`, `open-ran`, `digital-twin`
 
 ### Phase 3: 구조화된 출력
