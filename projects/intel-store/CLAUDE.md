@@ -8,7 +8,7 @@
 - **임베딩**: multilingual-e5-large (로컬, 1024차원, 한영 다국어)
 - **전문검색**: tsvector + GIN 인덱스 (simple config)
 - **하이브리드 검색**: Reciprocal Rank Fusion (k=60) — keyword + semantic 결과 병합
-- **수집기**: Semantic Scholar, arXiv, USPTO PatentsView, Tavily, GDELT, Naver News
+- **수집기**: Semantic Scholar, arXiv, Google Patents (SerpAPI), Tavily, GDELT, Naver News
 
 ## MCP 도구 (13개)
 | 도구 | 설명 |
@@ -22,7 +22,7 @@
 | `link_relation` | 아이템 간 관계 생성 |
 | `collect_papers` | Semantic Scholar → 수집+저장 |
 | `collect_arxiv` | arXiv → 수집+저장 (Semantic Scholar 대안) |
-| `collect_patents` | USPTO → 수집+저장 |
+| `collect_patents` | Google Patents (SerpAPI) → 수집+저장 |
 | `collect_news` | Tavily/GDELT/Naver → 수집+저장 |
 | `collect_all` | 전체 소스 일괄 수집 (papers+arxiv+patents+news) |
 | `get_intel_stats` | 실시간 집계 통계 |
@@ -32,7 +32,7 @@
 |--------|------|------|------------|
 | Semantic Scholar | 학술 논문 | paper | 1 req/sec |
 | arXiv | 학술 논문 (프리프린트) | paper | 3초 간격 |
-| USPTO PatentsView | 미국 특허 | patent | 45 req/min |
+| Google Patents (SerpAPI) | 글로벌 특허 | patent | 250 req/월 (free) |
 | Tavily | AI 최적화 뉴스 | news | 1,000 req/월 (free) |
 | GDELT | 글로벌 뉴스 | news | 무제한 |
 | Naver News | 한국어 뉴스 | news | API 키 필요 |
@@ -58,6 +58,7 @@
 - `TAVILY_API_KEY` — Tavily 검색 API 키 (optional)
 - `NAVER_CLIENT_ID` — Naver 개발자 Client ID (optional, 한국어 뉴스)
 - `NAVER_CLIENT_SECRET` — Naver 개발자 Client Secret (optional, 한국어 뉴스)
+- `SERPAPI_API_KEY` — SerpAPI 키 (optional, Google Patents 특허 수집)
 
 ## 실행
 ```bash

@@ -1,6 +1,13 @@
 """Tests for collector _normalise functions (no network calls)."""
 
-from intel_store.collectors import arxiv, gdelt, naver_news, patents_view, semantic_scholar, tavily
+from intel_store.collectors import (
+    arxiv,
+    gdelt,
+    google_patents,
+    naver_news,
+    semantic_scholar,
+    tavily,
+)
 
 
 class TestTavilyNormalise:
@@ -130,28 +137,33 @@ class TestArxivExtractId:
         assert arxiv._extract_arxiv_id("https://example.com") is None
 
 
-class TestPatentsViewNormalise:
+class TestGooglePatentsNormalise:
     def test_valid_patent(self):
         raw = {
-            "patent_id": "12345678",
-            "patent_title": "Method for Quantum Key Distribution",
-            "patent_abstract": "A novel method.",
-            "patent_date": "2026-01-01",
-            "app_date": "2025-06-01",
-            "patent_number": "US12345678B2",
-            "assignees": [{"assignee_organization": "Samsung", "assignee_country": "KR"}],
-            "ipcs": [{"ipc_subgroup_id": "H04L9/00"}],
+            "patent_id": "US12345678B2",
+            "title": "Method for Quantum Key Distribution",
+            "snippet": "A novel method for secure quantum key distribution.",
+            "assignee": "Samsung Electronics",
+            "publication_date": "2026-01-01",
+            "filing_date": "2025-06-01",
+            "classifications": [{"code": "H04L9/00"}],
         }
-        result = patents_view._normalise(raw)
+        result = google_patents._normalise(raw)
         assert result is not None
-        assert result["external_id"] == "uspto:US12345678B2"
-        assert result["applicant"] == "Samsung (KR)"
+        assert result["external_id"] == "gp:US12345678B2"
+        assert result["source"] == "google_patents"
+        assert result["applicant"] == "Samsung Electronics"
         assert result["ipc_codes"] == ["H04L9/00"]
         assert result["reliability_tag"] == "A"
+        assert result["raw_url"] == "https://patents.google.com/patent/US12345678B2"
 
     def test_no_title(self):
-        raw = {"patent_id": "123", "patent_title": ""}
-        assert patents_view._normalise(raw) is None
+        raw = {"patent_id": "US999", "title": ""}
+        assert google_patents._normalise(raw) is None
+
+    def test_no_patent_id(self):
+        raw = {"title": "Some Patent"}
+        assert google_patents._normalise(raw) is None
 
 
 class TestNaverNewsNormalise:

@@ -18,6 +18,7 @@ class Settings(BaseSettings):
     semantic_scholar_api_key: str = ""
     naver_client_id: str = ""
     naver_client_secret: str = ""
+    serpapi_api_key: str = ""
     embedding_model: str = "intfloat/multilingual-e5-large"
 
 

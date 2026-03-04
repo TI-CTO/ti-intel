@@ -380,7 +380,7 @@ def collect_patents(
     limit: int = 10,
     generate_embedding: bool = True,
 ) -> dict:
-    """Collect patents from USPTO PatentsView, store in DB, and link to topic.
+    """Collect patents from Google Patents (via SerpAPI), store in DB, and link to topic.
 
     Args:
         topic: Topic slug to associate patents with.
@@ -392,13 +392,13 @@ def collect_patents(
     Returns:
         Dict with fetched, stored counts and patent titles.
     """
-    from intel_store.collectors import patents_view
+    from intel_store.collectors import google_patents
     from intel_store.models import patent_from_collector
 
     repo = _get_repo()
     repo._require_topic_id(topic)  # validate topic exists
 
-    raw_patents = patents_view.search_patents(query, limit=limit, since_year=since_year)
+    raw_patents = google_patents.search_patents(query, limit=limit, since_year=since_year)
 
     models = []
     for raw in raw_patents:
