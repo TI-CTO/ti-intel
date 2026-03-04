@@ -141,6 +141,7 @@ def _normalise(raw: dict) -> dict | None:
 
     return {
         "external_id": f"ss:{paper_id}",
+        "arxiv_id": arxiv_id,
         "source": "semantic_scholar",
         "title": title,
         "authors": authors,

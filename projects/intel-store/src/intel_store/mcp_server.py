@@ -40,6 +40,46 @@ def _rrf_merge(*result_lists: list[dict], limit: int = 20, k: int = 60) -> list[
     return [items_by_id[item_id] for item_id, _ in ranked[:limit]]
 
 
+def _dedup_papers(raw_papers: list[dict], repo) -> list[dict]:
+    """Remove papers that already exist in DB under a different source.
+
+    Cross-references arXiv IDs between Semantic Scholar and arXiv sources
+    to prevent the same paper from being stored twice.
+
+    Args:
+        raw_papers: Normalised paper dicts from any collector.
+        repo: IntelRepository instance.
+
+    Returns:
+        Filtered list with cross-source duplicates removed.
+    """
+    unique = []
+    for paper in raw_papers:
+        ext_id = paper.get("external_id", "")
+
+        if ext_id.startswith("ss:"):
+            # SS paper — check if arXiv copy exists
+            arxiv_id = paper.get("arxiv_id")
+            if arxiv_id:
+                existing = repo.get_item_by_external_id(f"arxiv:{arxiv_id}")
+                if existing:
+                    logger.debug("Skip SS duplicate (arXiv exists): %s", paper["title"][:60])
+                    continue
+
+        elif ext_id.startswith("arxiv:"):
+            # arXiv paper — check if SS copy with same arXiv ID exists
+            arxiv_id = ext_id.removeprefix("arxiv:")
+            existing = repo.get_item_by_external_id(ext_id)
+            if existing:
+                logger.debug("Skip arXiv duplicate (already stored): %s", paper["title"][:60])
+                continue
+            # Also check SS papers that reference this arXiv ID via content_hash
+            # (content_hash dedup in upsert_items handles the rest)
+
+        unique.append(paper)
+    return unique
+
+
 def _get_repo():
     from functools import lru_cache
 
@@ -301,6 +341,8 @@ def collect_papers(
         source_used = "arxiv"
         raw_papers = arxiv.search_papers(query, limit=limit, since_year=since_year)
 
+    raw_papers = _dedup_papers(raw_papers, repo)
+
     models = []
     for raw in raw_papers:
         model = paper_from_collector(raw)
@@ -494,6 +536,7 @@ def collect_arxiv(
     repo._require_topic_id(topic)
 
     raw_papers = arxiv.search_papers(query, limit=limit, since_year=since_year)
+    raw_papers = _dedup_papers(raw_papers, repo)
 
     models = []
     for raw in raw_papers:

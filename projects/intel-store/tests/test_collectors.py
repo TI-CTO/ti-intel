@@ -66,10 +66,21 @@ class TestSemanticScholarNormalise:
         result = semantic_scholar._normalise(raw)
         assert result is not None
         assert result["external_id"] == "ss:abc123"
+        assert result["arxiv_id"] == "2026.12345"
         assert result["title"] == "PQC Survey Paper"
         assert result["authors"] == ["Alice", "Bob"]
         assert result["citation_count"] == 42
         assert result["reliability_tag"] == "A"
+
+    def test_no_arxiv_id(self):
+        raw = {
+            "paperId": "xyz",
+            "title": "Paper Without ArXiv",
+            "externalIds": {},
+        }
+        result = semantic_scholar._normalise(raw)
+        assert result is not None
+        assert result["arxiv_id"] is None
 
     def test_no_paper_id(self):
         raw = {"title": "Test"}

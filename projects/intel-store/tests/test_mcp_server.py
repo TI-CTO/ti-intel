@@ -1,8 +1,10 @@
 """Tests for intel_store MCP server tool registration and helpers."""
 
+from unittest.mock import MagicMock
+
 import pytest
 
-from intel_store.mcp_server import _rrf_merge
+from intel_store.mcp_server import _dedup_papers, _rrf_merge
 
 # ── RRF merge tests ──────────────────────────────────────────────
 
@@ -41,6 +43,68 @@ class TestRRFMerge:
         merged = _rrf_merge(items, limit=10)
         ids = [item["id"] for item in merged]
         assert ids == [10, 20, 30]
+
+
+# ── Cross-source dedup tests ─────────────────────────────────────
+
+
+class TestDedupPapers:
+    def _mock_repo(self, existing_ids: dict[str, dict | None]):
+        """Create a mock repo that returns existing items by external_id."""
+        repo = MagicMock()
+        repo.get_item_by_external_id.side_effect = lambda eid: existing_ids.get(eid)
+        return repo
+
+    def test_ss_paper_skipped_when_arxiv_exists(self):
+        """SS paper with arxiv_id should be skipped if arXiv copy already in DB."""
+        repo = self._mock_repo({"arxiv:2301.12345": {"id": 1, "title": "Paper"}})
+        papers = [{"external_id": "ss:abc", "arxiv_id": "2301.12345", "title": "Paper"}]
+        result = _dedup_papers(papers, repo)
+        assert len(result) == 0
+
+    def test_ss_paper_kept_when_no_arxiv_match(self):
+        """SS paper should be kept when no arXiv copy exists."""
+        repo = self._mock_repo({"arxiv:2301.12345": None})
+        papers = [{"external_id": "ss:abc", "arxiv_id": "2301.12345", "title": "Paper"}]
+        result = _dedup_papers(papers, repo)
+        assert len(result) == 1
+
+    def test_ss_paper_without_arxiv_id_kept(self):
+        """SS paper without arxiv_id should always be kept."""
+        repo = self._mock_repo({})
+        papers = [{"external_id": "ss:abc", "arxiv_id": None, "title": "Paper"}]
+        result = _dedup_papers(papers, repo)
+        assert len(result) == 1
+
+    def test_arxiv_paper_skipped_when_already_stored(self):
+        """arXiv paper should be skipped if same external_id already in DB."""
+        repo = self._mock_repo({"arxiv:2301.99999": {"id": 2, "title": "Existing"}})
+        papers = [{"external_id": "arxiv:2301.99999", "title": "Paper"}]
+        result = _dedup_papers(papers, repo)
+        assert len(result) == 0
+
+    def test_arxiv_paper_kept_when_new(self):
+        """arXiv paper should be kept when not in DB."""
+        repo = self._mock_repo({"arxiv:2301.99999": None})
+        papers = [{"external_id": "arxiv:2301.99999", "title": "Paper"}]
+        result = _dedup_papers(papers, repo)
+        assert len(result) == 1
+
+    def test_mixed_batch(self):
+        """Batch with both duplicates and new papers filters correctly."""
+        repo = self._mock_repo({
+            "arxiv:111": {"id": 1},  # exists
+            "arxiv:222": None,  # doesn't exist
+        })
+        papers = [
+            {"external_id": "ss:a", "arxiv_id": "111", "title": "Dup"},
+            {"external_id": "ss:b", "arxiv_id": "222", "title": "New SS"},
+            {"external_id": "ss:c", "arxiv_id": None, "title": "No arXiv"},
+        ]
+        result = _dedup_papers(papers, repo)
+        assert len(result) == 2
+        assert result[0]["title"] == "New SS"
+        assert result[1]["title"] == "No arXiv"
 
 
 # ── Tool registration test ───────────────────────────────────────
