@@ -13,6 +13,33 @@ logger = logging.getLogger(__name__)
 mcp = FastMCP("intel-store")
 
 
+def _rrf_merge(*result_lists: list[dict], limit: int = 20, k: int = 60) -> list[dict]:
+    """Merge multiple ranked result lists using Reciprocal Rank Fusion.
+
+    Args:
+        *result_lists: Ranked lists of item dicts (must have 'id' key).
+        limit: Maximum results to return.
+        k: RRF smoothing constant (default 60).
+
+    Returns:
+        Merged list sorted by RRF score, highest first.
+    """
+    scores: dict[int, float] = {}
+    items_by_id: dict[int, dict] = {}
+
+    for results in result_lists:
+        for rank, item in enumerate(results):
+            item_id = item.get("id")
+            if item_id is None:
+                continue
+            scores[item_id] = scores.get(item_id, 0.0) + 1.0 / (k + rank + 1)
+            if item_id not in items_by_id:
+                items_by_id[item_id] = item
+
+    ranked = sorted(scores.items(), key=lambda x: x[1], reverse=True)
+    return [items_by_id[item_id] for item_id, _ in ranked[:limit]]
+
+
 def _get_repo():
     from functools import lru_cache
 
@@ -62,23 +89,16 @@ def search_intel(
     elif mode == "hybrid":
         from intel_store import embeddings
 
-        # Keyword results
-        kw_results = repo.search_fulltext(query, types=types, topic=topic, since=since, limit=limit)
-        # Semantic results
+        fetch_limit = limit * 2
+        kw_results = repo.search_fulltext(
+            query, types=types, topic=topic, since=since, limit=fetch_limit
+        )
         query_vec = embeddings.embed_query(query)
         sem_results = repo.search_semantic(
-            query_vec, types=types, topic=topic, since=since, limit=limit
+            query_vec, types=types, topic=topic, since=since, limit=fetch_limit
         )
 
-        # Merge and deduplicate, preserving order (keyword first, then semantic)
-        seen_ids: set[int] = set()
-        merged: list[dict] = []
-        for item in kw_results + sem_results:
-            item_id = item.get("id")
-            if item_id and item_id not in seen_ids:
-                seen_ids.add(item_id)
-                merged.append(item)
-        return merged[:limit]
+        return _rrf_merge(kw_results, sem_results, limit=limit)
     else:
         return [{"error": f"Unknown mode: {mode}. Use 'keyword', 'semantic', or 'hybrid'."}]
 
