@@ -205,7 +205,9 @@ class IntelRepository:
             query = query.gte("published_date", since)
 
         query = query.order("published_date", desc=True).limit(limit)
-        query = query.text_search("search_text", query_text, options={"config": "simple"})
+        query = query.text_search(
+            "search_text", query_text, options={"config": "simple", "type": "plain"}
+        )
         return query.execute().data
 
     # ── semantic search (via RPC) ────────────────────────────

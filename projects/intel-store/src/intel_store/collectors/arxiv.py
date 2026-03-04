@@ -6,6 +6,7 @@ import logging
 import re
 import time
 from datetime import date
+from urllib.parse import quote
 
 import feedparser
 
@@ -32,7 +33,11 @@ def search_papers(
         List of paper dicts ready for IntelItem conversion via paper_from_collector.
     """
     limit = max(1, min(limit, 100))
-    params = f"search_query={query}&start=0&max_results={limit}&sortBy=submittedDate&sortOrder=descending"
+    encoded_query = quote(query, safe=":")
+    params = (
+        f"search_query={encoded_query}&start=0&max_results={limit}"
+        "&sortBy=submittedDate&sortOrder=descending"
+    )
     url = f"{_BASE_URL}?{params}"
 
     try:
