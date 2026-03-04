@@ -10,7 +10,7 @@
 - **하이브리드 검색**: Reciprocal Rank Fusion (k=60) — keyword + semantic 결과 병합
 - **수집기**: Semantic Scholar, arXiv, USPTO PatentsView, Tavily, GDELT, Naver News
 
-## MCP 도구 (14개)
+## MCP 도구 (13개)
 | 도구 | 설명 |
 |------|------|
 | `search_intel` | 통합 검색 (keyword/semantic/hybrid with RRF) |
