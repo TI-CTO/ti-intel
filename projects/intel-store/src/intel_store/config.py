@@ -16,6 +16,8 @@ class Settings(BaseSettings):
     supabase_key: str
     tavily_api_key: str = ""
     semantic_scholar_api_key: str = ""
+    naver_client_id: str = ""
+    naver_client_secret: str = ""
     embedding_model: str = "intfloat/multilingual-e5-large"
 
 

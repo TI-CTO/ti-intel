@@ -381,20 +381,20 @@ def collect_news(
     source: str = "all",
     generate_embedding: bool = True,
 ) -> dict:
-    """Collect news from Tavily/GDELT, store in DB, and link to topic.
+    """Collect news from Tavily/GDELT/Naver, store in DB, and link to topic.
 
     Args:
         topic: Topic slug to associate news with.
         query: Search query string.
         since_days: Look back this many days (default 7).
         limit: Max results per source (default 20).
-        source: Collector to use — 'tavily', 'gdelt', or 'all' (default).
+        source: Collector to use — 'tavily', 'gdelt', 'naver', or 'all' (default).
         generate_embedding: Generate embeddings for collected news.
 
     Returns:
         Dict with collection results per source and stored count.
     """
-    from intel_store.collectors import gdelt, tavily
+    from intel_store.collectors import gdelt, naver_news, tavily
     from intel_store.collectors.tavily import QuotaExhaustedError
     from intel_store.models import news_from_collector
 
@@ -421,6 +421,11 @@ def collect_news(
         gdelt_items = gdelt.collect(query, since_days=since_days, limit=limit)
         results["sources"]["gdelt"] = {"fetched": len(gdelt_items)}
         all_raw.extend(gdelt_items)
+
+    if source in ("naver", "all"):
+        naver_items = naver_news.collect(query, since_days=since_days, limit=limit)
+        results["sources"]["naver"] = {"fetched": len(naver_items)}
+        all_raw.extend(naver_items)
 
     # Deduplicate by URL
     seen_urls: set[str] = set()
@@ -523,7 +528,7 @@ def collect_all(
     Args:
         topic: Topic slug to associate all items with.
         query: Default search query (used when queries dict does not specify a source).
-        queries: Per-source query overrides, e.g. {"papers": "...", "arxiv": "...", "news": "...", "patents": "..."}.
+        queries: Per-source query overrides, e.g. {"papers": "...", "arxiv": "..."}.
         since_days: Look-back days for news (default 7).
         since_year: Filter papers/patents published on or after this year.
         limit: Max results per source (default 10).
@@ -536,22 +541,47 @@ def collect_all(
     results: dict = {"topic": topic, "sources": {}, "errors": []}
 
     source_calls = [
-        ("papers", lambda q: collect_papers(
-            topic=topic, query=q, since_year=since_year,
-            limit=limit, generate_embedding=generate_embedding,
-        )),
-        ("arxiv", lambda q: collect_arxiv(
-            topic=topic, query=q, since_year=since_year,
-            limit=limit, generate_embedding=generate_embedding,
-        )),
-        ("patents", lambda q: collect_patents(
-            topic=topic, query=q, since_year=since_year,
-            limit=limit, generate_embedding=generate_embedding,
-        )),
-        ("news", lambda q: collect_news(
-            topic=topic, query=q, since_days=since_days,
-            limit=limit, source="all", generate_embedding=generate_embedding,
-        )),
+        (
+            "papers",
+            lambda q: collect_papers(
+                topic=topic,
+                query=q,
+                since_year=since_year,
+                limit=limit,
+                generate_embedding=generate_embedding,
+            ),
+        ),
+        (
+            "arxiv",
+            lambda q: collect_arxiv(
+                topic=topic,
+                query=q,
+                since_year=since_year,
+                limit=limit,
+                generate_embedding=generate_embedding,
+            ),
+        ),
+        (
+            "patents",
+            lambda q: collect_patents(
+                topic=topic,
+                query=q,
+                since_year=since_year,
+                limit=limit,
+                generate_embedding=generate_embedding,
+            ),
+        ),
+        (
+            "news",
+            lambda q: collect_news(
+                topic=topic,
+                query=q,
+                since_days=since_days,
+                limit=limit,
+                source="all",
+                generate_embedding=generate_embedding,
+            ),
+        ),
     ]
 
     total_stored = 0

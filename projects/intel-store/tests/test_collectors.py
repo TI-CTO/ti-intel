@@ -1,6 +1,6 @@
 """Tests for collector _normalise functions (no network calls)."""
 
-from intel_store.collectors import arxiv, gdelt, patents_view, semantic_scholar, tavily
+from intel_store.collectors import arxiv, gdelt, naver_news, patents_view, semantic_scholar, tavily
 
 
 class TestTavilyNormalise:
@@ -141,3 +141,58 @@ class TestPatentsViewNormalise:
     def test_no_title(self):
         raw = {"patent_id": "123", "patent_title": ""}
         assert patents_view._normalise(raw) is None
+
+
+class TestNaverNewsNormalise:
+    def test_valid_result(self):
+        raw = {
+            "title": "<b>양자암호</b> 통신 기술 발전",
+            "originallink": "https://news.example.kr/article/123",
+            "link": "https://n.news.naver.com/redirect/123",
+            "description": "<b>양자암호</b> 기반의 보안 통신 기술이 발전하고 있다.",
+            "pubDate": "Mon, 03 Mar 2026 09:00:00 +0900",
+        }
+        result = naver_news._normalise(raw)
+        assert result is not None
+        assert result["title"] == "양자암호 통신 기술 발전"  # HTML stripped
+        assert result["url"] == "https://news.example.kr/article/123"  # originallink
+        assert result["published_date"] == "2026-03-03"
+        assert result["reliability_tag"] == "B"
+        assert result["collector"] == "naver"
+        assert "<b>" not in result["summary"]
+
+    def test_missing_title(self):
+        raw = {"title": "", "link": "https://example.com"}
+        assert naver_news._normalise(raw) is None
+
+    def test_fallback_to_link(self):
+        raw = {
+            "title": "Test",
+            "originallink": "",
+            "link": "https://n.news.naver.com/article/123",
+        }
+        result = naver_news._normalise(raw)
+        assert result is not None
+        assert result["url"] == "https://n.news.naver.com/article/123"
+
+
+class TestNaverStripHtml:
+    def test_removes_bold_tags(self):
+        assert naver_news._strip_html("<b>양자</b>암호") == "양자암호"
+
+    def test_empty_string(self):
+        assert naver_news._strip_html("") == ""
+
+    def test_no_tags(self):
+        assert naver_news._strip_html("plain text") == "plain text"
+
+
+class TestNaverParseDateRfc822:
+    def test_valid_date(self):
+        assert naver_news._parse_rfc822_date("Mon, 03 Mar 2026 09:00:00 +0900") == "2026-03-03"
+
+    def test_empty_string(self):
+        assert naver_news._parse_rfc822_date("") is None
+
+    def test_invalid_date(self):
+        assert naver_news._parse_rfc822_date("not a date") is None

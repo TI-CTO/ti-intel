@@ -4,7 +4,6 @@ import pytest
 
 from intel_store.mcp_server import _rrf_merge
 
-
 # ── RRF merge tests ──────────────────────────────────────────────
 
 
