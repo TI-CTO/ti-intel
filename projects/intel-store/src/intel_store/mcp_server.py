@@ -452,6 +452,70 @@ def collect_news(
     return results
 
 
+# ── orchestration tools ──────────────────────────────────────────
+
+
+@mcp.tool()
+def collect_all(
+    topic: str,
+    query: str = "",
+    queries: dict[str, str] | None = None,
+    since_days: int = 7,
+    since_year: int | None = None,
+    limit: int = 10,
+    generate_embedding: bool = True,
+) -> dict:
+    """Collect papers, patents, and news in one call, store and link to topic.
+
+    Args:
+        topic: Topic slug to associate all items with.
+        query: Default search query (used when queries dict does not specify a source).
+        queries: Per-source query overrides, e.g. {"papers": "...", "news": "...", "patents": "..."}.
+        since_days: Look-back days for news (default 7).
+        since_year: Filter papers/patents published on or after this year.
+        limit: Max results per source (default 10).
+        generate_embedding: Generate embeddings for collected items.
+
+    Returns:
+        Dict with per-source results and overall summary.
+    """
+    queries = queries or {}
+    results: dict = {"topic": topic, "sources": {}, "errors": []}
+
+    source_calls = [
+        ("papers", lambda q: collect_papers(
+            topic=topic, query=q, since_year=since_year,
+            limit=limit, generate_embedding=generate_embedding,
+        )),
+        ("patents", lambda q: collect_patents(
+            topic=topic, query=q, since_year=since_year,
+            limit=limit, generate_embedding=generate_embedding,
+        )),
+        ("news", lambda q: collect_news(
+            topic=topic, query=q, since_days=since_days,
+            limit=limit, source="all", generate_embedding=generate_embedding,
+        )),
+    ]
+
+    total_stored = 0
+    for source_name, call_fn in source_calls:
+        source_query = queries.get(source_name, query)
+        if not source_query:
+            results["sources"][source_name] = {"skipped": "no query provided"}
+            continue
+        try:
+            result = call_fn(source_query)
+            results["sources"][source_name] = result
+            total_stored += result.get("stored", 0)
+        except Exception as e:
+            logger.error("collect_all: %s failed — %s", source_name, e)
+            results["sources"][source_name] = {"error": str(e)}
+            results["errors"].append(source_name)
+
+    results["total_stored"] = total_stored
+    return results
+
+
 # ── stats tool ───────────────────────────────────────────────────
 
 
