@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import html
 import logging
 import re
 from datetime import date, timedelta
@@ -109,8 +110,8 @@ def _normalise(raw: dict) -> dict | None:
 
 
 def _strip_html(text: str) -> str:
-    """Remove HTML tags from text (Naver returns <b> highlighting)."""
-    return re.sub(r"<[^>]+>", "", text)
+    """Remove HTML tags and unescape entities (Naver returns <b> and &quot;)."""
+    return html.unescape(re.sub(r"<[^>]+>", "", text))
 
 
 def _parse_rfc822_date(date_str: str) -> str | None:

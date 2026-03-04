@@ -180,6 +180,9 @@ class TestNaverStripHtml:
     def test_removes_bold_tags(self):
         assert naver_news._strip_html("<b>양자</b>암호") == "양자암호"
 
+    def test_unescapes_html_entities(self):
+        assert naver_news._strip_html("&quot;hello&quot; &amp; world") == '"hello" & world'
+
     def test_empty_string(self):
         assert naver_news._strip_html("") == ""
 
