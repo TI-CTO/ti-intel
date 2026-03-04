@@ -127,47 +127,7 @@ class IntelRepository:
         )
         return result.data[0] if result.data else None
 
-    # ── keyword search ───────────────────────────────────────
-
-    def search_keyword(
-        self,
-        keyword: str,
-        *,
-        types: list[str] | None = None,
-        topic: str | None = None,
-        since: str | None = None,
-        limit: int = 20,
-    ) -> list[dict]:
-        """Search items by keyword (title ilike).
-
-        Args:
-            keyword: Search term for title matching.
-            types: Filter by item_type (e.g. ["news", "paper"]).
-            topic: Filter by topic slug.
-            since: Filter by published_date >= since (YYYY-MM-DD).
-            limit: Maximum results.
-
-        Returns:
-            List of matching item dicts.
-        """
-        query = self._client.table("intel_items").select("*")
-
-        if keyword:
-            query = query.ilike("title", f"%{keyword}%")
-        if types:
-            query = query.in_("item_type", types)
-        if topic:
-            topic_id = self._resolve_topic_id(topic)
-            if topic_id is None:
-                return []
-            item_ids = self._get_item_ids_for_topic(topic_id)
-            if not item_ids:
-                return []
-            query = query.in_("id", item_ids)
-        if since:
-            query = query.gte("published_date", since)
-
-        return query.order("published_date", desc=True).limit(limit).execute().data
+    # ── fulltext search ────────────────────────────────────────
 
     def search_fulltext(
         self,
