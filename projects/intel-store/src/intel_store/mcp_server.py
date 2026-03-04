@@ -275,7 +275,7 @@ def collect_papers(
     limit: int = 10,
     generate_embedding: bool = True,
 ) -> dict:
-    """Collect papers from Semantic Scholar, store in DB, and link to topic.
+    """Collect papers from Semantic Scholar (falls back to arXiv on failure).
 
     Args:
         topic: Topic slug to associate papers with (e.g. 'ondevice-pqc').
@@ -287,13 +287,19 @@ def collect_papers(
     Returns:
         Dict with fetched, stored counts and paper titles.
     """
-    from intel_store.collectors import semantic_scholar
+    from intel_store.collectors import arxiv, semantic_scholar
     from intel_store.models import paper_from_collector
 
     repo = _get_repo()
     repo._require_topic_id(topic)  # validate topic exists
 
+    source_used = "semantic_scholar"
     raw_papers = semantic_scholar.search_papers(query, limit=limit, since_year=since_year)
+
+    if not raw_papers:
+        logger.info("Semantic Scholar returned 0 results, falling back to arXiv")
+        source_used = "arxiv"
+        raw_papers = arxiv.search_papers(query, limit=limit, since_year=since_year)
 
     models = []
     for raw in raw_papers:
@@ -311,13 +317,17 @@ def collect_papers(
     if item_ids:
         repo.batch_link_topic(item_ids, topic)
 
-    return {
+    result = {
         "topic": topic,
         "query": query,
+        "source": source_used,
         "fetched": len(raw_papers),
         "stored": len(results),
         "titles": [r.get("title", "") for r in results],
     }
+    if source_used == "arxiv":
+        result["fallback"] = "semantic_scholar returned 0 results"
+    return result
 
 
 @mcp.tool()
