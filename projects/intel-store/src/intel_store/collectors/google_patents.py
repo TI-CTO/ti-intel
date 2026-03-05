@@ -40,7 +40,7 @@ def search_patents(
         logger.warning("SERPAPI_API_KEY not set — skipping Google Patents search")
         return []
 
-    limit = max(1, min(limit, 100))
+    limit = max(10, min(limit, 100))
 
     search_query = query
     if since_year:
