@@ -426,16 +426,16 @@ MWC 2026을 기점으로 온디바이스 SLM 시장이 **실증→양산 단계 
 
 ---
 
-## 기술 간 교차 시사점
+## 종합 시사점 및 후속 조치
+
+### 기술 간 교차 시사점
 
 1. **온디바이스 AI 보안의 수렴**: PQC(양자암호) + HE(동형암호) + sLM(소형언어모델)이 온디바이스에서 수렴. Samsung S3SSE2A(PQC) + Gauss2(sLM) + Apple swift-HE 등이 동일 디바이스 통합 추세
 2. **통신사 보안 경쟁 격화**: SKT(Syntelligence JV + PQC), KT(보이스피싱 탐지 + PQC+QKD), LG U+(SOLMAE + ixi-Guardian) — 3사 모두 보안을 핵심 차별화 축으로 추진
 3. **표준화 가속**: PQC(NIST FIPS 203/204/205), FHE(HE.org 서울 회의), 스팸 탐지(Syntelligence 네트워크 레벨) 모두 2026년 표준화 본격 진행
 4. **프라이버시 규제가 시장 창출**: HIPAA 암호화 의무화, EU AI Act, NISTIR 8547 — 규제가 PQC/HE/Secure Search 시장 성장의 직접 동인
 
----
-
-## 후속 조치 제안
+### 후속 조치 제안
 
 - 🔴 **ondevice-pqc**: Thales OTA PQC 기술이 SIM 전환 비용 구조를 근본적으로 변경. `/wtis standard 양자동형암호` Go/No-Go 검증 권장
 - 🔴 **spam-phishing-detection**: Syntelligence JV에 SKT 참여 + Google Scam Detection 확대. 경쟁 구도 변화 모니터링 필요

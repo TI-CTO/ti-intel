@@ -467,6 +467,8 @@ pre code {
 
 .references-section {
     padding: 8mm 0 6mm;
+    page-break-before: always;
+    break-before: page;
 }
 
 .references-section > h2 {
@@ -494,9 +496,20 @@ pre code {
 }
 
 /* References tables: allow page breaks, smaller font, wrap all columns */
+.references-section .table-wrapper {
+    page-break-inside: auto !important;
+    break-inside: auto !important;
+}
+
 .references-section .data-table {
-    page-break-inside: auto;
+    page-break-inside: auto !important;
+    break-inside: auto !important;
     font-size: 7pt;
+}
+
+.references-section .data-table tr {
+    page-break-inside: auto !important;
+    break-inside: auto !important;
 }
 
 .references-section .data-table th,
