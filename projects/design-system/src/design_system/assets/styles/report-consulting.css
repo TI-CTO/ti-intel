@@ -1,8 +1,13 @@
 /*
  * report-consulting.css
- * LG U+ Consulting Report Design
- * Design 1: Financial Consulting Executive Summary (2-column, KPI boxes, timeline footer)
- * Design 2: Management Consulting Proposal (dark header, dotted dividers, magenta table headers)
+ * LG U+ WTIS Consulting Report Design
+ *
+ * Layout: Cover (header + executive summary) → Content (H2 per page) → References → Footer
+ * Typography: body 10pt, H2 14pt (magenta underline), H3 12pt (bg + left bar), H4 10pt (gray underline)
+ * Pagination: paged.js polyfill, @page margin 20/14/18/14mm, first page margin 0 (full-bleed cover)
+ * Page numbers: JS-injected via paged.js afterRendered (p2+: "LG U+ WTIS" left, "N / total" right)
+ * Tables: nowrap first 2 cols only, references tables allow page breaks
+ * Key rule: NEVER set fixed width (210mm) on body/wrapper — use width: 100%, @page controls margins
  *
  * CSS variables are injected by PdfRenderer from design tokens.
  */
@@ -10,6 +15,9 @@
 /* ── Page Setup ──────────────────────────────────────────────────── */
 @page {
     size: A4;
+    margin: 20mm 14mm 18mm 14mm;
+}
+@page :first {
     margin: 0;
 }
 
@@ -21,19 +29,16 @@
 
 body {
     font-family: var(--font-main);
-    font-size: 9pt;
+    font-size: 10pt;
     line-height: 1.6;
     color: var(--color-text);
     background: var(--color-background);
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
-    width: 210mm;
 }
 
 .report-wrapper {
-    width: 210mm;
-    min-height: 297mm;
-    margin: 0 auto;
+    width: 100%;
     display: flex;
     flex-direction: column;
 }
@@ -88,7 +93,7 @@ body {
     display: flex;
     gap: 14px;
     color: rgba(255, 255, 255, 0.7);
-    font-size: 8pt;
+    font-size: 12pt;
     flex-wrap: wrap;
 }
 
@@ -96,10 +101,13 @@ body {
     color: rgba(255, 255, 255, 0.3);
 }
 
+
 /* ── Report Body ─────────────────────────────────────────────────── */
 .report-body {
-    padding: 8mm 14mm 6mm;
+    padding: 0;
     flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 /* ── Executive Summary Callout Box (Design 1) ───────────────────── */
@@ -114,15 +122,14 @@ body {
 
 .callout-title {
     color: var(--color-primary);
-    font-size: 8pt;
+    font-size: 14pt;
     font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    margin-bottom: 5px;
+    letter-spacing: 0.03em;
+    margin-bottom: 8px;
 }
 
 .callout-box p {
-    font-size: 9pt;
+    font-size: 10pt;
     line-height: 1.6;
     color: var(--color-text);
     margin-bottom: 4px;
@@ -175,9 +182,9 @@ body {
 /* Magenta bold, underline accent */
 .section-title {
     color: var(--color-primary);
-    font-size: 11pt;
+    font-size: 14pt;
     font-weight: 700;
-    margin: 6mm 0 3mm;
+    margin: 8mm 0 3mm;
     padding-bottom: 3px;
     border-bottom: 2px solid var(--color-primary);
     display: flex;
@@ -202,19 +209,19 @@ body {
     padding: 0 2px;
 }
 
-/* ── Dotted Section Divider (Design 2) ──────────────────────────── */
-.section-divider {
-    border: none;
-    border-top: 2px dotted var(--color-border);
-    margin: 5mm 0;
+/* ── Horizontal Rules (hide markdown-generated <hr>) ─────────────── */
+hr {
+    display: none;
 }
 
 /* ── Body Text ───────────────────────────────────────────────────── */
 .section-content p {
-    font-size: 9pt;
+    font-size: 10pt;
     line-height: 1.6;
     margin-bottom: 4px;
     color: var(--color-text);
+    orphans: 3;
+    widows: 3;
 }
 
 .section-content ul,
@@ -224,7 +231,7 @@ body {
 }
 
 .section-content li {
-    font-size: 9pt;
+    font-size: 10pt;
     line-height: 1.5;
     margin-bottom: 2px;
 }
@@ -280,6 +287,17 @@ blockquote p {
     border-bottom: 1px solid var(--color-border);
     vertical-align: top;
     line-height: 1.4;
+}
+
+/* First two columns: prevent wrapping for short labels */
+.data-table th:nth-child(-n+2),
+.data-table td:nth-child(-n+2) {
+    white-space: nowrap;
+}
+
+.data-table tr {
+    page-break-inside: avoid;
+    break-inside: avoid;
 }
 
 .data-table tr:nth-child(even) td {
@@ -383,9 +401,72 @@ pre code {
     page-break-inside: avoid;
 }
 
+/* Section blocks: allow page breaks inside long sections,
+   but keep title with at least some content (orphan control) */
+.section-block {
+    page-break-inside: auto;
+}
+
+.section-block > .section-title {
+    page-break-after: avoid;
+    break-after: avoid;
+}
+
+.content-zone {
+    page-break-before: always;
+    break-before: page;
+}
+
+.section-block-break {
+    page-break-before: always;
+    break-before: page;
+}
+
+/* Prevent widowed section titles at page bottom */
+.section-content > p:first-child,
+.section-content > ul:first-child,
+.section-content > ol:first-child,
+.section-content > .data-table:first-of-type {
+    page-break-before: avoid;
+}
+
+/* Keep sub-headings together with following content */
+.section-content h3 {
+    font-size: 12pt;
+    font-weight: 700;
+    color: var(--color-dark);
+    background: var(--color-surface);
+    padding: 3px 8px;
+    margin-top: 10mm;
+    margin-bottom: 3mm;
+    border-left: 3px solid var(--color-primary);
+    page-break-after: avoid;
+    break-after: avoid;
+}
+
+.section-content h4 {
+    font-size: 10pt;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-top: 6mm;
+    margin-bottom: 2mm;
+    padding-bottom: 2px;
+    border-bottom: 1px solid var(--color-border);
+    page-break-after: avoid;
+    break-after: avoid;
+}
+
 /* ── References Section ─────────────────────────────────────────── */
+.cover-zone {
+    padding: 0 14mm;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+}
+
 .references-section {
-    padding: 8mm 14mm 6mm;
+    padding: 8mm 0 6mm;
 }
 
 .references-section > h2 {
@@ -399,7 +480,7 @@ pre code {
 
 .reference-group {
     margin-bottom: 5mm;
-    page-break-inside: avoid;
+    page-break-inside: auto;
 }
 
 .reference-group h3 {
@@ -411,3 +492,37 @@ pre code {
     margin-bottom: 2mm;
     border-left: 3px solid var(--color-primary);
 }
+
+/* References tables: allow page breaks, smaller font, wrap all columns */
+.references-section .data-table {
+    page-break-inside: auto;
+    font-size: 7pt;
+}
+
+.references-section .data-table th,
+.references-section .data-table td {
+    white-space: normal;
+    word-break: break-all;
+}
+
+/* URL column: constrain width and break long URLs */
+.references-section .data-table td:nth-child(3) {
+    max-width: 45mm;
+    word-break: break-all;
+    font-size: 6.5pt;
+}
+
+.references-section .data-table a {
+    word-break: break-all;
+}
+
+/* ── Table Wrapper ─────────────────────────────────────────────── */
+.table-wrapper {
+    overflow-x: auto;
+    margin: 3mm 0;
+}
+
+.table-wrapper > .data-table {
+    margin: 0;
+}
+

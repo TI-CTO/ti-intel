@@ -24,6 +24,7 @@ logger = logging.getLogger(__name__)
 _ASSETS_DIR = Path(__file__).parent.parent / "assets"
 _TEMPLATES_DIR = _ASSETS_DIR / "templates"
 _STYLES_DIR = _ASSETS_DIR / "styles"
+_PAGEDJS_PATH = _ASSETS_DIR / "js" / "paged.polyfill.min.js"
 
 _EXEC_SUMMARY_KEYS = ("경영진 요약", "Executive Summary")
 _REFERENCES_KEYS = ("References", "참조", "Reference")
@@ -56,11 +57,26 @@ def _make_md() -> mistune.Markdown:
 
 
 def _postprocess(html: str) -> str:
-    """Add CSS class to tables and convert citation refs to styled badges."""
-    html = re.sub(r"<table>", '<table class="data-table">', html)
+    """Add CSS class to tables, wrap in div, and convert citation refs to styled badges."""
+    html = re.sub(
+        r"<table>", '<div class="table-wrapper"><table class="data-table">', html
+    )
+    html = re.sub(r"</table>", "</table></div>", html)
     html = re.sub(
         r"\[([GNEPTI]-\d+)\]",
         r'<span class="citation-badge">\1</span>',
+        html,
+    )
+    # Restore escaped <a id="..."> anchor tags (mistune escapes raw HTML in table cells)
+    html = re.sub(
+        r"&lt;a id=&quot;([^&]+)&quot;&gt;&lt;/a&gt;",
+        r'<a id="\1"></a>',
+        html,
+    )
+    # Convert bare URLs to clickable links (skip URLs already inside href="...")
+    html = re.sub(
+        r'(?<!href=")(https?://[^\s<,|"]+)',
+        r'<a href="\1" target="_blank">\1</a>',
         html,
     )
     return html
@@ -137,6 +153,48 @@ def _css_vars(theme: ThemeInfo) -> str:
 
 
 # ---------------------------------------------------------------------------
+# paged.js injection
+# ---------------------------------------------------------------------------
+
+
+def _build_pagedjs_script() -> str:
+    """Build paged.js inline script block for template injection."""
+    if not _PAGEDJS_PATH.exists():
+        logger.warning("paged.js bundle not found at %s", _PAGEDJS_PATH)
+        return ""
+    pagedjs_bundle = _PAGEDJS_PATH.read_text(encoding="utf-8")
+    return (
+        '<script>window.PagedConfig = { auto: false };</script>\n'
+        f"<script>{pagedjs_bundle}</script>\n"
+        "<script>\n"
+        "class ReadyHandler extends Paged.Handler {\n"
+        "  afterRendered(pages) {\n"
+        "    const total = pages.length;\n"
+        "    pages.forEach((page, idx) => {\n"
+        "      if (idx === 0) return;\n"
+        "      const bl = page.element.querySelector("
+        "'.pagedjs_margin-bottom-left .pagedjs_margin-content');\n"
+        "      const br = page.element.querySelector("
+        "'.pagedjs_margin-bottom-right .pagedjs_margin-content');\n"
+        "      if (bl) {\n"
+        "        bl.textContent = 'LG U+ WTIS';\n"
+        "        bl.style.cssText = 'font-size:7.5pt;color:#888;';\n"
+        "      }\n"
+        "      if (br) {\n"
+        "        br.textContent = (idx + 1) + ' / ' + total;\n"
+        "        br.style.cssText = 'font-size:7.5pt;color:#888;text-align:right;';\n"
+        "      }\n"
+        "    });\n"
+        "    window.pagedJsReady = true;\n"
+        "  }\n"
+        "}\n"
+        "Paged.registerHandlers(ReadyHandler);\n"
+        "window.PagedPolyfill.preview();\n"
+        "</script>"
+    )
+
+
+# ---------------------------------------------------------------------------
 # Playwright PDF generation
 # ---------------------------------------------------------------------------
 
@@ -144,6 +202,7 @@ def _css_vars(theme: ThemeInfo) -> str:
 def _playwright_pdf(html: str, output_path: Path) -> None:
     """Render HTML to PDF using Playwright headless Chromium.
 
+    Waits for paged.js to finish rendering before capturing PDF.
     Runs synchronously; call via thread pool from async contexts.
     """
     from playwright.sync_api import sync_playwright
@@ -152,6 +211,7 @@ def _playwright_pdf(html: str, output_path: Path) -> None:
         browser = p.chromium.launch()
         page = browser.new_page()
         page.set_content(html, wait_until="domcontentloaded")
+        page.wait_for_function("window.pagedJsReady === true", timeout=60_000)
         page.pdf(
             path=str(output_path),
             format="A4",
@@ -225,6 +285,12 @@ class PdfRenderer(BaseRenderer):
         meta: dict = post.metadata
         body: str = post.content
 
+        # Extract H1 title from markdown body
+        h1_match = re.match(r"^#\s+(.+)$", body, re.MULTILINE)
+        report_title = h1_match.group(1).strip() if h1_match else meta.get(
+            "topic", markdown_path.stem
+        )
+
         sections = _parse_sections(body)
         exec_summary = next((s for s in sections if s.is_exec_summary), None)
         references = next((s for s in sections if s.is_references), None)
@@ -245,7 +311,9 @@ class PdfRenderer(BaseRenderer):
 
         sources_used = meta.get("sources_used", [])
         html = template.render(
+            title=report_title,
             topic=meta.get("topic", markdown_path.stem),
+            filename=markdown_path.name,
             date=str(meta.get("date", "")),
             confidence=meta.get("confidence", "medium"),
             status=meta.get("status", ""),
@@ -254,6 +322,7 @@ class PdfRenderer(BaseRenderer):
             main_sections=main_sections,
             references_html=references.html if references else "",
             css=css,
+            pagedjs_script=_build_pagedjs_script(),
         )
 
         output_path.parent.mkdir(parents=True, exist_ok=True)
