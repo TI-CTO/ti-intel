@@ -197,7 +197,7 @@ def _build_pagedjs_script() -> str:
         "      const br = page.element.querySelector("
         "'.pagedjs_margin-bottom-right .pagedjs_margin-content');\n"
         "      if (bl) {\n"
-        "        bl.textContent = 'LG U+ WTIS';\n"
+        "        bl.textContent = 'WTIS';\n"
         "        bl.style.cssText = 'font-size:7.5pt;color:#888;';\n"
         "      }\n"
         "      if (br) {\n"

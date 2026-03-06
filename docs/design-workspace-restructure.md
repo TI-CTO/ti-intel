@@ -7,7 +7,7 @@
 
 ## Context
 
-현재 `/Users/ctoti/Project/ClaudeCode/`는 단일 git root에 4개 MCP 프로젝트 + 10개 스킬 + 5개 에이전트가 공존한다. 모든 자산이 "LG U+ 기술전략 인텔리전스" 도메인에 특화되어 있어, 이종 도메인(주식매매 등) 프로젝트 추가 시 컨텍스트 오염, MCP 서버 전역 노출, git history 혼재 문제가 발생한다.
+현재 `/Users/ctoti/Project/ClaudeCode/`는 단일 git root에 4개 MCP 프로젝트 + 10개 스킬 + 5개 에이전트가 공존한다. 모든 자산이 "기술 인텔리전스" 도메인에 특화되어 있어, 이종 도메인(주식매매 등) 프로젝트 추가 시 컨텍스트 오염, MCP 서버 전역 노출, git history 혼재 문제가 발생한다.
 
 **목표**: 향후 이종 도메인 프로젝트 추가 시 즉시 적용 가능한 구조 설계안을 확정한다. 지금 당장 실행하지 않고, 필요한 시점에 참조하여 마이그레이션한다.
 
@@ -58,7 +58,7 @@
 │   │       ├── monitor/           (도메인 전용)
 │   │       └── weekly-monitor/    (도메인 전용)
 │   ├── .mcp.json                   (tech-intel MCP만)
-│   ├── CLAUDE.md                   (LG U+ 도메인 컨텍스트)
+│   ├── CLAUDE.md                   (도메인 컨텍스트)
 │   └── projects/                   (intel-store, trend-tracker, telco-factbook, design-system)
 │
 └── {NewDomain}/                    ← 향후 새 도메인
@@ -75,7 +75,7 @@
 ## 핵심 설계 결정
 
 ### 1. ClaudeCode → TechIntel 리네임
-- **이유**: 현재 이름이 실체(LG U+ Tech Intel)와 불일치
+- **이유**: 현재 이름이 실체(Tech Intel)와 불일치
 - **비용**: `~/.claude/projects/` 세션 데이터 경로 변경됨 → MEMORY.md만 수동 복사
 - **MEMORY.md 절대경로**: `sed`로 `/ClaudeCode/` → `/TechIntel/` 일괄 치환
 

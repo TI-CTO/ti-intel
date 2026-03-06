@@ -1,6 +1,6 @@
 # Tech Intelligence Platform
 
-LG U+ 기술전략 인텔리전스를 위한 멀티 에이전트 플랫폼.
+기술 인텔리전스를 위한 멀티 에이전트 플랫폼.
 Claude Code + MCP 서버 + Supabase로 구성.
 
 ## Structure
@@ -21,7 +21,7 @@ scripts/        유틸리티 스크립트
 | `intel-store` | 논문·특허·뉴스 통합 수집/검색 (14 도구) | Active |
 | `trend-tracker` | 트렌드 스냅샷 시계열 비교 (5 도구) | Active |
 | `design-system` | 마크다운 → PDF/PPTX 렌더링 (4 도구) | Active |
-| `telco-factbook` | SKT/KT 재무 지표 조회 (CLI 전용) | Maintenance |
+| `telco-factbook` | 통신사 재무 지표 조회 (CLI 전용) | Maintenance |
 
 ## Skills
 
@@ -52,7 +52,7 @@ scripts/        유틸리티 스크립트
 
 ```bash
 # 1. Clone & setup
-git clone git@github.com:TI-CTO/ti-intel.git && cd ti-intel
+git clone <your-repo-url> && cd ti-intel
 cp .mcp.json.example .mcp.json
 
 # 2. Install dependencies (each project)

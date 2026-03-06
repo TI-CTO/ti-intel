@@ -68,7 +68,7 @@ async def list_tools() -> list[Tool]:
         ),
         Tool(
             name="render_pdf",
-            description="WTIS 마크다운 리포트를 컨설팅 스타일 PDF로 변환합니다. LG U+ 마젠타(#C50063) 브랜드 색상 적용.",
+            description="WTIS 마크다운 리포트를 컨설팅 스타일 PDF로 변환합니다. 프라이머리(#C50063) 색상 적용.",
             inputSchema={
                 "type": "object",
                 "properties": {

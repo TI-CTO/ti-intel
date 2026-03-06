@@ -1,11 +1,11 @@
 /*
  * report-consulting.css
- * LG U+ WTIS Consulting Report Design
+ * WTIS Consulting Report Design
  *
  * Layout: Cover (header + executive summary) → Content (H2 per page) → References → Footer
  * Typography: body 10pt, H2 14pt (magenta underline), H3 12pt (bg + left bar), H4 10pt (gray underline)
  * Pagination: paged.js polyfill, @page margin 20/14/18/14mm, first page margin 0 (full-bleed cover)
- * Page numbers: JS-injected via paged.js afterRendered (p2+: "LG U+ WTIS" left, "N / total" right)
+ * Page numbers: JS-injected via paged.js afterRendered (p2+: "WTIS" left, "N / total" right)
  * Tables: nowrap first 2 cols only, references tables allow page breaks
  * Key rule: NEVER set fixed width (210mm) on body/wrapper — use width: 100%, @page controls margins
  *

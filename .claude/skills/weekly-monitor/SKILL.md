@@ -7,7 +7,7 @@ argument-hint: "<agentic-ai | secure-ai | axops>"
 
 # Weekly Monitor — 주간 기술 동향 모니터링
 
-LG U+ 기술전략 3개 도메인 × 18개 L3 세부기술의 주간 모니터링.
+3개 도메인 × 18개 L3 세부기술의 주간 모니터링.
 **2단계 파이프라인**: 먼저 전체 L3를 빠르게 스캔하고, 변화가 감지된 L3에 대해서만 심층 리서치를 실행한다.
 
 ## 핵심 원칙
@@ -155,7 +155,7 @@ research-deep 에이전트 (sonnet):
     - WebSearch: MCP 결과 보강 (최신 뉴스, 블로그, 공식 발표)
   태스크 경계:
     - Go/No-Go 판정하지 않음 (WTIS standard/proposal의 역할)
-    - LG U+ 전략 권고하지 않음 (팩트 수집 + 분석에 집중)
+    - 전략 권고하지 않음 (팩트 수집 + 분석에 집중)
   출력 경로: outputs/reports/weekly/YYYY-MM-DD_research-{l3-slug}.md
     ⚠️ 반드시 weekly/ 폴더에 저장 (메인 리포트와 같은 위치)
   출력 내용:

@@ -1,6 +1,6 @@
 # Tech Intelligence Platform — 사용 가이드
 
-> LG U+ 기술전략실을 위한 AI 기반 기술 인텔리전스 시스템.
+> AI 기반 기술 인텔리전스 시스템.
 > 주간 동향 모니터링부터 과제 Go/No-Go 판정까지, 일관된 파이프라인으로 의사결정을 지원한다.
 
 ---
@@ -192,7 +192,7 @@ L1 도메인 전체 스캔                    L2 기술 하나에 집중
 
 ```bash
 # 1. 저장소 클론
-git clone git@github.com:TI-CTO/ti-intel.git
+git clone <your-repo-url>
 cd ti-intel
 
 # 2. 환경 변수 설정 (각 프로젝트)

@@ -19,7 +19,7 @@ MCP 서버(intel-store)는 메타데이터(제목, 초록, URL)만 저장한다.
 예: `6g_samsung-whitepaper.pdf`, `open-ran_lgu-internal-report-2025.pdf`
 
 ## 저장 대상 예시
-- LG U+ 사내 보고서, 제안서 초안
+- 사내 보고서, 제안서 초안
 - 유료 논문 PDF (URL 접근 불가)
 - 표준 기구 문서 (3GPP, ITU 등)
 - 다운로드한 API 스펙 문서 (.yaml, .json)

@@ -1,13 +1,13 @@
 ---
 name: wtis
-description: "Winning Tech Intelligence System v4.1 — LG U+ 기술전략 인텔리전스. L2 기술 단위 분석, 포트폴리오 관리, 선정/진행 검증을 수행한다."
+description: "Winning Tech Intelligence System v4.1 — 기술 인텔리전스. L2 기술 단위 분석, 포트폴리오 관리, 선정/진행 검증을 수행한다."
 user-invokable: true
 argument-hint: "[proposal|quick|standard|deep] [query or file path]"
 ---
 
 # WTIS v4.1 Orchestrator
 
-LG U+ Winning Tech Intelligence System의 오케스트레이터.
+Winning Tech Intelligence System의 오케스트레이터.
 v4.1: L2 단위 분석 + 포트폴리오 구조 전환.
 - 분석 단위를 L1(도메인) → L2(기술)로 전환. "하나의 판정 = 하나의 의사결정"
 - L1 도메인별 포트폴리오로 L2 평가 결과를 종합
@@ -80,10 +80,10 @@ v4.1: L2 단위 분석 + 포트폴리오 구조 전환.
 2. **결과는 파일로 저장** — 모든 서브에이전트는 결과를 파일에 쓰고, 오케스트레이터는 요약만 수신
 3. **레퍼런스 체인 유지** — 모든 주장은 출처까지 추적 가능해야 한다
 4. **검증 독립성** — validator는 분석 컨텍스트 없이 독립 실행 (Black-box)
-5. **도메인 파라미터** — Layer 2 호출 시 항상 LG U+ 도메인 설정 전달
+5. **도메인 파라미터** — Layer 2 호출 시 항상 도메인 설정 전달
 
 ## Domain Parameters
-LG U+ 도메인 설정: `/Users/ctoti/Project/ClaudeCode/.claude/skills/wtis/references/domain-params.md`
+도메인 설정: `/Users/ctoti/Project/ClaudeCode/.claude/skills/wtis/references/domain-params.md`
 
 ## Internal Subagent Prompts (SKILL-0/1/2)
 - SKILL-0: `/Users/ctoti/Project/ClaudeCode/.claude/skills/wtis/subprompts/skill-0-proposal.md`
@@ -312,7 +312,7 @@ outputs/reports/{domain}/portfolio.md       # 포트폴리오 종합
 - 경쟁사: SKT, KT (국내 직접), NTT/Verizon/AT&T (글로벌 벤치마크)
 - MCP 토픽 우선 사용 (ai-network, 6g, network-slicing, edge-computing 등)
 - 데이터 소스 우선순위: telco-factbook > intel-store > trend-tracker > WebSearch
-- 분석 결과는 LG U+ 전략 관점에서 해석
+- 분석 결과는 자사 전략 관점에서 해석
 
 ## 이전 분석 컨텍스트 (prior_reports가 있는 경우에만 포함)
 prior_reports:

@@ -88,7 +88,7 @@
 
 | 스킬 | 호출 | 한 줄 설명 |
 |------|------|-----------|
-| **Report PDF** | `/report-pdf {파일}` | 마크다운 → LG U+ 스타일 PDF |
+| **Report PDF** | `/report-pdf {파일}` | 마크다운 → 컨설팅 스타일 PDF |
 | **Slides** | `/slides {파일}` | 마크다운 → 테마 적용 PPTX |
 | **Obsidian Bridge** | `/obsidian-bridge {파일} {유형}` | 산출물 → 옵시디언 볼트 동기화 |
 | **Work Log** | `/work-log` | 오늘 작업 → 업무일지 기록 |
@@ -270,26 +270,23 @@ collect_all(
 | `get_topic_summary` | 토픽 최신 요약 |
 | `compare_snapshots` | 두 시점 비교 |
 
-### 경쟁사(SKT/KT) 모니터링
+### 경쟁사 모니터링
 
-> 경쟁사 전략 방향·임원 발언은 **intel-store**의 `skt-strategy`, `kt-strategy` 토픽으로 수집·검색한다.
+> 경쟁사 전략 방향·임원 발언은 **intel-store**의 경쟁사 토픽으로 수집·검색한다.
 
 ```
-# SKT 전략 뉴스 검색
-search_intel(query="SKT AI 전략", topic="skt-strategy", mode="hybrid")
-
-# KT CEO 발언 검색
-search_intel(query="KT CEO 발언", topic="kt-strategy", mode="hybrid")
+# 경쟁사 전략 뉴스 검색
+search_intel(query="competitor AI strategy", topic="competitor-strategy", mode="hybrid")
 
 # 뉴스 추가 수집
-collect_news(topic="skt-strategy", query="SK텔레콤 AI 투자", source="all")
+collect_news(topic="competitor-strategy", query="경쟁사 AI 투자", source="all")
 ```
 
 > 재무 지표(매출, 가입자 등)가 필요한 경우: `projects/telco-factbook/` CLI로 직접 실행 (MCP 미등록)
 
 ### design-system — 디자인 시스템
 
-> 마크다운을 LG U+ 스타일 PDF/PPTX로 변환.
+> 마크다운을 컨설팅 스타일 PDF/PPTX로 변환.
 
 **4개 도구**:
 
@@ -300,7 +297,7 @@ collect_news(topic="skt-strategy", query="SK텔레콤 AI 투자", source="all")
 | `list_themes` | 사용 가능한 테마 목록 |
 | `get_theme` | 특정 테마의 디자인 토큰 상세 |
 
-테마: professional(마젠타 #C50063) / minimal / dark
+테마: professional / minimal / dark
 
 ---
 
@@ -315,8 +312,8 @@ get_weekly_diff(topic="ondevice-pqc")
 # 다각도 근거 수집 → "동형암호 사업화 데이터 모아줘"
 collect_all(topic="quantum-he", query="homomorphic encryption commercialization")
 
-# 경쟁사 추적 → "SKT 양자암호 관련 뭐 있어?"
-search_intel(query="SKT 양자암호", mode="hybrid")
+# 경쟁사 추적
+search_intel(query="competitor quantum crypto", mode="hybrid")
 
 # 투자 판정 → "/wtis" 실행
 ```

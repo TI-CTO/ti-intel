@@ -1,4 +1,4 @@
-# LG U+ 기술전략 분류체계 (Tech Taxonomy)
+# 기술전략 분류체계 (Tech Taxonomy)
 
 3개 도메인(L1) × 9개 기술영역(L2) × 18개 세부기술(L3).
 `/weekly-monitor` 스킬과 WTIS 파이프라인에서 참조한다.
