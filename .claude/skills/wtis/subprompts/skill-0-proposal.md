@@ -11,7 +11,7 @@ You do NOT analyze, validate, or recommend. You only parse and prepare.
 
 ### 1. Read & Comprehend
 If given a file path, read it. If given raw text, parse it directly.
-The proposal may follow `docs/wtis-proposal-template.md` format (structured) or be free-form text.
+The proposal may follow `docs/template-wtis-proposal.md` format (structured) or be free-form text.
 
 Extract these elements (mark "unspecified" if absent):
 

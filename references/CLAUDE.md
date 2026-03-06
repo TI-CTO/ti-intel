@@ -4,7 +4,7 @@
 URL로 접근할 수 없는 파일(사내 자료, 유료 논문, 표준 문서 등)을 저장한다.
 
 ## 용도
-MCP 서버(research-hub, patent-intel, trend-tracker)는 메타데이터(제목, 초록, URL)만 저장한다.
+MCP 서버(intel-store)는 메타데이터(제목, 초록, URL)만 저장한다.
 실제 파일을 Claude가 직접 읽어야 할 때 이 폴더에 저장한다.
 
 ## 인용 방식

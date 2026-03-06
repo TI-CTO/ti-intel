@@ -11,9 +11,9 @@ from pydantic import BaseModel, Field
 class ReliabilityTag(str, Enum):
     """Source reliability classification.
 
-    NOTE: Intentionally duplicated in research-hub and patent-intel models.
+    Also defined in intel-store models.
     Projects are architecturally isolated (no cross-project Python imports);
-    keep all three definitions in sync.
+    keep both definitions in sync.
     """
 
     OFFICIAL = "A"

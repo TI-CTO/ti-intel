@@ -1,11 +1,13 @@
-# docs — 에이전트/스킬 설계 문서
+# docs — 가이드·설계·템플릿 문서
 
-에이전트와 스킬의 설계 청사진을 보관한다.
-실제 실행 파일은 `.claude/skills/`와 `.claude/agents/`에 있다.
+플랫폼 가이드, 설계 문서, 스킬 참조 템플릿을 보관한다.
+이 폴더가 **원본** (git 관리). Obsidian에는 `/obsidian-bridge`로 동기화.
 
 ## Naming
-- 스킬 설계: `name.skill.md` (예: `wtis.skill.md`)
-- 에이전트 설계: `name.agent.md` (예: `code-reviewer.agent.md`)
+접두사로 유형을 구분한다:
+- `guide-*.md` — 사용 가이드, 도구 레퍼런스
+- `template-*.md` — 스킬/에이전트가 참조하는 양식
+- `design-*.md` — 아키텍처 설계 문서
 
 ## Rules
 - 에이전트는 최소 권한 원칙 — 필요한 도구만 허용

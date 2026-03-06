@@ -2,7 +2,7 @@
 
 > WTIS v4.0 입력 템플릿.
 > 이 양식을 채워 `/wtis proposal <파일경로>` 로 실행하면 심층 분석 리포트가 생성된다.
-> 출력 형식: `docs/wtis-report-template.md` 참조.
+> 출력 형식: `docs/template-wtis-report.md` 참조.
 
 ---
 

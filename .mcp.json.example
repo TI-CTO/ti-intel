@@ -1,8 +1,8 @@
 {
   "mcpServers": {
-    "telco-factbook": {
+    "intel-store": {
       "command": "uv",
-      "args": ["--directory", "projects/telco-factbook", "run", "python", "-m", "telco_factbook.mcp_server"]
+      "args": ["--directory", "projects/intel-store", "run", "python", "-m", "intel_store.mcp_server"]
     },
     "design-system": {
       "command": "uv",
@@ -12,23 +12,9 @@
       "command": "uv",
       "args": ["--directory", "projects/trend-tracker", "run", "python", "-m", "trend_tracker.mcp_server"]
     },
-    "research-hub": {
-      "command": "uv",
-      "args": ["--directory", "projects/research-hub", "run", "python", "-m", "research_hub.mcp_server"]
-    },
-    "patent-intel": {
-      "command": "uv",
-      "args": ["--directory", "projects/patent-intel", "run", "python", "-m", "patent_intel.mcp_server"]
-    },
     "context7": {
-      "url": "https://mcp.context7.com/mcp"
-    },
-    "supabase": {
       "type": "http",
-      "url": "https://mcp.supabase.com/mcp?project_ref=YOUR_PROJECT_REF",
-      "headers": {
-        "Authorization": "Bearer YOUR_SUPABASE_PAT"
-      }
+      "url": "https://mcp.context7.com/mcp"
     }
   }
 }

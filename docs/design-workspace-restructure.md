@@ -29,8 +29,7 @@
 | skill | wtis, discover, monitor, weekly-monitor |
 | project | intel-store, trend-tracker, telco-factbook |
 
-> **참고**: `research-hub`, `patent-intel`은 `intel-store`로 통합 완료 (2026-03-04).
-> 폴더는 잔존하나 `.mcp.json`에서 제거됨. 마이그레이션 시점에 폴더 삭제 예정.
+> **참고**: `research-hub`, `patent-intel`은 `intel-store`로 통합 완료 후 폴더 삭제됨 (2026-03-06).
 
 ## 권장 구조
 
