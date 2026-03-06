@@ -71,13 +71,15 @@
 
   <!-- ══ FOOTER ══════════════════════════════════════════════════ -->
   <div class="report-footer">
+    {% if confidence %}
     <div class="footer-metric">
       <div class="metric-label">신뢰도</div>
       <div class="metric-value accent confidence-{{ confidence }}">
-        {{ confidence | upper if confidence else "—" }}
+        {{ confidence | upper }}
       </div>
     </div>
     <div class="footer-divider"></div>
+    {% endif %}
     <div class="footer-metric">
       <div class="metric-label">분석 기관</div>
       <div class="metric-value">LG U+</div>

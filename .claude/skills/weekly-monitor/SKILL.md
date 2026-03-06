@@ -232,6 +232,43 @@ design-system MCP → render_pdf(
 
 ---
 
+## Table Schema (고정 — 열 수/순서 변경 금지)
+
+메인 리포트와 Deep 리서치 모두 아래 스키마를 **정확히** 따른다.
+research-deep 에이전트에도 동일한 스키마가 정의되어 있다.
+
+### T1: Executive Summary (4열)
+```
+| 세부기술 | 신호 | 핵심 내용 | 분석 |
+```
+
+### T2: 플레이어 동향 (3열)
+```
+| 기업 | 동향 | 출처 |
+```
+- 동향 셀에 수치·성과 포함. 별도 "성과" 컬럼 금지.
+- 출처: `[[G-01]](#ref-g-01)` 앵커 링크. 복수 출처는 `, `로 구분.
+
+### T3: 주요 논문 (3열)
+```
+| 논문 | 핵심 | 출처 |
+```
+- 논문: "제목 (저자, 연도)". 저자 3인+ → "First et al."
+- 출처: `[[P-01]](#ref-p-01)` 앵커 링크.
+
+### T4: 시장 시그널
+- **테이블 금지** — 불릿 리스트로만 작성.
+
+### T5: References (6열)
+```
+| # | 출처 | URL | 유형 | 날짜 | 신뢰도 |
+```
+- 모든 출처 유형(G/N/E/P/T)을 **하나의 테이블**에 통합. 유형별 분리 금지.
+- URL: `[링크](url)` 마크다운 링크.
+- #열: `<a id="ref-g-01"></a>G-01` 앵커 태그 포함.
+
+---
+
 ## Output Format
 
 ```markdown
@@ -249,11 +286,10 @@ deep_count: {Deep 실행된 L3 수}
 ## Executive Summary
 
 | 세부기술 | 신호 | 핵심 내용 | 분석 |
-|----|------|----------|------|
+|----------|------|----------|------|
 | OnDevice sLM | 🔴 긴급 | Apple sLM 3.0 발표, 온디바이스 추론 2배 향상 | Deep |
 | ondevice-pqc | 🟡 주목 | NIST PQC 마이그레이션 가이드 v2 공개 | Deep |
 | speaker-diarization | 🟢 평온 | 특이사항 없음 | Quick |
-| spam-phishing-detection | 🟢 평온 | 특이사항 없음 | Quick |
 
 ---
 
@@ -280,12 +316,13 @@ deep_count: {Deep 실행된 L3 수}
 | Samsung | Galaxy AI 업데이트 예고 | [[N-01]](#ref-n-01) |
 
 #### 시장 시그널
-- 투자/M&A/파트너십 동향
+- 투자/M&A/파트너십 동향 (불릿 리스트)
 
 #### 학술 동향 (주요 논문)
 
 | 논문 | 핵심 | 출처 |
 |------|------|------|
+| Nexus (Author et al., 2025) | 단일 GPU 내 P/D 분리 | [[P-01]](#ref-p-01) |
 
 #### 전략적 시사점
 
@@ -294,9 +331,6 @@ deep_count: {Deep 실행된 L3 수}
 
 **위협**
 - 항목
-
-**이전 대비 변화** (스냅샷 있을 때만)
-- 지난주 대비 달라진 점
 
 ---
 
@@ -315,12 +349,11 @@ deep_count: {Deep 실행된 L3 수}
 
 ## References
 
-(전수 포함 — 삭제 금지)
 | # | 출처 | URL | 유형 | 날짜 | 신뢰도 |
 |---|------|-----|------|------|--------|
-| <a id="ref-g-01"></a>G-01 | {source} | {url} | news | {date} | {confidence} |
-| <a id="ref-p-01"></a>P-01 | {source} | {url} | paper | {date} | {confidence} |
-| <a id="ref-t-01"></a>T-01 | {source} | {url} | patent | {date} | {confidence} |
+| <a id="ref-g-01"></a>G-01 | {출처명} | [링크]({url}) | news | {YYYY-MM-DD} | [B] |
+| <a id="ref-p-01"></a>P-01 | {저자 — 제목} | [링크]({url}) | paper | {YYYY} | [A] |
+| <a id="ref-e-01"></a>E-01 | {기업 — 발언 요약} | [링크]({url}) | IR/발표 | {YYYY-MM-DD} | [A] |
 ```
 
 ---

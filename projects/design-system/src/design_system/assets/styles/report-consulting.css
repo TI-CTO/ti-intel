@@ -270,6 +270,14 @@ blockquote p {
     font-size: 8pt;
     margin: 3mm 0;
     page-break-inside: avoid;
+    caption-side: bottom;
+}
+
+.data-table caption {
+    font-size: 9pt;
+    color: var(--color-text-secondary);
+    text-align: center;
+    padding-top: 3px;
 }
 
 .data-table th {
@@ -289,10 +297,18 @@ blockquote p {
     line-height: 1.4;
 }
 
-/* First two columns: prevent wrapping for short labels */
-.data-table th:nth-child(-n+2),
-.data-table td:nth-child(-n+2) {
+/* First column only: nowrap for short labels (기업명, #, 등) */
+.data-table th:first-child,
+.data-table td:first-child {
     white-space: nowrap;
+}
+
+/* Remaining columns: allow wrapping to prevent overflow */
+.data-table th:nth-child(n+2),
+.data-table td:nth-child(n+2) {
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .data-table tr {

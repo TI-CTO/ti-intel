@@ -62,8 +62,28 @@ def _postprocess(html: str) -> str:
         r"<table>", '<div class="table-wrapper"><table class="data-table">', html
     )
     html = re.sub(r"</table>", "</table></div>", html)
+    # Move bold text before table into <caption> (displayed below table via CSS)
     html = re.sub(
-        r"\[([GNEPTI]-\d+)\]",
+        r"<p><strong>(.*?)</strong></p>\s*(<div class=\"table-wrapper\"><table class=\"data-table\">)",
+        r'\2<caption>&lt; \1 &gt;</caption>',
+        html,
+    )
+    # Move h3 heading before table into <caption> (e.g. References sub-tables)
+    html = re.sub(
+        r"<h3>(.*?)</h3>\s*(<div class=\"table-wrapper\"><table class=\"data-table\">)",
+        r'\2<caption>&lt; \1 &gt;</caption>',
+        html,
+    )
+    # Case 1: mistune converted [[G-01]](#ref-g-01) → <a href="#ref-...">[G-01]</a>
+    # Must run BEFORE Case 2 so the <a> tag is stripped before raw bracket matching
+    html = re.sub(
+        r'<a href="#ref-[^"]*">\[([GNEPTI]-\d+[a-z]?)\]</a>',
+        r'<span class="citation-badge">\1</span>',
+        html,
+    )
+    # Case 2: raw [G-01] or [G-01b] not yet parsed by mistune
+    html = re.sub(
+        r"\[([GNEPTI]-\d+[a-z]?)\]",
         r'<span class="citation-badge">\1</span>',
         html,
     )
@@ -185,6 +205,26 @@ def _build_pagedjs_script() -> str:
         "        br.style.cssText = 'font-size:7.5pt;color:#888;text-align:right;';\n"
         "      }\n"
         "    });\n"
+        "    // Push footer to bottom of last page\n"
+        "    const lastPage = pages[pages.length - 1];\n"
+        "    if (lastPage) {\n"
+        "      const area = lastPage.element.querySelector('.pagedjs_page_content');\n"
+        "      const footer = area && area.querySelector('.report-footer');\n"
+        "      if (area && footer) {\n"
+        "        // Set flex on all intermediate containers between area and footer\n"
+        "        let el = footer.parentElement;\n"
+        "        while (el && el !== area) {\n"
+        "          el.style.display = 'flex';\n"
+        "          el.style.flexDirection = 'column';\n"
+        "          el.style.flex = '1';\n"
+        "          el = el.parentElement;\n"
+        "        }\n"
+        "        area.style.display = 'flex';\n"
+        "        area.style.flexDirection = 'column';\n"
+        "        area.style.height = '100%';\n"
+        "        footer.style.marginTop = 'auto';\n"
+        "      }\n"
+        "    }\n"
         "    window.pagedJsReady = true;\n"
         "  }\n"
         "}\n"
@@ -315,7 +355,7 @@ class PdfRenderer(BaseRenderer):
             topic=meta.get("topic", markdown_path.stem),
             filename=markdown_path.name,
             date=str(meta.get("date", "")),
-            confidence=meta.get("confidence", "medium"),
+            confidence=meta.get("confidence"),
             status=meta.get("status", ""),
             sources_count=len(sources_used) if isinstance(sources_used, list) else 0,
             executive_summary_html=exec_summary.html if exec_summary else "",

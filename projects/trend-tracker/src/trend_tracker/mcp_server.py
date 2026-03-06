@@ -100,18 +100,20 @@ def upsert_snapshot(
     Returns:
         The upserted snapshot record.
     """
-    data: dict = {"topic": topic, "summary": summary}
+    repo = _get_repo()
+    topic_id = repo._require_topic_id(topic)
+    data: dict = {"topic_id": topic_id, "summary": summary}
     if snapshot_date:
         data["snapshot_date"] = snapshot_date
     if key_signals is not None:
         data["key_signals"] = key_signals
     if news_count is not None:
-        data["news_count"] = news_count
+        data["item_count"] = news_count
     if sentiment:
         data["sentiment"] = sentiment
     if change_level:
         data["change_level"] = change_level
-    return _get_repo().upsert_snapshot(data)
+    return repo.upsert_snapshot(data)
 
 
 @mcp.tool()
@@ -140,7 +142,7 @@ def manage_watch_topics(
     if action in ("add", "update"):
         topic_data: dict = {}
         if topic:
-            topic_data["topic"] = topic
+            topic_data["topic_id"] = repo._require_topic_id(topic)
         if keywords:
             topic_data["keywords"] = keywords
         if frequency:
