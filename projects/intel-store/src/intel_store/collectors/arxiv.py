@@ -12,7 +12,7 @@ import feedparser
 
 logger = logging.getLogger(__name__)
 
-_BASE_URL = "http://export.arxiv.org/api/query"
+_BASE_URL = "https://export.arxiv.org/api/query"
 _REQUEST_DELAY = 3.0  # arXiv asks for 3-second gap between requests
 
 

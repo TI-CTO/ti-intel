@@ -314,7 +314,7 @@ def collect_papers(
     since_year: int | None = None,
     limit: int = 10,
     generate_embedding: bool = True,
-    relevance_threshold: float = 0.3,
+    relevance_threshold: float = 0.8,
 ) -> dict:
     """Collect papers from Semantic Scholar (falls back to arXiv on failure).
 
@@ -324,7 +324,7 @@ def collect_papers(
         since_year: Filter papers published on or after this year.
         limit: Maximum papers to collect (default 10).
         generate_embedding: Generate embeddings for collected papers.
-        relevance_threshold: Minimum cosine similarity to query (default 0.3).
+        relevance_threshold: Minimum cosine similarity to query (default 0.8).
             Items below this threshold are discarded before storage.
 
     Returns:
@@ -528,7 +528,7 @@ def collect_arxiv(
     since_year: int | None = None,
     limit: int = 10,
     generate_embedding: bool = True,
-    relevance_threshold: float = 0.3,
+    relevance_threshold: float = 0.8,
 ) -> dict:
     """Collect papers from arXiv, store in DB, and link to topic.
 
@@ -538,7 +538,7 @@ def collect_arxiv(
         since_year: Filter papers published on or after this year.
         limit: Maximum papers to collect (default 10).
         generate_embedding: Generate embeddings for collected papers.
-        relevance_threshold: Minimum cosine similarity to query (default 0.3).
+        relevance_threshold: Minimum cosine similarity to query (default 0.8).
             Items below this threshold are discarded before storage.
 
     Returns:
@@ -599,7 +599,7 @@ def collect_all(
     since_year: int | None = None,
     limit: int = 10,
     generate_embedding: bool = True,
-    relevance_threshold: float = 0.3,
+    relevance_threshold: float = 0.8,
 ) -> dict:
     """Collect papers, arxiv, patents, and news in one call, store and link to topic.
 
@@ -611,7 +611,7 @@ def collect_all(
         since_year: Filter papers/patents published on or after this year.
         limit: Max results per source (default 10).
         generate_embedding: Generate embeddings for collected items.
-        relevance_threshold: Minimum cosine similarity for paper/arXiv items (default 0.3).
+        relevance_threshold: Minimum cosine similarity for paper/arXiv items (default 0.8).
             Irrelevant papers are discarded before storage; news and patents are unaffected.
 
     Returns:

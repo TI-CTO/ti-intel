@@ -97,19 +97,20 @@ def filter_by_relevance(
     query: str,
     items: list[dict],
     *,
-    threshold: float = 0.3,
+    threshold: float = 0.8,
     title_key: str = "title",
     abstract_key: str = "abstract",
 ) -> list[dict]:
     """Filter collected items by embedding-based relevance to a query.
 
-    Computes cosine similarity between the query embedding and each item's
-    title+abstract passage embedding, then discards items below threshold.
+    Uses cosine similarity between the query and each item's title+abstract.
+    e5 models produce scores in the 0.7-0.9 range, so the default threshold
+    is 0.8 (not the usual 0.3 for normalized embeddings).
 
     Args:
         query: The search query used to collect the items.
         items: List of raw collector dicts (each must have at least a title).
-        threshold: Minimum cosine similarity to retain an item (default 0.3).
+        threshold: Minimum cosine similarity to retain an item (default 0.8).
         title_key: Dict key for item title.
         abstract_key: Dict key for item abstract / summary.
 
@@ -126,10 +127,15 @@ def filter_by_relevance(
     ]
     passage_vecs = embed_passages_batch(passages)
 
-    kept: list[dict] = []
-    filtered_count = 0
+    scored: list[tuple[dict, float]] = []
     for item, passage_vec in zip(items, passage_vecs):
         score = cosine_similarity(query_vec, passage_vec)
+        scored.append((item, score))
+
+    # Apply absolute threshold
+    kept: list[dict] = []
+    filtered_count = 0
+    for item, score in scored:
         if score >= threshold:
             kept.append(item)
         else:
