@@ -50,7 +50,7 @@
 | 서비스 | 용도 | 비용 | 인증 |
 |--------|------|------|------|
 | **Supabase** | PostgreSQL + pgvector DB | 무료 티어 | `SUPABASE_URL` + `SUPABASE_KEY` |
-| **multilingual-e5-large** | 임베딩 (1024차원, 한영) | 무료 (로컬) | 불필요 |
+| **multilingual-e5-large** | 임베딩 (1024차원, 한영) + 관련성 필터링 | 무료 (로컬) | 불필요 |
 | **Playwright Chromium** | PDF 렌더링 | 무료 (로컬) | 불필요 |
 
 ### 폐기된 API
@@ -60,12 +60,14 @@
 | ~~USPTO PatentsView~~ | HTTP 410 서비스 종료 (2026-03) | Google Patents (SerpAPI) |
 | ~~research-hub MCP~~ | intel-store로 통합 | intel-store `collect_papers` |
 | ~~patent-intel MCP~~ | intel-store로 통합 | intel-store `collect_patents` |
+| ~~telco-factbook MCP~~ | MCP 제거 (2026-03) | CLI 직접 실행 또는 intel-store 경쟁사 토픽 |
+| ~~supabase MCP~~ | VSCode 확장 미작동 | Management API 직접 사용 |
 
 ### 월간 쿼터 관리
 
 | API | 월 한도 | 예상 사용량 | 여유 |
 |-----|---------|-----------|------|
-| SerpAPI | 250회 | ~80회 (18토픽 × ~4회/월) | 충분 |
+| SerpAPI | 250회 | ~80회 (20토픽 × ~4회/월) | 충분 |
 | Tavily | 1,000회 | ~200회 (주간 모니터링 + 수동) | 충분 |
 
 > 쿼터 초과 시: SerpAPI → 특허 수집 중단 (뉴스/논문은 무영향), Tavily → GDELT + Naver 자동 폴백
@@ -180,9 +182,10 @@
 ### `/obsidian-bridge` — 옵시디언 동기화
 
 ```
+/obsidian-bridge /path/to/file.md reference      ← 10-Reference/
 /obsidian-bridge /path/to/file.md research       ← 30-Reports/
 /obsidian-bridge /path/to/file.md weekly          ← 30-Reports/weekly/
-/obsidian-bridge /path/to/file.md implementation  ← 40-DevLog/
+/obsidian-bridge /path/to/file.md devlog          ← 40-DevLog/
 ```
 
 ### `/work-log` — 업무일지
@@ -253,6 +256,8 @@ collect_all(
 [이후] search_intel / find_similar → 쌓인 데이터에서 즉시 검색
 [정기] get_weekly_diff → 이번 주 신규 아이템 변화 감지
 ```
+
+**관련성 필터링**: `collect_papers`, `collect_arxiv`는 임베딩 코사인 유사도 기반 필터링 적용 (기본 임계값 0.8). 토픽과 무관한 수집물이 자동 제거됨.
 
 **기술 스택**: Supabase PostgreSQL + pgvector(HNSW) + multilingual-e5-large(1024차원) + RRF 하이브리드 검색
 
