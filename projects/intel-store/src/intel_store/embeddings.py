@@ -71,3 +71,81 @@ def embed_passages_batch(texts: list[str], *, batch_size: int = 32) -> list[list
     prefixed = [f"passage: {t}" for t in texts]
     vectors = model.encode(prefixed, normalize_embeddings=True, batch_size=batch_size)
     return [v.tolist() for v in vectors]
+
+
+def cosine_similarity(vec_a: list[float], vec_b: list[float]) -> float:
+    """Compute cosine similarity between two pre-normalised vectors.
+
+    Both vectors must already be L2-normalised (as produced by embed_query /
+    embed_passage), so the similarity reduces to a plain dot product.
+
+    Args:
+        vec_a: First normalised float vector.
+        vec_b: Second normalised float vector.
+
+    Returns:
+        Cosine similarity in the range [-1.0, 1.0].
+    """
+    import numpy as np
+
+    a = np.array(vec_a, dtype=float)
+    b = np.array(vec_b, dtype=float)
+    return float(np.dot(a, b))
+
+
+def filter_by_relevance(
+    query: str,
+    items: list[dict],
+    *,
+    threshold: float = 0.3,
+    title_key: str = "title",
+    abstract_key: str = "abstract",
+) -> list[dict]:
+    """Filter collected items by embedding-based relevance to a query.
+
+    Computes cosine similarity between the query embedding and each item's
+    title+abstract passage embedding, then discards items below threshold.
+
+    Args:
+        query: The search query used to collect the items.
+        items: List of raw collector dicts (each must have at least a title).
+        threshold: Minimum cosine similarity to retain an item (default 0.3).
+        title_key: Dict key for item title.
+        abstract_key: Dict key for item abstract / summary.
+
+    Returns:
+        Filtered list containing only items at or above the threshold.
+    """
+    if not items:
+        return items
+
+    query_vec = embed_query(query)
+
+    passages = [
+        f"{item.get(title_key, '')}. {item.get(abstract_key, '') or ''}".strip() for item in items
+    ]
+    passage_vecs = embed_passages_batch(passages)
+
+    kept: list[dict] = []
+    filtered_count = 0
+    for item, passage_vec in zip(items, passage_vecs):
+        score = cosine_similarity(query_vec, passage_vec)
+        if score >= threshold:
+            kept.append(item)
+        else:
+            filtered_count += 1
+            logger.debug(
+                "Relevance filter: score=%.3f < %.3f — skipping '%s'",
+                score,
+                threshold,
+                item.get(title_key, "")[:60],
+            )
+
+    logger.info(
+        "Relevance filter: kept %d/%d items (threshold=%.2f, filtered=%d)",
+        len(kept),
+        len(items),
+        threshold,
+        filtered_count,
+    )
+    return kept

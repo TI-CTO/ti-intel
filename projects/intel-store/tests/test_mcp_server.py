@@ -92,10 +92,12 @@ class TestDedupPapers:
 
     def test_mixed_batch(self):
         """Batch with both duplicates and new papers filters correctly."""
-        repo = self._mock_repo({
-            "arxiv:111": {"id": 1},  # exists
-            "arxiv:222": None,  # doesn't exist
-        })
+        repo = self._mock_repo(
+            {
+                "arxiv:111": {"id": 1},  # exists
+                "arxiv:222": None,  # doesn't exist
+            }
+        )
         papers = [
             {"external_id": "ss:a", "arxiv_id": "111", "title": "Dup"},
             {"external_id": "ss:b", "arxiv_id": "222", "title": "New SS"},

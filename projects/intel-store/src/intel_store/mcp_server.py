@@ -314,6 +314,7 @@ def collect_papers(
     since_year: int | None = None,
     limit: int = 10,
     generate_embedding: bool = True,
+    relevance_threshold: float = 0.3,
 ) -> dict:
     """Collect papers from Semantic Scholar (falls back to arXiv on failure).
 
@@ -323,10 +324,13 @@ def collect_papers(
         since_year: Filter papers published on or after this year.
         limit: Maximum papers to collect (default 10).
         generate_embedding: Generate embeddings for collected papers.
+        relevance_threshold: Minimum cosine similarity to query (default 0.3).
+            Items below this threshold are discarded before storage.
 
     Returns:
-        Dict with fetched, stored counts and paper titles.
+        Dict with fetched, filtered, stored counts and paper titles.
     """
+    from intel_store import embeddings
     from intel_store.collectors import arxiv, semantic_scholar
     from intel_store.models import paper_from_collector
 
@@ -343,12 +347,19 @@ def collect_papers(
 
     raw_papers = _dedup_papers(raw_papers, repo)
 
+    fetched_count = len(raw_papers)
+    raw_papers = embeddings.filter_by_relevance(
+        query,
+        raw_papers,
+        threshold=relevance_threshold,
+        abstract_key="abstract",
+    )
+    filtered_count = fetched_count - len(raw_papers)
+
     models = []
     for raw in raw_papers:
         model = paper_from_collector(raw)
         if generate_embedding:
-            from intel_store import embeddings
-
             model.embedding = embeddings.embed_passage(model.embedding_input())
         models.append(model)
 
@@ -363,7 +374,8 @@ def collect_papers(
         "topic": topic,
         "query": query,
         "source": source_used,
-        "fetched": len(raw_papers),
+        "fetched": fetched_count,
+        "filtered_out": filtered_count,
         "stored": len(results),
         "titles": [r.get("title", "") for r in results],
     }
@@ -516,6 +528,7 @@ def collect_arxiv(
     since_year: int | None = None,
     limit: int = 10,
     generate_embedding: bool = True,
+    relevance_threshold: float = 0.3,
 ) -> dict:
     """Collect papers from arXiv, store in DB, and link to topic.
 
@@ -525,10 +538,13 @@ def collect_arxiv(
         since_year: Filter papers published on or after this year.
         limit: Maximum papers to collect (default 10).
         generate_embedding: Generate embeddings for collected papers.
+        relevance_threshold: Minimum cosine similarity to query (default 0.3).
+            Items below this threshold are discarded before storage.
 
     Returns:
-        Dict with fetched, stored counts and paper titles.
+        Dict with fetched, filtered, stored counts and paper titles.
     """
+    from intel_store import embeddings
     from intel_store.collectors import arxiv
     from intel_store.models import paper_from_collector
 
@@ -538,12 +554,19 @@ def collect_arxiv(
     raw_papers = arxiv.search_papers(query, limit=limit, since_year=since_year)
     raw_papers = _dedup_papers(raw_papers, repo)
 
+    fetched_count = len(raw_papers)
+    raw_papers = embeddings.filter_by_relevance(
+        query,
+        raw_papers,
+        threshold=relevance_threshold,
+        abstract_key="abstract",
+    )
+    filtered_count = fetched_count - len(raw_papers)
+
     models = []
     for raw in raw_papers:
         model = paper_from_collector(raw)
         if generate_embedding:
-            from intel_store import embeddings
-
             model.embedding = embeddings.embed_passage(model.embedding_input())
         models.append(model)
 
@@ -557,7 +580,8 @@ def collect_arxiv(
         "topic": topic,
         "query": query,
         "source": "arxiv",
-        "fetched": len(raw_papers),
+        "fetched": fetched_count,
+        "filtered_out": filtered_count,
         "stored": len(results),
         "titles": [r.get("title", "") for r in results],
     }
@@ -575,6 +599,7 @@ def collect_all(
     since_year: int | None = None,
     limit: int = 10,
     generate_embedding: bool = True,
+    relevance_threshold: float = 0.3,
 ) -> dict:
     """Collect papers, arxiv, patents, and news in one call, store and link to topic.
 
@@ -586,6 +611,8 @@ def collect_all(
         since_year: Filter papers/patents published on or after this year.
         limit: Max results per source (default 10).
         generate_embedding: Generate embeddings for collected items.
+        relevance_threshold: Minimum cosine similarity for paper/arXiv items (default 0.3).
+            Irrelevant papers are discarded before storage; news and patents are unaffected.
 
     Returns:
         Dict with per-source results and overall summary.
@@ -602,6 +629,7 @@ def collect_all(
                 since_year=since_year,
                 limit=limit,
                 generate_embedding=generate_embedding,
+                relevance_threshold=relevance_threshold,
             ),
         ),
         (
@@ -612,6 +640,7 @@ def collect_all(
                 since_year=since_year,
                 limit=limit,
                 generate_embedding=generate_embedding,
+                relevance_threshold=relevance_threshold,
             ),
         ),
         (
