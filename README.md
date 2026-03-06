@@ -72,4 +72,3 @@ cd projects/design-system && ~/.local/bin/uv sync && cd ../..
 | `docs/template-wtis-proposal.md` | WTIS 제안서 입력 템플릿 |
 | `docs/template-wtis-report.md` | WTIS 리포트 출력 템플릿 |
 | `docs/template-agent-design.md` | 에이전트 설계 프롬프트 |
-| `docs/design-workspace-restructure.md` | 도메인 분리 설계안 (미래용) |

@@ -32,11 +32,11 @@ argument-hint: "[file-path] [type: research|implementation|project]"
 ## Destination Mapping
 | Type           | Obsidian Vault Path                                          |
 |----------------|--------------------------------------------------------------|
-| guide          | /Users/ctoti/Obsidian/Obsidian_Work/10-Guide/                |
+| reference      | /Users/ctoti/Obsidian/Obsidian_Work/10-Reference/            |
+| goal           | /Users/ctoti/Obsidian/Obsidian_Work/20-Goals/                |
 | research       | /Users/ctoti/Obsidian/Obsidian_Work/30-Reports/              |
 | weekly         | /Users/ctoti/Obsidian/Obsidian_Work/30-Reports/weekly/       |
-| design         | /Users/ctoti/Obsidian/Obsidian_Work/40-DevLog/Designs/       |
-| goal           | /Users/ctoti/Obsidian/Obsidian_Work/20-Goals/                |
+| devlog         | /Users/ctoti/Obsidian/Obsidian_Work/40-DevLog/               |
 
 ## Process
 

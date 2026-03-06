@@ -36,10 +36,10 @@ ctoti의 Claude Code 개발/리서치 워크스페이스.
 
 ## Obsidian Integration
 Obsidian 볼트 경로: `/Users/ctoti/Obsidian/Obsidian_Work/` (env: `$OBSIDIAN_VAULT_PATH`)
-- 가이드/사용법 → `10-Guide/`
+- 레퍼런스 (가이드/설계) → `10-Reference/`
 - 목표 추적 → `20-Goals/`
 - 리포트 (WTIS/리서치) → `30-Reports/`, 주간 → `30-Reports/weekly/`
-- 작업 로그 → `40-DevLog/`, 설계 문서 → `40-DevLog/Designs/`
+- 작업 로그 → `40-DevLog/`
 동기화: `/obsidian-bridge` 스킬 사용
 
 ## Naming Conventions

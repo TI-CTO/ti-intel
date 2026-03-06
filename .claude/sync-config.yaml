@@ -2,33 +2,40 @@
 vault_path: /Users/ctoti/Obsidian/Obsidian_Work
 
 mappings:
+  reference:
+    source: docs/guide-*.md
+    destination: 10-Reference/
+    frontmatter:
+      tags: [claude-code, reference]
+      fields: [status]
+
   research:
     source: outputs/reports/
-    destination: 70-Research/Sessions/
+    destination: 30-Reports/
     frontmatter:
       tags: [claude-code, research]
       fields: [topic, confidence, status]
 
-  implementation:
-    source: projects/
-    destination: 60-ClaudeCode/Implementations/
+  weekly:
+    source: outputs/reports/weekly/
+    destination: 30-Reports/weekly/
     frontmatter:
-      tags: [claude-code, implementation]
-      fields: [project, complexity, status]
+      tags: [claude-code, weekly]
+      fields: [domain, period]
 
-  qa:
-    source: null  # manually created
-    destination: 80-QA-Log/{year}/{month}/
+  goal:
+    source: null  # Obsidian-only
+    destination: 20-Goals/
     frontmatter:
-      tags: [claude-code, qa]
-      fields: [topic, quality]
+      tags: [claude-code, goal]
+      fields: [status]
 
-  config:
-    source: null  # manually created
-    destination: 60-ClaudeCode/Configs/
+  devlog:
+    source: null  # Obsidian-only
+    destination: 40-DevLog/
     frontmatter:
-      tags: [claude-code, config]
-      fields: [scope, language]
+      tags: [claude-code, daily]
+      fields: [phase]
 
 naming:
   date_prefix: true
