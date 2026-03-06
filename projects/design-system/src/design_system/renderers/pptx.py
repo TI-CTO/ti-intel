@@ -7,8 +7,9 @@ from pathlib import Path
 
 from pptx import Presentation as PptxPresentation
 from pptx.dml.color import RGBColor
+from pptx.enum.shapes import MSO_SHAPE
 from pptx.enum.text import MSO_ANCHOR, PP_ALIGN
-from pptx.util import Inches, Pt
+from pptx.util import Emu, Inches, Pt
 
 from design_system.models import (
     DesignTokens,
@@ -32,11 +33,25 @@ MARGIN_TOP = Inches(0.6)
 CONTENT_WIDTH = Inches(11.733)
 CONTENT_HEIGHT = Inches(5.5)
 
+# Footer / branding bar
+FOOTER_HEIGHT = Inches(0.35)
+FOOTER_TOP = SLIDE_HEIGHT - FOOTER_HEIGHT
+
 
 def _hex_to_rgb(hex_color: str) -> RGBColor:
     """Convert hex color string to RGBColor."""
     h = hex_color.lstrip("#")
     return RGBColor(int(h[:2], 16), int(h[2:4], 16), int(h[4:6], 16))
+
+
+def _lighten(hex_color: str, factor: float = 0.92) -> RGBColor:
+    """Lighten a hex color toward white by the given factor (0=original, 1=white)."""
+    h = hex_color.lstrip("#")
+    r, g, b = int(h[:2], 16), int(h[2:4], 16), int(h[4:6], 16)
+    r = int(r + (255 - r) * factor)
+    g = int(g + (255 - g) * factor)
+    b = int(b + (255 - b) * factor)
+    return RGBColor(r, g, b)
 
 
 class PptxRenderer(BaseRenderer):
@@ -58,9 +73,10 @@ class PptxRenderer(BaseRenderer):
         prs.slide_height = SLIDE_HEIGHT
 
         tokens = theme.tokens
+        total = len(presentation.slides)
 
-        for slide_content in presentation.slides:
-            self._add_slide(prs, slide_content, tokens)
+        for idx, slide_content in enumerate(presentation.slides):
+            self._add_slide(prs, slide_content, tokens, idx + 1, total)
 
         output_path.parent.mkdir(parents=True, exist_ok=True)
         prs.save(str(output_path))
@@ -78,6 +94,8 @@ class PptxRenderer(BaseRenderer):
         prs: PptxPresentation,
         content: SlideContent,
         tokens: DesignTokens,
+        slide_num: int,
+        total: int,
     ) -> None:
         """Add a single slide based on its type."""
         layout = prs.slide_layouts[6]  # Blank layout
@@ -96,92 +114,138 @@ class PptxRenderer(BaseRenderer):
         handler = handlers.get(content.slide_type, self._render_text)
         handler(slide, content, tokens)
 
+        # Add footer/branding to content slides (not cover/closing)
+        if content.slide_type not in (SlideType.COVER, SlideType.CLOSING):
+            self._add_footer(slide, tokens, slide_num, total)
+
     # ----- Slide type renderers -----
 
     def _render_cover(self, slide, content: SlideContent, tokens: DesignTokens) -> None:
-        """Cover slide with full-width colored background."""
-        # Background
+        """Cover slide with full-width colored background and accent stripe."""
         bg = slide.background
         fill = bg.fill
         fill.solid()
         fill.fore_color.rgb = _hex_to_rgb(tokens.color.primary)
 
+        # Top-left decorative bar (secondary color)
+        deco = slide.shapes.add_shape(
+            MSO_SHAPE.RECTANGLE,
+            Inches(0),
+            Inches(0),
+            SLIDE_WIDTH,
+            Inches(0.15),
+        )
+        deco_fill = deco.fill
+        deco_fill.solid()
+        deco_fill.fore_color.rgb = _hex_to_rgb(tokens.color.secondary)
+        deco.line.fill.background()
+
         # Title
         title_box = slide.shapes.add_textbox(
             MARGIN_LEFT,
-            Inches(2.2),
+            Inches(2.0),
             CONTENT_WIDTH,
-            Inches(1.5),
+            Inches(1.8),
         )
         tf = title_box.text_frame
         tf.word_wrap = True
         p = tf.paragraphs[0]
         p.text = content.title
-        p.font.size = Pt(tokens.typography.title_size + 8)
+        p.font.size = Pt(tokens.typography.title_size + 12)
         p.font.bold = True
         p.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
         p.font.name = tokens.typography.font_family
         p.alignment = PP_ALIGN.LEFT
 
+        # Accent line between title and subtitle
+        accent = slide.shapes.add_shape(
+            MSO_SHAPE.RECTANGLE,
+            MARGIN_LEFT,
+            Inches(3.95),
+            Inches(3),
+            Pt(4),
+        )
+        accent_fill = accent.fill
+        accent_fill.solid()
+        accent_fill.fore_color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
+        accent.line.fill.background()
+
         # Subtitle
         if content.subtitle:
             sub_box = slide.shapes.add_textbox(
                 MARGIN_LEFT,
-                Inches(3.9),
+                Inches(4.3),
                 CONTENT_WIDTH,
-                Inches(0.8),
+                Inches(1.0),
             )
             tf2 = sub_box.text_frame
+            tf2.word_wrap = True
             p2 = tf2.paragraphs[0]
             p2.text = content.subtitle
-            p2.font.size = Pt(tokens.typography.subheading_size)
-            p2.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
+            p2.font.size = Pt(tokens.typography.subheading_size + 2)
+            p2.font.color.rgb = RGBColor(0xDD, 0xDD, 0xDD)
             p2.font.name = tokens.typography.font_family
 
-        # Accent line
-        slide.shapes.add_shape(
-            1,  # Rectangle
-            MARGIN_LEFT,
-            Inches(3.6),
-            Inches(2),
-            Pt(4),
+        # Bottom bar
+        bottom = slide.shapes.add_shape(
+            MSO_SHAPE.RECTANGLE,
+            Inches(0),
+            Inches(7.0),
+            SLIDE_WIDTH,
+            Inches(0.5),
         )
+        bottom_fill = bottom.fill
+        bottom_fill.solid()
+        bottom_fill.fore_color.rgb = _hex_to_rgb(tokens.color.secondary)
+        bottom.line.fill.background()
 
     def _render_section(
         self, slide, content: SlideContent, tokens: DesignTokens
     ) -> None:
-        """Section divider slide."""
-        # Subtle background
+        """Section divider slide — bold accent stripe at top."""
         bg = slide.background
         fill = bg.fill
         fill.solid()
         fill.fore_color.rgb = _hex_to_rgb(tokens.color.surface)
 
-        # Accent bar on left
+        # Full-width accent bar at top
         bar = slide.shapes.add_shape(
-            1,
-            Inches(0.4),
-            Inches(2.0),
-            Pt(6),
-            Inches(3.0),
+            MSO_SHAPE.RECTANGLE,
+            Inches(0),
+            Inches(0),
+            SLIDE_WIDTH,
+            Inches(0.12),
         )
         bar_fill = bar.fill
         bar_fill.solid()
         bar_fill.fore_color.rgb = _hex_to_rgb(tokens.color.primary)
         bar.line.fill.background()
 
+        # Left vertical accent bar
+        vbar = slide.shapes.add_shape(
+            MSO_SHAPE.RECTANGLE,
+            Inches(0.5),
+            Inches(2.5),
+            Pt(6),
+            Inches(2.5),
+        )
+        vbar_fill = vbar.fill
+        vbar_fill.solid()
+        vbar_fill.fore_color.rgb = _hex_to_rgb(tokens.color.primary)
+        vbar.line.fill.background()
+
         # Section title
         title_box = slide.shapes.add_textbox(
             Inches(1.2),
             Inches(2.5),
             Inches(10),
-            Inches(2),
+            Inches(2.5),
         )
         tf = title_box.text_frame
         tf.word_wrap = True
         p = tf.paragraphs[0]
         p.text = content.title
-        p.font.size = Pt(tokens.typography.heading_size + 4)
+        p.font.size = Pt(tokens.typography.heading_size + 8)
         p.font.bold = True
         p.font.color.rgb = _hex_to_rgb(tokens.color.text)
         p.font.name = tokens.typography.font_family
@@ -189,28 +253,38 @@ class PptxRenderer(BaseRenderer):
     def _render_bullet(
         self, slide, content: SlideContent, tokens: DesignTokens
     ) -> None:
-        """Bullet list slide."""
+        """Bullet list slide — single text frame, no overlapping shapes."""
         self._add_slide_background(slide, tokens)
         self._add_title_bar(slide, content.title, tokens)
 
         body_box = slide.shapes.add_textbox(
-            MARGIN_LEFT,
+            MARGIN_LEFT + Inches(0.05),
             Inches(1.8),
-            CONTENT_WIDTH,
-            CONTENT_HEIGHT,
+            CONTENT_WIDTH - Inches(0.05),
+            Inches(5.0),
         )
         tf = body_box.text_frame
         tf.word_wrap = True
 
-        for i, bullet in enumerate(content.bullets):
+        primary_rgb = _hex_to_rgb(tokens.color.primary)
+        text_rgb = _hex_to_rgb(tokens.color.text)
+        bullet_size = Pt(tokens.typography.body_size)
+
+        for i, bullet in enumerate(content.bullets or []):
             p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
-            p.text = bullet
-            p.font.size = Pt(tokens.typography.body_size)
-            p.font.color.rgb = _hex_to_rgb(tokens.color.text)
-            p.font.name = tokens.typography.font_family
-            p.space_after = Pt(tokens.spacing.sm)
-            p.level = 0
-            p.runs[0].text = f"\u2022  {bullet}"
+            # Colored bullet marker as inline text
+            run_marker = p.add_run()
+            run_marker.text = "\u25A0  "  # filled square
+            run_marker.font.size = Pt(tokens.typography.body_size - 4)
+            run_marker.font.color.rgb = primary_rgb
+            run_marker.font.name = tokens.typography.font_family
+            # Bullet text
+            run_text = p.add_run()
+            run_text.text = bullet
+            run_text.font.size = bullet_size
+            run_text.font.color.rgb = text_rgb
+            run_text.font.name = tokens.typography.font_family
+            p.space_after = Pt(tokens.spacing.sm + 4)
 
     def _render_table(self, slide, content: SlideContent, tokens: DesignTokens) -> None:
         """Table slide."""
@@ -225,9 +299,8 @@ class PptxRenderer(BaseRenderer):
         if cols == 0:
             return
 
-        # Calculate table dimensions
         table_width = min(CONTENT_WIDTH, Inches(12))
-        table_height = Inches(min(0.4 * rows, 5.0))
+        table_height = Inches(min(0.45 * rows, 5.0))
 
         table_shape = slide.shapes.add_table(
             rows,
@@ -254,12 +327,25 @@ class PptxRenderer(BaseRenderer):
                     self._style_cell(cell, tokens, is_header=False, row_idx=i)
 
     def _render_quote(self, slide, content: SlideContent, tokens: DesignTokens) -> None:
-        """Quote/key message slide."""
+        """Quote/key message slide with accent bar."""
         self._add_slide_background(slide, tokens)
+
+        # Left accent bar (thick, primary color)
+        accent = slide.shapes.add_shape(
+            MSO_SHAPE.RECTANGLE,
+            Inches(1.0),
+            Inches(1.8),
+            Pt(6),
+            Inches(3.5),
+        )
+        accent_fill = accent.fill
+        accent_fill.solid()
+        accent_fill.fore_color.rgb = _hex_to_rgb(tokens.color.primary)
+        accent.line.fill.background()
 
         # Large quote mark
         quote_mark = slide.shapes.add_textbox(
-            Inches(1.0),
+            Inches(1.4),
             Inches(1.2),
             Inches(2),
             Inches(1.5),
@@ -273,9 +359,9 @@ class PptxRenderer(BaseRenderer):
 
         # Quote text
         quote_box = slide.shapes.add_textbox(
-            Inches(1.5),
+            Inches(1.8),
             Inches(2.5),
-            Inches(10),
+            Inches(9.5),
             Inches(3),
         )
         tf = quote_box.text_frame
@@ -317,6 +403,19 @@ class PptxRenderer(BaseRenderer):
         fill.solid()
         fill.fore_color.rgb = _hex_to_rgb(tokens.color.primary)
 
+        # Top decorative bar (secondary)
+        deco = slide.shapes.add_shape(
+            MSO_SHAPE.RECTANGLE,
+            Inches(0),
+            Inches(0),
+            SLIDE_WIDTH,
+            Inches(0.15),
+        )
+        deco_fill = deco.fill
+        deco_fill.solid()
+        deco_fill.fore_color.rgb = _hex_to_rgb(tokens.color.secondary)
+        deco.line.fill.background()
+
         title_box = slide.shapes.add_textbox(
             MARGIN_LEFT,
             Inches(2.8),
@@ -327,11 +426,41 @@ class PptxRenderer(BaseRenderer):
         tf.word_wrap = True
         p = tf.paragraphs[0]
         p.text = content.title
-        p.font.size = Pt(tokens.typography.title_size + 4)
+        p.font.size = Pt(tokens.typography.title_size + 8)
         p.font.bold = True
         p.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
         p.font.name = tokens.typography.font_family
         p.alignment = PP_ALIGN.CENTER
+
+        # Subtitle (e.g. branding line)
+        if content.subtitle:
+            sub_box = slide.shapes.add_textbox(
+                MARGIN_LEFT,
+                Inches(4.5),
+                CONTENT_WIDTH,
+                Inches(0.8),
+            )
+            tf2 = sub_box.text_frame
+            tf2.word_wrap = True
+            p2 = tf2.paragraphs[0]
+            p2.text = content.subtitle
+            p2.font.size = Pt(tokens.typography.subheading_size)
+            p2.font.color.rgb = RGBColor(0xCC, 0xCC, 0xCC)
+            p2.font.name = tokens.typography.font_family
+            p2.alignment = PP_ALIGN.CENTER
+
+        # Bottom bar
+        bottom = slide.shapes.add_shape(
+            MSO_SHAPE.RECTANGLE,
+            Inches(0),
+            Inches(7.0),
+            SLIDE_WIDTH,
+            Inches(0.5),
+        )
+        bottom_fill = bottom.fill
+        bottom_fill.solid()
+        bottom_fill.fore_color.rgb = _hex_to_rgb(tokens.color.secondary)
+        bottom.line.fill.background()
 
     # ----- Helper methods -----
 
@@ -343,16 +472,29 @@ class PptxRenderer(BaseRenderer):
         fill.fore_color.rgb = _hex_to_rgb(tokens.color.background)
 
     def _add_title_bar(self, slide, title: str, tokens: DesignTokens) -> None:
-        """Add a title bar at the top of the slide."""
+        """Add a title bar at the top of the slide with accent line."""
         if not title:
             return
 
+        # Top-edge accent stripe (full width, thin)
+        top_stripe = slide.shapes.add_shape(
+            MSO_SHAPE.RECTANGLE,
+            Inches(0),
+            Inches(0),
+            SLIDE_WIDTH,
+            Pt(4),
+        )
+        top_fill = top_stripe.fill
+        top_fill.solid()
+        top_fill.fore_color.rgb = _hex_to_rgb(tokens.color.primary)
+        top_stripe.line.fill.background()
+
         # Accent line under title
         line = slide.shapes.add_shape(
-            1,  # Rectangle
+            MSO_SHAPE.RECTANGLE,
             MARGIN_LEFT,
             Inches(1.35),
-            Inches(1.5),
+            Inches(2.0),
             Pt(3),
         )
         line_fill = line.fill
@@ -363,9 +505,9 @@ class PptxRenderer(BaseRenderer):
         # Title text
         title_box = slide.shapes.add_textbox(
             MARGIN_LEFT,
-            Inches(0.5),
+            Inches(0.4),
             CONTENT_WIDTH,
-            Inches(0.8),
+            Inches(0.85),
         )
         tf = title_box.text_frame
         tf.word_wrap = True
@@ -375,6 +517,39 @@ class PptxRenderer(BaseRenderer):
         p.font.bold = True
         p.font.color.rgb = _hex_to_rgb(tokens.color.text)
         p.font.name = tokens.typography.font_family
+
+    def _add_footer(
+        self, slide, tokens: DesignTokens, slide_num: int, total: int
+    ) -> None:
+        """Add branding footer bar with slide number."""
+        # Footer background bar
+        bar = slide.shapes.add_shape(
+            MSO_SHAPE.RECTANGLE,
+            Inches(0),
+            FOOTER_TOP,
+            SLIDE_WIDTH,
+            FOOTER_HEIGHT,
+        )
+        bar_fill = bar.fill
+        bar_fill.solid()
+        bar_fill.fore_color.rgb = _hex_to_rgb(tokens.color.secondary)
+        bar.line.fill.background()
+
+        # Slide number (right-aligned)
+        num_box = slide.shapes.add_textbox(
+            SLIDE_WIDTH - Inches(1.5),
+            FOOTER_TOP + Pt(2),
+            Inches(1.2),
+            FOOTER_HEIGHT - Pt(4),
+        )
+        tf = num_box.text_frame
+        tf.vertical_anchor = MSO_ANCHOR.MIDDLE
+        p = tf.paragraphs[0]
+        p.text = f"{slide_num} / {total}"
+        p.font.size = Pt(9)
+        p.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
+        p.font.name = tokens.typography.font_family
+        p.alignment = PP_ALIGN.RIGHT
 
     def _style_cell(
         self,

@@ -16,12 +16,15 @@ def parse_markdown(text: str) -> Presentation:
     """Parse a markdown document into a Presentation with typed slides.
 
     Mapping rules:
-        # H1          → COVER slide (first H1 = title)
-        ## H2         → SECTION divider slide
-        > blockquote  → QUOTE slide (key message)
+        # H1          → COVER slide (first H1 = title; immediately following > = subtitle)
+        ## H2         → title for the NEXT content slide (not a standalone section)
+        > blockquote  → QUOTE slide (key message); but merged into cover/closing when adjacent
         | table |     → TABLE slide
         - list items  → BULLET slide
         plain text    → TEXT slide (body content)
+
+    Section divider slides are only created when ## has no content before the
+    next ## (i.e. back-to-back headings or heading at end of document).
     """
     lines = text.strip().split("\n")
     lines = _strip_frontmatter(lines)
@@ -30,17 +33,33 @@ def parse_markdown(text: str) -> Presentation:
     current_section = ""
     buffer: list[str] = []
     buffer_type: SlideType | None = None
+    pending_section: str | None = None  # H2 waiting for content
 
     def flush() -> None:
         """Flush accumulated buffer into a slide."""
-        nonlocal buffer, buffer_type
+        nonlocal buffer, buffer_type, pending_section
         if not buffer:
             return
-        slide = _build_slide(buffer, buffer_type, current_section)
+        # Use pending section title if available
+        title = pending_section or current_section
+        slide = _build_slide(buffer, buffer_type, title)
         if slide:
             presentation.slides.append(slide)
         buffer = []
         buffer_type = None
+        pending_section = None
+
+    def flush_pending_section() -> None:
+        """If there's a pending H2 with no content, emit it as a section slide."""
+        nonlocal pending_section
+        if pending_section is not None:
+            presentation.slides.append(
+                SlideContent(
+                    slide_type=SlideType.SECTION,
+                    title=pending_section,
+                )
+            )
+            pending_section = None
 
     i = 0
     while i < len(lines):
@@ -57,13 +76,25 @@ def parse_markdown(text: str) -> Presentation:
         # H1 — Cover slide
         if stripped.startswith("# ") and not stripped.startswith("## "):
             flush()
+            flush_pending_section()
             title = stripped.lstrip("# ").strip()
             if not presentation.slides and presentation.title == "Untitled":
                 presentation.title = title
+
+                # Look ahead for subtitle (> blockquote immediately after H1)
+                subtitle = None
+                j = i + 1
+                while j < len(lines) and not lines[j].strip():
+                    j += 1
+                if j < len(lines) and lines[j].strip().startswith("> "):
+                    subtitle = lines[j].strip().lstrip("> ").strip()
+                    i = j  # skip the subtitle line
+
                 presentation.slides.append(
                     SlideContent(
                         slide_type=SlideType.COVER,
                         title=title,
+                        subtitle=subtitle or "",
                     )
                 )
             else:
@@ -76,16 +107,12 @@ def parse_markdown(text: str) -> Presentation:
             i += 1
             continue
 
-        # H2 — Section divider
+        # H2 — Set as pending section title (don't create a slide yet)
         if stripped.startswith("## "):
             flush()
+            flush_pending_section()
             current_section = stripped.lstrip("# ").strip()
-            presentation.slides.append(
-                SlideContent(
-                    slide_type=SlideType.SECTION,
-                    title=current_section,
-                )
-            )
+            pending_section = current_section
             i += 1
             continue
 
@@ -140,13 +167,28 @@ def parse_markdown(text: str) -> Presentation:
         i += 1
 
     flush()
+    flush_pending_section()
 
-    # Add closing slide if not present
+    # Convert trailing quote into closing subtitle if it's the last content
+    closing_subtitle = None
+    if (
+        presentation.slides
+        and presentation.slides[-1].slide_type == SlideType.QUOTE
+        and presentation.slides[-1].quote
+    ):
+        last = presentation.slides[-1]
+        # Heuristic: short quotes at the end are closing subtitles
+        if len(last.quote) < 80:
+            closing_subtitle = last.quote
+            presentation.slides.pop()
+
+    # Add closing slide
     if presentation.slides and presentation.slides[-1].slide_type != SlideType.CLOSING:
         presentation.slides.append(
             SlideContent(
                 slide_type=SlideType.CLOSING,
                 title="Thank You",
+                subtitle=closing_subtitle or "",
             )
         )
 
