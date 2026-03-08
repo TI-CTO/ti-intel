@@ -16,7 +16,7 @@ import frontmatter
 import mistune
 from jinja2 import Environment, FileSystemLoader
 
-from design_system.models import Presentation, RenderResult, ThemeInfo
+from design_system.models import Presentation, RenderResult, ThemeInfo, ValidationSummary
 from design_system.renderers.base import BaseRenderer
 
 logger = logging.getLogger(__name__)
@@ -75,13 +75,13 @@ def _postprocess(html: str) -> str:
         html,
     )
     # Case 1: mistune converted [[G-01]](#ref-g-01) → <a href="#ref-...">[G-01]</a>
-    # Must run BEFORE Case 2 so the <a> tag is stripped before raw bracket matching
+    # Keep the <a href> for clickable jump, wrap badge inside it
     html = re.sub(
-        r'<a href="#ref-[^"]*">\[([GNEPTI]-\d+[a-z]?)\]</a>',
-        r'<span class="citation-badge">\1</span>',
+        r'<a href="(#ref-[^"]*)">\[([GNEPTI]-\d+[a-z]?)\]</a>',
+        r'<a href="\1" class="citation-badge">\2</a>',
         html,
     )
-    # Case 2: raw [G-01] or [G-01b] not yet parsed by mistune
+    # Case 2: raw [G-01] or [G-01b] not yet parsed by mistune (no link target)
     html = re.sub(
         r"\[([GNEPTI]-\d+[a-z]?)\]",
         r'<span class="citation-badge">\1</span>',
@@ -319,11 +319,23 @@ class PdfRenderer(BaseRenderer):
             output_path: Destination .pdf path.
 
         Returns:
-            RenderResult with output_path, format, theme name.
+            RenderResult with output_path, format, theme name, and validation.
         """
+        from design_system.renderers.validator import (
+            run_validation,
+            validate_html,
+            validate_markdown,
+        )
+
         post = frontmatter.load(str(markdown_path))
         meta: dict = post.metadata
         body: str = post.content
+
+        # L1: Validate markdown source
+        md_checks = validate_markdown(body, meta)
+        for c in md_checks:
+            if not c.passed:
+                logger.warning("L1 %s: %s — %s", c.check_id, c.name, c.message)
 
         # Extract H1 title from markdown body
         h1_match = re.match(r"^#\s+(.+)$", body, re.MULTILINE)
@@ -365,13 +377,26 @@ class PdfRenderer(BaseRenderer):
             pagedjs_script=_build_pagedjs_script(),
         )
 
+        # L2: Validate HTML
+        html_checks = validate_html(html)
+        for c in html_checks:
+            if not c.passed and c.severity == "error":
+                logger.warning("L2 %s: %s — %s", c.check_id, c.name, c.message)
+
         output_path.parent.mkdir(parents=True, exist_ok=True)
         _html_to_pdf(html, output_path)
         logger.info("PDF rendered: %s", output_path)
+
+        # L3 + aggregate: Full validation
+        report = run_validation(body, meta, html, output_path)
+        validation = ValidationSummary(**report.to_dict())
+
+        logger.info("Validation: %s", report.summary)
 
         return RenderResult(
             output_path=output_path,
             format="pdf",
             theme=theme.name,
             slide_count=0,
+            validation=validation,
         )

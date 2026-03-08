@@ -216,7 +216,7 @@ outputs/reports/weekly/
 ⚠️ **Deep research-deep 에이전트 호출 시 `file_path`를 반드시 `weekly/` 경로로 지정한다.**
 잘못된 예: `outputs/reports/YYYY-MM-DD_research-xxx.md` (reports 루트에 저장 — 금지)
 
-### Step 5: PDF 생성
+### Step 5: PDF 생성 + 품질 검증
 
 ```
 design-system MCP → render_pdf(
@@ -224,6 +224,34 @@ design-system MCP → render_pdf(
   theme = "professional"
 )
 ```
+
+`render_pdf` 응답에 `validation` 필드가 포함된다:
+```json
+{
+  "status": "success",
+  "output_path": "...",
+  "validation": {
+    "passed": true,
+    "summary": "18/18 PASS",
+    "errors": [],
+    "warnings": []
+  }
+}
+```
+
+#### 검증 실패 시 재시도 플로우
+
+1. **errors가 있으면** (M-05~M-11 마크다운 구조 문제):
+   - 에러 메시지를 분석하여 마크다운 소스를 수정
+   - 수정 후 `render_pdf` 재호출 (최대 2회 재시도)
+   - 대표적 수정: citation 앵커 누락(M-05), References 열 수(M-07), 시장 시그널 테이블(M-10)
+
+2. **HTML 에러 (H-01, H-02)**:
+   - 렌더러 코드 버그이므로 사용자에게 경고만 출력
+   - 마크다운 수정으로 해결 불가
+
+3. **warnings만 있으면**:
+   - 경고 목록을 사용자에게 출력하되 재시도 없이 진행
 
 ### Step 6: 후속 안내
 

@@ -53,12 +53,16 @@ class TestMarkdownParser:
         assert pres.slides[0].slide_type == SlideType.COVER
         assert pres.slides[0].title == "Test Presentation Title"
 
-    def test_section_slides_created(self):
+    def test_section_titles_used_in_content_slides(self):
+        """H2 with content becomes a title on the content slide, not a SECTION slide."""
         pres = parse_markdown(SAMPLE_MD)
-        sections = [s for s in pres.slides if s.slide_type == SlideType.SECTION]
-        section_titles = [s.title for s in sections]
-        assert "Section One" in section_titles
-        assert "Section Two" in section_titles
+        # H2 titles appear as titles on BULLET/QUOTE/TABLE/TEXT slides
+        content_titles = [
+            s.title for s in pres.slides
+            if s.slide_type not in (SlideType.COVER, SlideType.CLOSING, SlideType.SECTION)
+        ]
+        assert "Section One" in content_titles
+        assert "Section Two" in content_titles
 
     def test_bullet_slide(self):
         pres = parse_markdown(SAMPLE_MD)
@@ -83,8 +87,9 @@ class TestMarkdownParser:
 
     def test_korean_content(self):
         pres = parse_markdown(SAMPLE_MD)
-        sections = [s for s in pres.slides if s.slide_type == SlideType.SECTION]
-        assert any("한글" in s.title for s in sections)
+        # Korean H2 with content becomes a title on a content slide
+        all_titles = [s.title for s in pres.slides]
+        assert any("한글" in t for t in all_titles)
 
     def test_closing_slide_appended(self):
         pres = parse_markdown(SAMPLE_MD)

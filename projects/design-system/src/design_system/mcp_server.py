@@ -170,12 +170,15 @@ def _dispatch(name: str, args: dict) -> dict:
         renderer = PdfRenderer()
         result = renderer.render_markdown(md_path, theme, output_path)
 
-        return {
+        response: dict = {
             "status": "success",
             "output_path": str(result.output_path),
             "theme": result.theme,
             "format": result.format,
         }
+        if result.validation:
+            response["validation"] = result.validation.model_dump()
+        return response
 
     return {"error": f"Unknown tool: {name}"}
 

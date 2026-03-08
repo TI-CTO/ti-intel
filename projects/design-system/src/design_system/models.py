@@ -123,6 +123,15 @@ class Presentation(BaseModel):
     slides: list[SlideContent] = Field(default_factory=list)
 
 
+class ValidationSummary(BaseModel):
+    """Validation results summary attached to render output."""
+
+    passed: bool = True
+    summary: str = ""
+    errors: list[dict[str, str]] = Field(default_factory=list)
+    warnings: list[dict[str, str]] = Field(default_factory=list)
+
+
 class RenderResult(BaseModel):
     """Result of rendering a presentation."""
 
@@ -130,3 +139,4 @@ class RenderResult(BaseModel):
     format: str
     theme: str
     slide_count: int
+    validation: ValidationSummary | None = None
