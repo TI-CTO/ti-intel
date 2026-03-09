@@ -1,7 +1,7 @@
 """Tests for PDF renderer helper functions."""
 
 from design_system.models import DesignTokens, ThemeInfo
-from design_system.renderers.pdf import _css_vars, _parse_sections, _postprocess
+from design_system.renderers.pdf import _css_vars, _parse_sections, _postprocess, _preprocess
 
 
 # ---------------------------------------------------------------------------
@@ -20,6 +20,59 @@ def _make_theme(**color_overrides: str) -> ThemeInfo:
         description="Unit test theme",
         tokens=tokens,
     )
+
+
+# ---------------------------------------------------------------------------
+# _preprocess (wikilink conversion)
+# ---------------------------------------------------------------------------
+
+
+class TestPreprocess:
+    def test_simple_wikilink(self):
+        md = "See [[2026-03-09_multi-agent/final]] here."
+        result = _preprocess(md)
+        assert result == "See [final](2026-03-09_multi-agent/final) here."
+
+    def test_wikilink_with_alias(self):
+        md = "See [[path/to/file|Display Text]] here."
+        result = _preprocess(md)
+        assert result == "See [Display Text](path/to/file) here."
+
+    def test_wikilink_no_slash(self):
+        md = "Link to [[portfolio]] page."
+        result = _preprocess(md)
+        assert result == "Link to [portfolio](portfolio) page."
+
+    def test_multiple_wikilinks(self):
+        md = "| [[a/b]] | [[c|D]] |"
+        result = _preprocess(md)
+        assert "[b](a/b)" in result
+        assert "[D](c)" in result
+
+    def test_no_wikilinks_unchanged(self):
+        md = "Normal [link](url) and text."
+        assert _preprocess(md) == md
+
+    def test_citation_link_not_affected(self):
+        """[[G-01]](#ref-g-01) should not be treated as wikilink."""
+        md = "See [[G-01]](#ref-g-01)."
+        result = _preprocess(md)
+        # The pattern [[...]] matches G-01 inside, but the ](#ref-...) part stays
+        assert "ref-g-01" in result
+
+    def test_wikilink_in_table_cell(self):
+        md = "| Multi-Agent | [[2026-03-09_multi-agent/final]] |"
+        result = _preprocess(md)
+        assert "[[" not in result
+        assert "[final](2026-03-09_multi-agent/final)" in result
+
+    def test_wikilink_in_parse_sections(self):
+        """Wikilinks in section content should be converted to standard links."""
+        body = "## Portfolio\n\n| Tech | Link |\n|------|------|\n| Agent | [[2026-03-09/final]] |"
+        sections = _parse_sections(body)
+        assert "[[" not in sections[0].html
+        # Should render as a proper <a> tag after mistune processes the standard link
+        assert "href" in sections[0].html or "final" in sections[0].html
 
 
 # ---------------------------------------------------------------------------

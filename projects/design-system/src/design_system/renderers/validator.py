@@ -1,9 +1,11 @@
 """PDF rendering quality validator — checks markdown, HTML, and PDF output.
 
-Validates WTIS reports at three levels:
+Validates reports at three levels with polymorphic type-specific checks:
   L1 (markdown source) — frontmatter, structure, citation integrity
   L2 (HTML post-processing) — badge links, anchor escaping, table classes
   L3 (PDF output) — file existence, page count, text extractability
+
+Report types: weekly (weekly-monitor), wtis (WTIS analysis), generic (common only).
 """
 
 from __future__ import annotations
@@ -77,6 +79,26 @@ class ValidationReport:
 
 
 # ---------------------------------------------------------------------------
+# Report type detection
+# ---------------------------------------------------------------------------
+
+_REQUIRED_KEYS: dict[str, list[str]] = {
+    "weekly": ["type", "date", "domain", "week"],
+    "wtis": ["topic", "domain", "date", "wtis_version"],
+    "generic": ["date"],
+}
+
+
+def _detect_report_type(meta: dict) -> str:
+    """Detect report type from frontmatter metadata."""
+    if meta.get("type") == "weekly-monitor":
+        return "weekly"
+    if "wtis_version" in meta or "l2_topic" in meta:
+        return "wtis"
+    return "generic"
+
+
+# ---------------------------------------------------------------------------
 # Level 1: Markdown source validation
 # ---------------------------------------------------------------------------
 
@@ -88,11 +110,19 @@ _ANCHOR_PATTERN = re.compile(r'<a\s+id="ref-([a-z]+-\d+[a-z]?)"\s*>\s*</a>')
 
 
 def validate_markdown(source: str, meta: dict) -> list[CheckResult]:
-    """Run Level 1 checks on markdown source and frontmatter."""
+    """Run Level 1 checks on markdown source and frontmatter.
+
+    Automatically detects report type from meta and applies
+    common checks + type-specific checks.
+    """
+    report_type = _detect_report_type(meta)
     results: list[CheckResult] = []
 
-    # M-01: frontmatter required keys
-    missing_keys = [k for k in ("type", "date") if k not in meta]
+    # --- Common checks ---
+
+    # M-01: frontmatter required keys (type-specific key set)
+    required = _REQUIRED_KEYS.get(report_type, _REQUIRED_KEYS["generic"])
+    missing_keys = [k for k in required if k not in meta]
     results.append(
         CheckResult(
             check_id="M-01",
@@ -112,20 +142,6 @@ def validate_markdown(source: str, meta: dict) -> list[CheckResult]:
             passed=h1_match is not None,
             severity="error",
             message="" if h1_match else "No H1 heading found",
-        )
-    )
-
-    # M-03: Executive Summary exists
-    has_exec = bool(
-        re.search(r"^## (Executive Summary|경영진 요약)", source, re.MULTILINE)
-    )
-    results.append(
-        CheckResult(
-            check_id="M-03",
-            name="Executive Summary exists",
-            passed=has_exec,
-            severity="warning",
-            message="" if has_exec else "No Executive Summary section found",
         )
     )
 
@@ -237,23 +253,6 @@ def validate_markdown(source: str, meta: dict) -> list[CheckResult]:
             )
         )
 
-    # M-08: Player trends table 3 columns (T2)
-    _check_section_table(
-        source, results, "M-08", "Player trends table 3 columns",
-        section_pattern=r"(?:플레이어 동향|Player)",
-        expected_cols=3, severity="warning",
-    )
-
-    # M-09: Key papers table 3 columns (T3)
-    _check_section_table(
-        source, results, "M-09", "Key papers table 3 columns",
-        section_pattern=r"(?:주요 논문|학술 동향|Key Papers|Academic)",
-        expected_cols=3, severity="warning",
-    )
-
-    # M-10: Market signals = bullet list (no tables)
-    _check_market_signals(source, results)
-
     # M-11: References no sub-heading split
     if has_refs and refs_section:
         h3_in_refs = re.findall(r"^### .+", refs_section, re.MULTILINE)
@@ -280,7 +279,276 @@ def validate_markdown(source: str, meta: dict) -> list[CheckResult]:
             )
         )
 
+    # --- Type-specific checks ---
+    if report_type == "weekly":
+        results.extend(_validate_weekly(source, meta))
+    elif report_type == "wtis":
+        results.extend(_validate_wtis(source, meta))
+
     return results
+
+
+# ---------------------------------------------------------------------------
+# Weekly-specific checks (W-xx + relocated M-03, M-08, M-09, M-10)
+# ---------------------------------------------------------------------------
+
+
+def _validate_weekly(source: str, meta: dict) -> list[CheckResult]:
+    """Run weekly-monitor specific checks."""
+    results: list[CheckResult] = []
+
+    # M-03: Executive Summary exists (weekly: English heading)
+    has_exec = bool(
+        re.search(r"^## Executive Summary", source, re.MULTILINE)
+    )
+    results.append(
+        CheckResult(
+            check_id="M-03",
+            name="Executive Summary exists",
+            passed=has_exec,
+            severity="warning",
+            message="" if has_exec else "No Executive Summary section found",
+        )
+    )
+
+    # W-01: Executive Summary table 4 columns
+    exec_match = re.search(r"^## Executive Summary\b.*", source, re.MULTILINE)
+    if exec_match:
+        start = exec_match.end()
+        next_heading = re.search(r"^## ", source[start:], re.MULTILINE)
+        end = start + next_heading.start() if next_heading else len(source)
+        exec_content = source[start:end]
+
+        table_rows = re.findall(r"^\|(.+)\|$", exec_content, re.MULTILINE)
+        if table_rows:
+            header_cols = [c.strip() for c in table_rows[0].split("|") if c.strip()]
+            w01_passed = len(header_cols) == 4
+            results.append(
+                CheckResult(
+                    check_id="W-01",
+                    name="Executive Summary table 4 columns",
+                    passed=w01_passed,
+                    severity="error",
+                    message=(
+                        f"Expected 4 columns, found {len(header_cols)}"
+                        if not w01_passed
+                        else ""
+                    ),
+                )
+            )
+        else:
+            results.append(
+                CheckResult(
+                    check_id="W-01",
+                    name="Executive Summary table 4 columns",
+                    passed=False,
+                    severity="error",
+                    message="No table in Executive Summary",
+                )
+            )
+    else:
+        results.append(
+            CheckResult(
+                check_id="W-01",
+                name="Executive Summary table 4 columns",
+                passed=False,
+                severity="error",
+                message="Executive Summary section missing",
+            )
+        )
+
+    # W-02: Signal emoji exists (🔴🟡🟢)
+    has_emoji = bool(re.search(r"[🔴🟡🟢]", source))
+    results.append(
+        CheckResult(
+            check_id="W-02",
+            name="Signal emoji exists",
+            passed=has_emoji,
+            severity="warning",
+            message="" if has_emoji else "No signal emoji (🔴🟡🟢) found",
+        )
+    )
+
+    # W-03: Deep analysis section count >= deep_count
+    deep_count = meta.get("deep_count", 0)
+    if deep_count > 0:
+        # Count numbered H2 sections (deep analysis sections)
+        numbered_h2 = re.findall(r"^## \d+\.\s+", source, re.MULTILINE)
+        actual_count = len(numbered_h2)
+        w03_passed = actual_count >= deep_count
+        results.append(
+            CheckResult(
+                check_id="W-03",
+                name="Deep analysis section count",
+                passed=w03_passed,
+                severity="warning",
+                message=(
+                    f"Expected >= {deep_count} deep sections, found {actual_count}"
+                    if not w03_passed
+                    else f"{actual_count} deep sections found"
+                ),
+            )
+        )
+    else:
+        results.append(
+            CheckResult(
+                check_id="W-03",
+                name="Deep analysis section count",
+                passed=True,
+                severity="warning",
+                message="No deep_count in frontmatter (skipped)",
+            )
+        )
+
+    # M-08: Player trends table 3 columns (relocated from common)
+    _check_section_table(
+        source, results, "M-08", "Player trends table 3 columns",
+        section_pattern=r"(?:플레이어 동향|Player)",
+        expected_cols=3, severity="warning",
+    )
+
+    # M-09: Key papers table 3 columns (relocated from common)
+    _check_section_table(
+        source, results, "M-09", "Key papers table 3 columns",
+        section_pattern=r"(?:주요 논문|학술 동향|Key Papers|Academic)",
+        expected_cols=3, severity="warning",
+    )
+
+    # M-10: Market signals = bullet list (relocated from common)
+    _check_market_signals(source, results)
+
+    return results
+
+
+# ---------------------------------------------------------------------------
+# WTIS-specific checks (T-xx)
+# ---------------------------------------------------------------------------
+
+
+def _validate_wtis(source: str, meta: dict) -> list[CheckResult]:
+    """Run WTIS analysis specific checks."""
+    results: list[CheckResult] = []
+
+    # T-01: 경영진 요약 exists (Korean heading)
+    has_exec_kr = bool(re.search(r"^## 경영진 요약", source, re.MULTILINE))
+    results.append(
+        CheckResult(
+            check_id="T-01",
+            name="경영진 요약 exists",
+            passed=has_exec_kr,
+            severity="warning",
+            message="" if has_exec_kr else "No '## 경영진 요약' section found",
+        )
+    )
+
+    # T-02: 200-point scoring table exists (in 전략 권고 section)
+    has_scoring = bool(
+        re.search(r"전략\s*권고", source)
+        and re.search(r"\b\d{2,3}\s*/\s*200\b|\b200점|\b/\s*200\b", source)
+    )
+    # Also check for a scoring table with point values
+    if not has_scoring:
+        has_scoring = bool(
+            re.search(r"점수|배점|Score", source, re.IGNORECASE)
+            and re.search(r"\|\s*\d+\s*\|", source)
+            and re.search(r"전략\s*권고|채점|Scoring", source, re.IGNORECASE)
+        )
+    results.append(
+        CheckResult(
+            check_id="T-02",
+            name="200-point scoring table",
+            passed=has_scoring,
+            severity="error",
+            message="" if has_scoring else "No scoring table found in 전략 권고 section",
+        )
+    )
+
+    # T-03: 교차검증 결과 section exists
+    has_cross = bool(
+        re.search(r"^##\s+\d*\.?\s*교차검증|^##.*cross.?valid", source, re.MULTILINE | re.IGNORECASE)
+    )
+    results.append(
+        CheckResult(
+            check_id="T-03",
+            name="교차검증 section exists",
+            passed=has_cross,
+            severity="warning",
+            message="" if has_cross else "No 교차검증 (cross-validation) section found",
+        )
+    )
+
+    # T-04: 3B decision matrix mention (Buy/Borrow/Build)
+    bbb_keywords = re.findall(r"\b(Buy|Borrow|Build)\b", source, re.IGNORECASE)
+    unique_bbb = {k.lower() for k in bbb_keywords}
+    has_3b = len(unique_bbb) >= 2  # At least 2 of 3 B's mentioned
+    results.append(
+        CheckResult(
+            check_id="T-04",
+            name="3B decision matrix mention",
+            passed=has_3b,
+            severity="warning",
+            message="" if has_3b else "Buy/Borrow/Build keywords not found",
+        )
+    )
+
+    # T-05: 경쟁사 비교표 exists (table in 경쟁 환경 section)
+    has_competitor = bool(
+        re.search(r"경쟁\s*환경|경쟁사|Competitive", source, re.IGNORECASE)
+    )
+    if has_competitor:
+        # Find the section and check for a table
+        comp_match = re.search(
+            r"^##\s+.*(?:경쟁\s*환경|경쟁사|Competitive).*$",
+            source, re.MULTILINE | re.IGNORECASE,
+        )
+        if comp_match:
+            start = comp_match.end()
+            next_h2 = re.search(r"^## ", source[start:], re.MULTILINE)
+            end = start + next_h2.start() if next_h2 else len(source)
+            section = source[start:end]
+            has_comp_table = bool(re.search(r"^\|.+\|$", section, re.MULTILINE))
+        else:
+            has_comp_table = False
+    else:
+        has_comp_table = False
+    results.append(
+        CheckResult(
+            check_id="T-05",
+            name="경쟁사 비교표 exists",
+            passed=has_comp_table,
+            severity="warning",
+            message="" if has_comp_table else "No competitor comparison table found",
+        )
+    )
+
+    # T-06: frontmatter consistency (wtis_mode + skills_executed)
+    wtis_mode = meta.get("wtis_mode")
+    skills = meta.get("skills_executed", [])
+    if wtis_mode and skills:
+        t06_passed = True
+        t06_msg = ""
+        if wtis_mode == "standard" and len(skills) < 3:
+            t06_passed = False
+            t06_msg = f"wtis_mode=standard but only {len(skills)} skills executed"
+    else:
+        t06_passed = True
+        t06_msg = "wtis_mode or skills_executed not set (skipped)"
+    results.append(
+        CheckResult(
+            check_id="T-06",
+            name="frontmatter consistency",
+            passed=t06_passed,
+            severity="info",
+            message=t06_msg,
+        )
+    )
+
+    return results
+
+
+# ---------------------------------------------------------------------------
+# Shared helpers
+# ---------------------------------------------------------------------------
 
 
 def _check_section_table(

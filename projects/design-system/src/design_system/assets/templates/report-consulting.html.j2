@@ -16,16 +16,10 @@
     <h1>{{ title }}</h1>
     <div class="report-meta">
       <span>{{ date }}</span>
-      {% if confidence %}
-      <span class="meta-sep">|</span>
-      <span>신뢰도: <strong class="confidence-{{ confidence }}">{{ confidence | upper }}</strong></span>
-      {% endif %}
       {% if sources_count > 0 %}
       <span class="meta-sep">|</span>
       <span>출처 {{ sources_count }}건</span>
       {% endif %}
-      <span class="meta-sep">|</span>
-      <span>{{ filename }}</span>
     </div>
   </div>
 
@@ -34,6 +28,11 @@
 
     <!-- ── Cover Zone (first page) ────────────────────────────── -->
     <div class="cover-zone">
+      {% if intro_html %}
+      <div class="intro-content">
+        {{ intro_html | safe }}
+      </div>
+      {% endif %}
       {% if executive_summary_html %}
       <div class="callout-box no-break">
         <div class="callout-title">경영진 요약</div>
@@ -71,15 +70,6 @@
 
   <!-- ══ FOOTER ══════════════════════════════════════════════════ -->
   <div class="report-footer">
-    {% if confidence %}
-    <div class="footer-metric">
-      <div class="metric-label">신뢰도</div>
-      <div class="metric-value accent confidence-{{ confidence }}">
-        {{ confidence | upper }}
-      </div>
-    </div>
-    <div class="footer-divider"></div>
-    {% endif %}
     <div class="footer-metric">
       <div class="metric-label">분석 기관</div>
       <div class="metric-value">Tech Intelligence</div>

@@ -56,6 +56,25 @@ def _make_md() -> mistune.Markdown:
     return mistune.create_markdown(plugins=["table", "strikethrough"])
 
 
+def _preprocess(md_text: str) -> str:
+    """Convert Obsidian wikilinks to standard markdown links before mistune parsing.
+
+    Handles:
+      [[path/to/file]]       → [file](path/to/file)
+      [[path/to/file|alias]] → [alias](path/to/file)
+    """
+    def _replace_wikilink(m: re.Match) -> str:
+        inner = m.group(1)
+        if "|" in inner:
+            path, alias = inner.split("|", 1)
+            return f"[{alias.strip()}]({path.strip()})"
+        # Use last path segment as display text
+        display = inner.strip().rsplit("/", 1)[-1]
+        return f"[{display}]({inner.strip()})"
+
+    return re.sub(r"\[\[([^\]]+)\]\]", _replace_wikilink, md_text)
+
+
 def _postprocess(html: str) -> str:
     """Add CSS class to tables, wrap in div, and convert citation refs to styled badges."""
     html = re.sub(
@@ -132,7 +151,7 @@ def _parse_sections(body: str) -> list[ReportSection]:
             number = None
             clean_title = title
 
-        html = _postprocess(md(content))
+        html = _postprocess(md(_preprocess(content)))
 
         sections.append(
             ReportSection(
@@ -256,6 +275,7 @@ def _playwright_pdf(html: str, output_path: Path) -> None:
             path=str(output_path),
             format="A4",
             print_background=True,
+            prefer_css_page_size=True,
             margin={"top": "0mm", "bottom": "0mm", "left": "0mm", "right": "0mm"},
         )
         browser.close()
@@ -350,6 +370,15 @@ class PdfRenderer(BaseRenderer):
             s for s in sections if not s.is_exec_summary and not s.is_references
         ]
 
+        # Extract intro content between H1 and first ## heading
+        intro_html = ""
+        first_h2 = re.search(r"^## ", body, re.MULTILINE)
+        if h1_match and first_h2:
+            intro_text = body[h1_match.end() : first_h2.start()].strip()
+            if intro_text:
+                md = _make_md()
+                intro_html = _postprocess(md(_preprocess(intro_text)))
+
         # Build CSS: theme variables first, then base stylesheet
         css = _css_vars(theme) + "\n" + (_STYLES_DIR / "report-consulting.css").read_text(
             encoding="utf-8"
@@ -370,6 +399,7 @@ class PdfRenderer(BaseRenderer):
             confidence=meta.get("confidence"),
             status=meta.get("status", ""),
             sources_count=len(sources_used) if isinstance(sources_used, list) else 0,
+            intro_html=intro_html,
             executive_summary_html=exec_summary.html if exec_summary else "",
             main_sections=main_sections,
             references_html=references.html if references else "",

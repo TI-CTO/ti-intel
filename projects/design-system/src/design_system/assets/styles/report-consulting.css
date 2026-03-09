@@ -325,7 +325,8 @@ blockquote p {
 }
 
 /* ── Inline Citation Badges ─────────────────────────────────────── */
-.citation-badge {
+.citation-badge,
+a.citation-badge {
     display: inline-block;
     background: var(--color-primary);
     color: white;
@@ -337,6 +338,8 @@ blockquote p {
     line-height: 1;
     margin-left: 1px;
     font-style: normal;
+    text-decoration: none;
+    cursor: pointer;
 }
 
 /* ── Code / Pre ─────────────────────────────────────────────────── */
@@ -475,10 +478,23 @@ pre code {
 /* ── References Section ─────────────────────────────────────────── */
 .cover-zone {
     padding: 0 14mm;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    flex: 1;
+}
+
+/* Intro content between H1 title and first section (e.g. portfolio table) */
+.intro-content {
+    margin-top: 6mm;
+    margin-bottom: 6mm;
+}
+
+.intro-content .table-wrapper {
+    overflow: visible;
+    page-break-inside: auto !important;
+    break-inside: auto !important;
+}
+
+.intro-content .data-table {
+    page-break-inside: auto !important;
+    break-inside: auto !important;
 }
 
 .references-section {
