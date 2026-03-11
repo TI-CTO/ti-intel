@@ -229,13 +229,13 @@
 |------|------|------|------|
 | 검색 | `search_intel` | 통합 검색 (keyword/semantic/hybrid) | `search_intel(query="PQC", mode="hybrid")` |
 | | `find_similar` | 유사 아이템 탐색 (ID 또는 텍스트) | `find_similar(item_id=128)` / `find_similar(text="실시간 AI 사기 탐지")` |
-| | `get_weekly_diff` | 이번 주 vs 지난 주 신규·변경 아이템 비교 | `get_weekly_diff(topic="ondevice-pqc", week_date="2026-03-04")` |
+| | `get_weekly_diff` | 이번 주 vs 지난 주 신규·변경 아이템 비교 | `get_weekly_diff(topic="pqc-voice-encryption", week_date="2026-03-04")` |
 | | `get_item_detail` | 단건 상세 조회 (ID 또는 external_id) | `get_item_detail(item_id=42)` / `get_item_detail(external_id="gp:US123")` |
-| 수집 | `collect_papers` | Semantic Scholar 수집 (빈 결과 시 arXiv 자동 폴백) | `collect_papers(topic="ondevice-pqc", query="post-quantum")` |
-| | `collect_arxiv` | arXiv 직접 수집 | `collect_arxiv(topic="ondevice-he", query="all:CKKS")` |
-| | `collect_patents` | Google Patents 수집 (SerpAPI, 250회/월) | `collect_patents(topic="ondevice-pqc", query="PQC")` |
-| | `collect_news` | Tavily/GDELT/Naver 수집 (source별 또는 all) | `collect_news(topic="secure-ai", source="naver")` |
-| | `collect_all` | 전체 소스 일괄 수집 (papers+arxiv+patents+news) | `collect_all(topic="ondevice-pqc", query="PQC")` |
+| 수집 | `collect_papers` | Semantic Scholar 수집 (빈 결과 시 arXiv 자동 폴백) | `collect_papers(topic="pqc-voice-encryption", query="post-quantum")` |
+| | `collect_arxiv` | arXiv 직접 수집 | `collect_arxiv(topic="he-keyword-search", query="all:CKKS")` |
+| | `collect_patents` | Google Patents 수집 (SerpAPI, 250회/월) | `collect_patents(topic="pqc-voice-encryption", query="PQC")` |
+| | `collect_news` | Tavily/GDELT/Naver 수집 (source별 또는 all) | `collect_news(topic="spam-phishing-detection", source="naver")` |
+| | `collect_all` | 전체 소스 일괄 수집 (papers+arxiv+patents+news) | `collect_all(topic="pqc-voice-encryption", query="PQC")` |
 | 저장 | `upsert_items` | 아이템 저장 (content_hash 자동 중복 체크) | |
 | | `link_topics` | 아이템 ↔ 토픽 연결 | |
 | | `link_relation` | 아이템 간 관계 (cites/updates/contradicts 등) | |
@@ -244,7 +244,7 @@
 **`collect_all` 고급 사용법** — 소스별 쿼리를 다르게 지정:
 ```
 collect_all(
-  topic="ondevice-pqc",
+  topic="pqc-voice-encryption",
   query="post-quantum cryptography",          ← 기본 쿼리
   queries={"arxiv": "all:ML-KEM lattice", "news": "양자암호 상용화"}  ← 소스별 오버라이드
 )
@@ -312,10 +312,10 @@ collect_news(topic="competitor-strategy", query="경쟁사 AI 투자", source="a
 
 ```
 # 주간 변화 감지 → "이번 주에 PQC 쪽에 뭐가 바뀌었어?"
-get_weekly_diff(topic="ondevice-pqc")
+get_weekly_diff(topic="pqc-voice-encryption")
 
 # 다각도 근거 수집 → "동형암호 사업화 데이터 모아줘"
-collect_all(topic="quantum-he", query="homomorphic encryption commercialization")
+collect_all(topic="he-keyword-search", query="homomorphic encryption commercialization")
 
 # 경쟁사 추적
 search_intel(query="competitor quantum crypto", mode="hybrid")
@@ -340,7 +340,7 @@ get_intel_stats(topic="ondevice-slm", period=90)
 
 ```
 # 논문 집중 수집 → "CKKS 부트스트래핑 논문 10편 수집해줘"
-collect_arxiv(topic="ondevice-he", query="all:CKKS bootstrapping optimization", limit=10)
+collect_arxiv(topic="he-keyword-search", query="all:CKKS bootstrapping optimization", limit=10)
 
 # 관련 연구 탐색
 find_similar(item_id=128)

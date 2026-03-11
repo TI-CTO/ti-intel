@@ -108,7 +108,7 @@ v4.1: L2 단위 분석 + 포트폴리오 구조 전환.
 ### 폴더 계층 구조
 ```
 outputs/reports/
-  {domain}/                         ← L1 도메인 (secure-ai / agentic-ai / axops)
+  {domain}/                         ← L1 도메인 (agentic-ai / voice-ai / secure-ai)
     portfolio.md                    ← 포트폴리오 (L2 분석 후 자동 갱신)
     portfolio.professional.pdf
     {date}_{slug}/                  ← L2 분석 세션
@@ -392,7 +392,7 @@ PQC 표준은 2025년 확정되었다 [[G-01]](#ref-g-01).
 ```markdown
 ---
 topic: {analysis topic}
-domain: {L1 도메인 slug — secure-ai / agentic-ai / axops}
+domain: {L1 도메인 slug — agentic-ai / voice-ai / secure-ai}
 l2_topic: {L2 기술 slug — tech-taxonomy.md 참조}
 date: {YYYY-MM-DD}
 wtis_version: v4.1
@@ -512,9 +512,9 @@ evaluated: {M}
 ```
 
 L2 목록은 `tech-taxonomy.md`에서 해당 L1 도메인의 L2 기술을 가져온다:
-- secure-ai: OnDevice AI, 스팸/피싱/탐지, 양자동형암호
-- agentic-ai: 의도파악기술, Multi-Agent, Self Evolving Agent, 관계추론기술
-- axops: FeedBackOps/EvalOps, ML/LLMOps
+- agentic-ai: Self Evolving Architecture, Model & Delta Foundry, Trusted Multi-Agent, Hybrid AI Infra, 의도 파악 기술
+- voice-ai: Speech Perception, Personal Intelligence, Speech Generation
+- secure-ai: 스팸/피싱탐지, 양자/동형 암호
 
 ### Step B: PDF 자동 생성 (필수)
 최종 보고서 + 포트폴리오를 PDF로 변환한다.

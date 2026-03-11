@@ -40,25 +40,26 @@ ESG/New Biz   │ energy efficiency, digital health, V2X
 ### 1-A. L2 분류 (필수)
 
 입력에서 다음을 식별한다:
-- **domain**: L1 도메인 슬러그 (`secure-ai` / `agentic-ai` / `axops`)
+- **domain**: L1 도메인 슬러그 (`agentic-ai` / `voice-ai` / `secure-ai`)
 - **l2_topic**: 해당 L1 아래 L2 기술 슬러그 (아래 매핑 참조)
 
 **L1 → L2 매핑:**
 ```
-secure-ai:
-  5. OnDevice AI       → ondevice-ai
-  6. 스팸/피싱/탐지     → spam-phishing
-  7. 양자동형암호       → quantum-he
-
 agentic-ai:
-  1. 의도파악기술       → intent-understanding
-  2. Multi-Agent       → multi-agent
-  3. Self Evolving Agent → self-evolving-agent
-  4. 관계추론기술       → relationship-reasoning
+  1. Self Evolving Architecture → self-evolving-architecture
+  2. Model & Delta Foundry      → model-delta-foundry
+  3. Trusted Multi-Agent        → trusted-multi-agent
+  4. Hybrid AI Infra            → hybrid-ai-infra
+  5. 의도 파악 기술              → intent-understanding
 
-axops:
-  8. FeedBackOps/EvalOps → feedbackops-evalops
-  9. ML/LLMOps          → ml-llmops
+voice-ai:
+  6. Speech Perception          → speech-perception
+  7. Personal Intelligence      → personal-intelligence
+  8. Speech Generation          → speech-generation
+
+secure-ai:
+  9. 스팸/피싱탐지              → spam-phishing
+  10. 양자/동형 암호            → quantum-he
 ```
 
 - 제안서가 L2 하나에 매핑되면 → 단일 L2 분석
@@ -116,7 +117,7 @@ If no internal references are provided, skip this step.
 ## L2 분류
 | 항목 | 값 |
 |------|-----|
-| domain | {L1 slug: secure-ai / agentic-ai / axops} |
+| domain | {L1 slug: agentic-ai / voice-ai / secure-ai} |
 | l2_topic | {L2 slug} |
 | l2_name | {L2 한글명} |
 | related_l2 | {관련 L2 — 없으면 생략} |

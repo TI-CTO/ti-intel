@@ -1,4 +1,4 @@
-"""Register 18 L3 technology topics in Supabase.
+"""Register 25 L3 technology topics in Supabase.
 
 Inserts into `topics` table, then registers each as a `watch_topic` (weekly).
 Uses the trend-tracker Supabase client for DB access.
@@ -105,7 +105,7 @@ L3_TOPICS: list[dict] = [
         "description": "Encrypted vector search, privacy-preserving AICC",
         "keywords": ["encrypted vector search", "privacy-preserving AICC"],
     },
-    # ── AXOps ──
+    # ── Agentic AI: Model & Delta Foundry ──
     {
         "slug": "feedbackops-prompt",
         "display_name": "FeedBackOps Meta Prompt Engineering",
