@@ -58,65 +58,78 @@ L1/L2/L3 전체 구조는 `tech-taxonomy.md` 참조.
 
 ```yaml
 l2_analysis:
-  # === Secure AI ===
-  ondevice-ai:
-    domain: secure-ai
-    name: 온디바이스 AI
-    l2_number: 5
-    focus: [sLM 성능/경량화, 프라이버시 보장, 단말 제약(메모리/전력), 실시간 추론]
-    key_players: [Apple, Samsung, Qualcomm, MediaTek, Google, SKT, KT]
-  spam-phishing:
-    domain: secure-ai
-    name: 스팸/피싱/탐지
-    l2_number: 6
-    focus: [AI 기반 실시간 탐지, 보이스피싱 예방, 이미지 스팸 OCR, 통화전 차단]
-    key_players: [SKT, KT, Hiya, RoboKiller, 경찰청]
-  quantum-he:
-    domain: secure-ai
-    name: 양자동형암호
-    l2_number: 7
-    focus: [PQC NIST 표준 적용, 동형암호 CKKS 실용화, 통신 프로토콜 통합, HW 가속]
-    key_players: [IBM, Google, NIST, SKT, KT, Samsung, CryptoLab]
-
   # === Agentic AI ===
+  self-evolving-architecture:
+    domain: agentic-ai
+    name: Self Evolving Architecture
+    l2_number: 1
+    focus: [Agentic Context Engineering, 자기개선 에이전트, 메타러닝]
+    key_players: [Anthropic, OpenAI, DeepMind, Microsoft Research, Elasticsearch, Weaviate, LangChain]
+
+  model-delta-foundry:
+    domain: agentic-ai
+    name: Model & Delta Foundry
+    l2_number: 2
+    focus: [자동 프롬프트 최적화, LLM 평가 자동화, 학습-배포 파이프라인, GPU 오케스트레이션]
+    key_players: [Stanford NLP, Databricks, Weights&Biases, LangSmith, NVIDIA, Run:ai, Ray, Anyscale, AWS, Google Cloud]
+
+  trusted-multi-agent:
+    domain: agentic-ai
+    name: Trusted Multi-Agent Orchestration
+    l2_number: 3
+    focus: [에이전트 오케스트레이션, 에이전트 기반 계획, 협업 프로토콜, 신뢰성]
+    key_players: [Microsoft, IBM, AWS, Anthropic, OpenAI, DeepSeek, Alibaba, LangChain, CrewAI, Talkdesk]
+
+  hybrid-ai-infra:
+    domain: agentic-ai
+    name: Hybrid AI Infra
+    l2_number: 4
+    focus: [sLM 성능/경량화, 실시간 추론, Edge AI, 5G SA/6G AI-RAN, 단말 제약(메모리/전력)]
+    key_players: [Apple, Samsung, Qualcomm, MediaTek, Google, Meta, Hugging Face, SKT, KT, Nokia, Ericsson]
+
   intent-understanding:
     domain: agentic-ai
-    name: 의도파악기술
-    l2_number: 1
+    name: 의도 파악 기술
+    l2_number: 5
     focus: [Adaptive RAG, Self-Reflective RAG, Query Routing, 멀티턴 대화 이해]
-    key_players: [Google, OpenAI, Anthropic, Naver, SKT]
-  multi-agent:
-    domain: agentic-ai
-    name: Multi-Agent
-    l2_number: 2
-    focus: [에이전트 오케스트레이션, 에이전트 기반 계획, 협업 프로토콜]
-    key_players: [Microsoft, Google, Anthropic, LangChain, CrewAI]
-  self-evolving-agent:
-    domain: agentic-ai
-    name: Self Evolving Agent
-    l2_number: 3
-    focus: [Agentic Context Engineering, 자기개선 에이전트, 메타러닝]
-    key_players: [Anthropic, OpenAI, DeepMind, Microsoft Research]
-  relationship-reasoning:
-    domain: agentic-ai
-    name: 관계추론기술
-    l2_number: 4
-    focus: [페르소나 플러그인, 관계 그래프 구축, 컨텍스트 기반 액션 추천]
-    key_players: [Naver, Kakao, SKT, Meta, Google]
+    key_players: [Google, OpenAI, Anthropic, Kore.ai, Databricks, LangChain, Naver, SKT]
 
-  # === AXOps ===
-  feedbackops-evalops:
-    domain: axops
-    name: FeedBackOps/EvalOps
+  # === Voice AI ===
+  speech-perception:
+    domain: voice-ai
+    name: Speech Perception & Interaction
+    l2_number: 6
+    focus: [음성 감정 분석, 대화 맥락 인식, 끼어들기/턴테이킹 예측, 실시간 처리]
+    key_players: [Google, Amazon, Microsoft, Nuance, Deepgram, AssemblyAI, Naver, Kakao, SKT]
+
+  personal-intelligence:
+    domain: voice-ai
+    name: Personal Intelligence
+    l2_number: 7
+    focus: [페르소나 플러그인, 관계 그래프 구축, 컨텍스트 기반 액션 추천]
+    key_players: [Naver, Kakao, SKT, Meta, Google, Neo4j, DeepLearning.AI]
+
+  speech-generation:
+    domain: voice-ai
+    name: Speech Generation
     l2_number: 8
-    focus: [자동 프롬프트 최적화, LLM 평가 자동화, RAGAS, DSPy]
-    key_players: [Stanford NLP, Databricks, Weights&Biases, LangSmith]
-  ml-llmops:
-    domain: axops
-    name: ML/LLMOps
+    focus: [Voice Cloning, Voice Synthesis, Zero-shot TTS, 화자 적응]
+    key_players: [ElevenLabs, Play.ht, Resemble AI, Google, Microsoft, Amazon, Naver, SKT]
+
+  # === Secure AI ===
+  spam-phishing:
+    domain: secure-ai
+    name: 스팸/피싱탐지
     l2_number: 9
-    focus: [학습-배포 통합 파이프라인, GPU 오케스트레이션, 하이브리드 클라우드]
-    key_players: [Ray, Anyscale, SkyPilot, MLflow, NVIDIA]
+    focus: [AI 기반 실시간 탐지, 보이스피싱 예방, 이미지 스팸 OCR, 통화전 차단]
+    key_players: [SKT, KT, Google, Hiya, Vectra AI, Adaptive Security, Resemble AI, 경찰청]
+
+  quantum-he:
+    domain: secure-ai
+    name: 양자/동형 암호
+    l2_number: 10
+    focus: [PQC NIST 표준 적용, 동형암호 CKKS 실용화, 통화 녹음 암호화, B2B AICC FHE, HW 가속]
+    key_players: [NIST, AWS, Microsoft Research, IBM, Samsung, Fortanix, Ant Group, CryptoLab, SKT, KT]
 ```
 
 ## 분석 프레임워크

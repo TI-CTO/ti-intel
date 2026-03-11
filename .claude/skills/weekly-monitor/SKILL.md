@@ -2,12 +2,12 @@
 name: weekly-monitor
 description: "주간 기술 동향 모니터링. 2단계 파이프라인: 전체 L3 빠른 스캔 → 변화 감지된 L3 심층 리서치. 논문/특허/뉴스를 종합한다."
 user-invokable: true
-argument-hint: "<agentic-ai | secure-ai | axops>"
+argument-hint: "<agentic-ai | voice-ai | secure-ai>"
 ---
 
 # Weekly Monitor — 주간 기술 동향 모니터링
 
-3개 도메인 × 18개 L3 세부기술의 주간 모니터링.
+3개 도메인 × 25개 L3 세부기술의 주간 모니터링.
 **2단계 파이프라인**: 먼저 전체 L3를 빠르게 스캔하고, 변화가 감지된 L3에 대해서만 심층 리서치를 실행한다.
 
 ## 핵심 원칙
@@ -20,9 +20,9 @@ argument-hint: "<agentic-ai | secure-ai | axops>"
 ## 빠른 시작
 
 ```
-/weekly-monitor agentic-ai   → 월요일: Agentic AI 7개 L3
-/weekly-monitor secure-ai    → 수요일: Secure AI 7개 L3
-/weekly-monitor axops        → 금요일: AXOps 4개 L3
+/weekly-monitor agentic-ai   → 월요일: Agentic AI 12개 L3
+/weekly-monitor voice-ai     → 화요일: Voice AI 8개 L3
+/weekly-monitor secure-ai    → 수요일: Secure AI 5개 L3
 ```
 
 ---
@@ -31,9 +31,9 @@ argument-hint: "<agentic-ai | secure-ai | axops>"
 
 | 인자 | 설명 |
 |------|------|
-| `agentic-ai` | Agentic AI 도메인 (L3 7개) |
-| `secure-ai` | Secure AI 도메인 (L3 7개) |
-| `axops` | AXOps 도메인 (L3 4개) |
+| `agentic-ai` | Agentic AI 도메인 (L3 12개) |
+| `voice-ai` | Voice AI 도메인 (L3 8개) |
+| `secure-ai` | Secure AI 도메인 (L3 5개) |
 
 인자는 필수. 도메인 하나만 지정한다.
 
@@ -49,32 +49,39 @@ argument-hint: "<agentic-ai | secure-ai | axops>"
 ### agentic-ai
 | L2 | L3 | slug |
 |----|----|------|
-| 의도파악기술 | Adaptive RAG | `adaptive-rag` |
-| Multi-Agent | Intelligent Agent Orchestration | `agent-orchestration` |
-| Multi-Agent | Agent Oriented Planning | `agent-planning` |
-| Self Evolving Agent | Agentic Context Engineering | `agentic-context-engineering` |
-| 관계추론기술 | 페르소나 플러그인 기술 | `persona-plugin` |
-| 관계추론기술 | 관계 그래프 구축 기술 | `relationship-graph` |
-| 관계추론기술 | 컨텍스트 기반 액션 추천 기술 | `context-action-recommendation` |
+| Self Evolving Architecture | Agentic Context Engineering | `agentic-context-engineering` |
+| Model & Delta Foundry | FeedbackOps: 자율형 Meta-prompt Engineering PoC | `feedbackops-prompt` |
+| Model & Delta Foundry | EvaluationOps: KMS 성능평가 자동화 PoC | `evalops-kms` |
+| Model & Delta Foundry | 데이터-학습-배포 통합 자동화 파이프라인 | `mlops-pipeline` |
+| Model & Delta Foundry | 하이브리드 GPU Orchestration | `gpu-orchestration` |
+| Trusted Multi-Agent Orchestration | Intelligent Agent Orchestration | `agent-orchestration` |
+| Trusted Multi-Agent Orchestration | Agent Oriented Orchestration | `agent-oriented-orchestration` |
+| Hybrid AI Infra | On-Device sLM | `ondevice-slm` |
+| Hybrid AI Infra | 실시간 화자분할(2인) 기술 확보 | `speaker-diarization` |
+| Hybrid AI Infra | Edge AI | `edge-ai` |
+| Hybrid AI Infra | 5G SA/6G(AI-RAN/SRv6) | `5g-6g-ai-ran` |
+| 의도 파악 기술 | Adaptive RAG | `adaptive-rag` |
+
+### voice-ai
+| L2 | L3 | slug |
+|----|----|------|
+| Speech Perception & Interaction | Emotional Analysis | `emotional-analysis` |
+| Speech Perception & Interaction | Context Recognition | `context-recognition` |
+| Speech Perception & Interaction | Interrupt & Turn-Taking | `interrupt-turn-taking` |
+| Personal Intelligence | 페르소나 플러그인 기술 고도화 | `persona-plugin` |
+| Personal Intelligence | 관계 그래프 구축 기술 확보 | `relationship-graph` |
+| Personal Intelligence | 컨텍스트 기반 액션 추천 기술 확보 | `context-action-recommendation` |
+| Speech Generation | Voice Cloning | `voice-cloning` |
+| Speech Generation | Voice Synthesis | `voice-synthesis` |
 
 ### secure-ai
 | L2 | L3 | slug |
 |----|----|------|
-| OnDevice AI | OnDevice sLM | `ondevice-slm` |
-| OnDevice AI | 실시간 화자분할(2인) | `speaker-diarization` |
-| 스팸/피싱/탐지 | 스팸피싱감지(통화전) | `spam-phishing-detection` |
-| 스팸/피싱/탐지 | OCR 이미지 스팸 차단 | `ocr-image-spam` |
-| 양자동형암호 | OnDevice 양자암호 | `ondevice-pqc` |
-| 양자동형암호 | OnDevice 동형암호 | `ondevice-he` |
-| 양자동형암호 | Secure Vector Search | `secure-vector-search` |
-
-### axops
-| L2 | L3 | slug |
-|----|----|------|
-| FeedBackOps/EvalOps | FeedBackOps Meta Prompt Eng. | `feedbackops-prompt` |
-| FeedBackOps/EvalOps | EvalOps KMS 성능평가 | `evalops-kms` |
-| ML/LLMOps | 학습 배포 통합 파이프라인 | `mlops-pipeline` |
-| ML/LLMOps | 하이브리드 GPU Orchestration | `gpu-orchestration` |
+| 스팸/피싱탐지 | 스팸/피싱 감지(통화전) | `spam-phishing-detection` |
+| 스팸/피싱탐지 | OCR 활용 이미지 스팸 차단 | `ocr-image-spam` |
+| 양자/동형 암호 | On-Device 양자암호: 통화 녹음 파일 암호화 | `pqc-voice-encryption` |
+| 양자/동형 암호 | On-Device 동형암호: 키워드 검색 | `he-keyword-search` |
+| 양자/동형 암호 | Secure Vector Search: B2B AICC 동형암호 적용 | `secure-vector-search` |
 
 ---
 
