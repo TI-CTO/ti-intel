@@ -40,6 +40,28 @@ MCP 병렬 탐색: intel-store(논문 20건, 특허 18건, 뉴스 20건)
 - `competitors` (선택): 비교 대상 경쟁사 목록
 - `taxonomy` (선택): 기술 분류 체계
 
+## I/O Contract
+
+### Input
+| Parameter | Required | Type | Description |
+|-----------|----------|------|-------------|
+| `domain` | yes | 자유 텍스트 | 탐색할 기술 도메인 (예: "edge AI", "quantum networking") |
+| `portfolio` | no | 텍스트/파일 | 기존 보유 과제 목록 (중복 방지) |
+| `competitors` | no | 텍스트 | 비교 대상 경쟁사 |
+| `taxonomy` | no | 텍스트 | 기술 분류 체계 |
+
+### Output Files
+| Artifact | Path Pattern | Description |
+|----------|-------------|-------------|
+| 리포트 | `outputs/reports/YYYY-MM-DD_discover-{domain-slug}.md` | 기회 탐색 보고서 |
+
+### Return
+```yaml
+status: pass
+summary: "{domain} — {N}건 기회 발견, 즉시착수: {top opportunity}"
+file_path: "리포트 절대 경로"
+```
+
 ## Process
 
 ### Phase 1: 도메인 분석 (sonnet)
@@ -153,11 +175,20 @@ sources_used: [intel-store, trend-tracker, websearch]
 |---|--------|-----|--------|--------|--------|
 ```
 
-## Return
+## Next Steps
+
+저장 완료 후 아래 후속 옵션을 사용자에게 제시한다:
+
 ```
-status: pass
-summary: (200자 이내 — 도메인, 발견된 기회 수, 최우선 기회명)
-file_path: (절대 경로)
+📋 Next Steps:
+  ✅ 즉시착수 기회 검증:
+    → /wtis standard {기회명} Go/No-Go 검증       — 타당성 검증 + 200점 채점
+  🔬 특정 기회 심화 조사:
+    → /research-session {기회명}                   — 자유 형식 심층 리서치
+  📄 PDF 변환:
+    → /report-pdf {리포트 경로}                    — 컨설팅 스타일 PDF
+  📂 Obsidian 동기화:
+    → /obsidian-bridge {리포트 경로} research       — 볼트에 동기화
 ```
 
 ## Notes

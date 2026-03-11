@@ -41,6 +41,25 @@ argument-hint: "[topic-slug | all]"
 - (없음): 모든 watch_topics 스캔
 - `[topic-slug]`: 특정 토픽만 스캔 (예: `ai-network`, `6g`)
 
+## I/O Contract
+
+### Input
+| Parameter | Required | Type | Description |
+|-----------|----------|------|-------------|
+| `topic-slug` | no | 문자열 | 특정 토픽만 스캔 (생략 시 전체 watch_topics) |
+
+### Output Files
+| Artifact | Path Pattern | Description |
+|----------|-------------|-------------|
+| 보고서 | `outputs/reports/YYYY-MM-DD_monitor-{topic-slug}.md` | 🟡🔴 토픽만 생성 |
+
+### Return
+```yaml
+status: pass | partial
+summary: "총 {N}개 — 🔴 {N} 🟡 {N} 🟢 {N}"
+files: ["생성된 보고서 절대 경로 목록"]
+```
+
 ## Process
 
 ### Phase 1: 토픽 목록 로드
@@ -138,6 +157,21 @@ previous_snapshot: {date}
 - MCP 도구 오류 시: 해당 토픽 스킵 + 오류 로그 → 다른 토픽 계속 처리
 - watch_topics 비어있을 시: "등록된 토픽 없음. manage_watch_topics로 토픽을 먼저 등록하세요." 안내
 - 모든 MCP 실패 시: WebSearch 대체 수집 + 한계 명시
+
+## Next Steps
+
+종합 요약 출력 후 아래 후속 옵션을 사용자에게 제시한다:
+
+```
+📋 Next Steps:
+  🔴 긴급 토픽 발견 시:
+    → /wtis standard {토픽} Go/No-Go 검증         — 의사결정이 필요한 기술 검증
+    → /weekly-monitor {domain}                    — 해당 도메인 주간 심층 분석
+  🟡 주목 토픽 심화:
+    → /research-session {토픽}                    — 자유 형식 심층 리서치
+  📂 Obsidian 동기화 (🟡🔴 보고서):
+    → /obsidian-bridge {보고서 경로} research       — 볼트에 동기화
+```
 
 ## Notes
 - 첫 실행 시 비교 기준 스냅샷 없음 → 데이터 수집 + 저장만 수행 (변화 감지 불가 안내)

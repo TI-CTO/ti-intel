@@ -23,6 +23,26 @@ argument-hint: "[file-path-or-folder] [type: wtis|weekly|research|reference|devl
 - 첫 번째 인자: 소스 파일 또는 폴더 경로
 - 두 번째 인자: 노트 타입 (destination 결정)
 
+## I/O Contract
+
+### Input
+| Parameter | Required | Type | Description |
+|-----------|----------|------|-------------|
+| `source` | yes | 파일/폴더 경로 | 동기화할 소스 경로 |
+| `type` | auto-detect | `wtis` \| `portfolio` \| `weekly` \| `research` \| `reference` \| `devlog` | 노트 타입 (미지정 시 경로 패턴으로 자동 감지) |
+
+### Output
+| Artifact | Description |
+|----------|-------------|
+| Obsidian 파일 | 볼트 대상 경로에 frontmatter 추가된 파일 복사 |
+
+### Return
+```yaml
+status: pass | fail
+files_copied: ["복사된 파일 절대 경로 목록"]
+vault_paths: ["Obsidian 볼트 내 경로 목록"]
+```
+
 ## Destination Mapping
 
 | Type       | Git Source                                              | Obsidian Vault Path                              |

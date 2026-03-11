@@ -37,6 +37,29 @@ argument-hint: "<agentic-ai | voice-ai | secure-ai>"
 
 인자는 필수. 도메인 하나만 지정한다.
 
+## I/O Contract
+
+### Input
+| Parameter | Required | Type | Description |
+|-----------|----------|------|-------------|
+| `domain` | yes | `agentic-ai` \| `voice-ai` \| `secure-ai` | 모니터링 대상 도메인 |
+| 추가 키워드 | no | 자유 텍스트 | Step 0에서 대화로 수집 |
+
+### Output Files
+| Artifact | Path Pattern | Description |
+|----------|-------------|-------------|
+| 메인 리포트 | `outputs/reports/weekly/YYYY-MM-DD_weekly-{domain}.md` | Quick + Deep 종합 |
+| PDF | `outputs/reports/weekly/YYYY-MM-DD_weekly-{domain}.professional.pdf` | 메인 리포트 PDF |
+| Deep 리서치 | `outputs/reports/weekly/YYYY-MM-DD_research-{l3-slug}.md` | L3별 심층 분석 (🟡🔴만) |
+
+### Return
+```yaml
+status: pass | partial    # partial: MCP 일부 실패 시
+summary: "{domain} W{nn} — Deep {N}건, 🔴 {N} 🟡 {N} 🟢 {N}"
+file_path: "메인 리포트 절대 경로"
+deep_files: ["Deep 리서치 파일 경로 목록"]
+```
+
 ## References
 
 - 분류체계: `.claude/skills/wtis/references/tech-taxonomy.md`
@@ -271,10 +294,24 @@ design-system MCP → render_pdf(
 3. **warnings만 있으면**:
    - 경고 목록을 사용자에게 출력하되 재시도 없이 진행
 
-### Step 6: 후속 안내
+### Step 6: Next Steps 안내
 
-- 🔴 긴급 L3가 있으면: `/wtis standard {L2 기술} Go/No-Go 검증` 제안
-- Obsidian 동기화: `/obsidian-bridge` 안내
+리포트 완료 후 아래 후속 옵션을 사용자에게 제시한다:
+
+```
+📋 Next Steps:
+  🔴 긴급 L3 발견 시:
+    → /wtis standard {L2 기술} Go/No-Go 검증    — 의사결정이 필요한 기술의 타당성 검증
+  📊 프레젠테이션 필요 시:
+    → /slides {리포트 경로}                      — PPTX 슬라이드 변환
+  📂 Obsidian 동기화:
+    → /obsidian-bridge {리포트 경로} weekly       — 메인 리포트 동기화
+    → /obsidian-bridge {research 경로} research   — 심층 리서치 개별 동기화
+  🔍 특정 L3 심화 조사:
+    → /research-session {L3 주제}                — 자유 형식 심층 리서치
+  📅 다른 도메인 모니터링:
+    → /weekly-monitor {다른 도메인}               — 월:agentic-ai / 화:voice-ai / 수:secure-ai
+```
 
 ---
 

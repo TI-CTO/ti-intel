@@ -2,10 +2,26 @@
 
 WTIS 리포트 또는 마크다운 파일을 컨설팅 스타일 PDF로 변환한다.
 
-## 입력
-- 마크다운 파일 경로 (필수)
-- 테마 이름 (선택, 기본: professional)
-- 출력 경로 (선택)
+## I/O Contract
+
+### Input
+| Parameter | Required | Type | Description |
+|-----------|----------|------|-------------|
+| `markdown_path` | yes | 파일 경로 | 변환할 마크다운 파일 절대 경로 |
+| `theme` | no | `professional` \| `minimal` \| `dark` | 디자인 테마 (기본: professional) |
+| `output_path` | no | 파일 경로 | 출력 PDF 경로 (기본: 소스와 같은 디렉토리) |
+
+### Output Files
+| Artifact | Path Pattern | Description |
+|----------|-------------|-------------|
+| PDF | `{source_dir}/{name}.{theme}.pdf` | 변환된 PDF |
+
+### Return
+```yaml
+status: pass | fail
+file_path: "PDF 절대 경로"
+theme: "적용된 테마"
+```
 
 ## 실행
 
@@ -69,4 +85,16 @@ PDF 생성 완료
 render_pdf(
   markdown_path = "/Users/ctoti/Project/ClaudeCode/outputs/reports/2026-02-25_research-secure-ai.md"
 )
+```
+
+## Next Steps
+
+PDF 생성 완료 후 아래 후속 옵션을 사용자에게 제시한다:
+
+```
+📋 Next Steps:
+  📊 프레젠테이션 필요 시:
+    → /slides {원본 마크다운 경로}                  — PPTX 슬라이드 변환
+  📂 Obsidian 동기화:
+    → /obsidian-bridge {파일 경로} {type}           — PDF 포함 볼트에 동기화
 ```

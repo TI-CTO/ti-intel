@@ -34,6 +34,26 @@ argument-hint: "[topic to research]"
 ## Arguments
 - 리서치할 주제 (자유 형식)
 
+## I/O Contract
+
+### Input
+| Parameter | Required | Type | Description |
+|-----------|----------|------|-------------|
+| `topic` | yes | 자유 텍스트 | 리서치할 주제 |
+
+### Output Files
+| Artifact | Path Pattern | Description |
+|----------|-------------|-------------|
+| 리포트 | `outputs/reports/YYYY-MM-DD_{topic-slug}.md` | 구조화된 리서치 노트 |
+
+### Return
+```yaml
+status: completed | needs-followup
+summary: "{topic} — 핵심 발견 {N}건, 신뢰도 {level}"
+file_path: "리포트 절대 경로"
+confidence: "high | medium | low"
+```
+
 ## Process
 
 ### Phase 1: 기존 지식 확인
@@ -95,4 +115,20 @@ status: completed|needs-followup
 결과를 다음 경로에 저장:
 `/Users/ctoti/Project/ClaudeCode/outputs/reports/{YYYY-MM-DD}_{topic-slug}.md`
 
-저장 완료 후 Obsidian 볼트 동기화가 필요하면 `/obsidian-bridge` 스킬 사용을 안내한다.
+### Phase 5: Next Steps 안내
+
+저장 완료 후 아래 후속 옵션을 사용자에게 제시한다:
+
+```
+📋 Next Steps:
+  ✅ 기술 타당성 검증이 필요하면:
+    → /wtis standard {주제} Go/No-Go 검증          — 200점 채점 + 3B 전략
+  🔍 더 넓은 기회 탐색이 필요하면:
+    → /discover {도메인}                           — 신기술 기회 발굴 + 우선순위
+  📄 PDF 변환:
+    → /report-pdf {리포트 경로}                    — 컨설팅 스타일 PDF
+  📂 Obsidian 동기화:
+    → /obsidian-bridge {리포트 경로} research        — 볼트에 동기화
+  📝 작업 기록:
+    → /work-log                                    — 리서치 내용 일지에 기록
+```

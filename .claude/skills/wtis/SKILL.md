@@ -74,6 +74,38 @@ v4.1: L2 단위 분석 + 포트폴리오 구조 전환.
 - "검증", "타당성", "Go/No-Go" → **standard**
 - "발굴", "탐색", "전략", "비교" → **deep**
 
+## I/O Contract
+
+### Input
+| Parameter | Required | Type | Description |
+|-----------|----------|------|-------------|
+| `mode` | auto-detect | `proposal` \| `standard` \| `deep` | 분석 모드 (미지정 시 키워드로 자동 판정) |
+| `query` | yes | 텍스트 또는 파일 경로 | 분석 대상 (제안서 경로, 검증 질의, 발굴 도메인) |
+
+### Output Files
+| Artifact | Path Pattern | Description |
+|----------|-------------|-------------|
+| SKILL-0 | `outputs/reports/{domain}/{date}_{slug}/skill0.md` | 제안서 분석 (proposal만) |
+| Research | `outputs/reports/{domain}/{date}_{slug}/research.md` | 심층 리서치 |
+| SKILL-1 | `outputs/reports/{domain}/{date}_{slug}/skill1.md` | 선정검증 |
+| Validator | `outputs/reports/{domain}/{date}_{slug}/validator.md` | 교차검증 |
+| Discover | `outputs/reports/{domain}/{date}_{slug}/discover.md` | 기회 탐색 (deep만) |
+| **Final** | `outputs/reports/{domain}/{date}_{slug}/final.md` | **최종 보고서** |
+| Final PDF | `.../{date}_{slug}/final.professional.pdf` | PDF 변환 |
+| Portfolio | `outputs/reports/{domain}/portfolio.md` | 포트폴리오 (자동 갱신) |
+| Portfolio PDF | `outputs/reports/{domain}/portfolio.professional.pdf` | 포트폴리오 PDF |
+
+### Return
+```yaml
+status: pass | fail | needs-followup
+summary: "{l2_topic} — {verdict} ({score}/200) — {strategy}"
+file_path: "final.md 절대 경로"
+session_dir: "세션 폴더 절대 경로"
+verdict: "Go | Conditional Go | No-Go"
+score: "N/200"
+strategy: "Buy | Borrow | Build | Watch"
+```
+
 ## Core Principles
 
 1. **오케스트레이터는 라우팅만 한다** — 직접 분석하지 않고 Layer 2 또는 내부 스킬에 위임
@@ -533,10 +565,26 @@ design-system MCP → render_pdf(
 - 성공 시: `{domain}/{date}_{slug}/final.professional.pdf` + `{domain}/portfolio.professional.pdf` 생성
 - 실패 시: 오류 메시지 출력 후 마크다운 파일 경로를 대신 안내 (파이프라인 중단 없음)
 
-### Step C: 후속 안내 (선택)
-1. Obsidian 동기화 필요 시 `/obsidian-bridge` 안내
-2. 후속 모니터링 필요 시 `/monitor [topic]` 사용 제안
-3. 동일 도메인의 다른 L2 미평가 기술이 있으면 다음 분석 대상 제안
+### Step C: Next Steps 안내
+
+포트폴리오와 PDF 생성 완료 후 아래 후속 옵션을 사용자에게 제시한다:
+
+```
+📋 Next Steps:
+  📂 Obsidian 동기화:
+    → /obsidian-bridge {세션 폴더} wtis           — final.md + PDF 동기화
+    → /obsidian-bridge {portfolio 경로} portfolio  — 포트폴리오 동기화
+  📊 프레젠테이션 필요 시:
+    → /slides {final.md 경로}                     — PPTX 슬라이드 변환
+  🔍 동일 도메인 미평가 L2:
+    → /wtis standard {미평가 L2}                  — 다음 평가 대상 제안
+  📅 정기 모니터링:
+    → /weekly-monitor {domain}                    — 주간 동향 추적
+  📝 작업 기록:
+    → /work-log                                   — 오늘 분석 내용 일지에 기록
+```
+
+미평가 L2가 있으면 포트폴리오에서 "미평가" 항목을 확인하여 구체적으로 제안한다.
 
 ## Announcement
 실행 시작 전 사용자에게 판정 결과를 먼저 보여준다:
