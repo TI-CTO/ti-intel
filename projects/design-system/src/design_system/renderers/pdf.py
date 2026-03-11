@@ -65,6 +65,9 @@ def _preprocess(md_text: str) -> str:
     """
     def _replace_wikilink(m: re.Match) -> str:
         inner = m.group(1)
+        # Skip citation patterns like [G-01] — these are markdown links, not wikilinks
+        if re.match(r"^[GNEPTI]-\d+[a-z]?$", inner):
+            return m.group(0)
         if "|" in inner:
             path, alias = inner.split("|", 1)
             return f"[{alias.strip()}]({path.strip()})"
