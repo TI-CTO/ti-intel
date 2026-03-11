@@ -126,16 +126,16 @@
 
 **사용법**:
 ```
-/weekly-monitor secure-ai      ← 보안AI 도메인 (7개 L3 기술 스캔)
-/weekly-monitor agentic-ai     ← 에이전틱AI 도메인 (7개 L3)
-/weekly-monitor axops           ← AX Ops 도메인 (4개 L3)
+/weekly-monitor agentic-ai     ← 에이전틱AI 도메인 (12개 L3 기술 스캔)
+/weekly-monitor voice-ai       ← 보이스AI 도메인 (8개 L3)
+/weekly-monitor secure-ai      ← 보안AI 도메인 (5개 L3)
 ```
 
 **2단계 파이프라인**:
 - **Tier 1**: 모든 L3 기술을 빠르게 스캔 → 🟢(안정) / 🟡(주의) / 🔴(변화감지) 분류
 - **Tier 2**: 🔴 기술만 심층 리서치 (research-deep 에이전트 사용)
 
-**스케줄**: 월(agentic-ai) / 수(secure-ai) / 금(axops)
+**스케줄**: 월(agentic-ai) / 화(voice-ai) / 수(secure-ai)
 
 **산출물**: `outputs/reports/weekly/`
 
@@ -162,7 +162,7 @@
 ### `/monitor` — 토픽 변화 감지
 
 ```
-/monitor ondevice-pqc    ← 특정 토픽
+/monitor pqc-voice-encryption    ← 특정 토픽
 /monitor all             ← 전체 토픽 스캔
 ```
 

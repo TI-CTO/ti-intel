@@ -108,7 +108,7 @@ sources_used: [intel-store, trend-tracker, websearch]
 
 # Research Report: {Topic}
 
-## Executive Summary (경영진 요약)
+## Executive Summary
 > (3-5줄: 핵심 발견, 전략적 시사점, 신뢰도 수준)
 
 ## 연구 질문

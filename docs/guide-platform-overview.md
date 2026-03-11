@@ -14,13 +14,13 @@
                              │
          ┌───────────────────┼───────────────────┐
          │                   │                   │
-    Secure AI           Agentic AI             AXOps
-    (L2 3개, L3 7개)    (L2 4개, L3 7개)      (L2 2개, L3 4개)
+    Agentic AI          Voice AI              Secure AI
+    (L2 5개, L3 12개)   (L2 3개, L3 8개)      (L2 2개, L3 5개)
          │                   │                   │
          ▼                   ▼                   ▼
   ┌──────────────────────────────────────────────────┐
   │              Weekly Monitor (주간 동향)             │
-  │  L1 도메인 단위로 L3 18개를 매주 스캔               │
+  │  L1 도메인 단위로 L3 25개를 매주 스캔               │
   │  "이번 주 무슨 일이 있었나?"                        │
   └──────────────────┬───────────────────────────────┘
                      │ 🔴 긴급 시그널 발견 시
@@ -40,17 +40,18 @@
 
 ### 기술 분류 체계
 
-| L1 도메인 | L2 기술 | L3 세부기술 (예시) |
-|-----------|---------|-------------------|
-| **Secure AI** | OnDevice AI | OnDevice sLM, 실시간 화자분할 |
-| | 스팸/피싱/탐지 | 스팸피싱감지(통화전), OCR 이미지 스팸 |
-| | 양자동형암호 | OnDevice 양자암호, OnDevice 동형암호, Secure Vector Search |
-| **Agentic AI** | 의도파악기술 | Adaptive RAG |
-| | Multi-Agent | Agent Orchestration, Agent Planning |
-| | Self Evolving Agent | Agentic Context Engineering |
-| | 관계추론기술 | 페르소나 플러그인, 관계 그래프, 컨텍스트 액션 추천 |
-| **AXOps** | FeedBackOps/EvalOps | Meta Prompt Eng., KMS 성능평가 |
-| | ML/LLMOps | 학습 배포 파이프라인, GPU Orchestration |
+| L1 도메인 | L2 기술 | L3 세부기술 |
+|-----------|---------|------------|
+| **Agentic AI** (12) | Self Evolving Architecture | Agentic Context Engineering |
+| | Model & Delta Foundry | FeedbackOps, EvaluationOps, 학습-배포 파이프라인, GPU Orchestration |
+| | Trusted Multi-Agent | Agent Orchestration, Agent Oriented Orchestration |
+| | Hybrid AI Infra | On-Device sLM, 실시간 화자분할, Edge AI, 5G SA/6G |
+| | 의도 파악 기술 | Adaptive RAG |
+| **Voice AI** (8) | Speech Perception | Emotional Analysis, Context Recognition, Interrupt & Turn-Taking |
+| | Personal Intelligence | 페르소나 플러그인, 관계 그래프, 컨텍스트 액션 추천 |
+| | Speech Generation | Voice Cloning, Voice Synthesis |
+| **Secure AI** (5) | 스팸/피싱탐지 | 스팸/피싱 감지(통화전), OCR 이미지 스팸 |
+| | 양자/동형 암호 | PQC 통화녹음 암호화, 동형암호 키워드 검색, Secure Vector Search |
 
 ---
 
@@ -77,16 +78,16 @@ Tier 2: 심층 리서치 (~10분, 🟡🔴만)
 
 | 요일 | 도메인 | L3 수 |
 |------|--------|-------|
-| **월** | Agentic AI | 7개 |
-| **수** | Secure AI | 7개 |
-| **금** | AXOps | 4개 |
+| **월** | Agentic AI | 12개 |
+| **화** | Voice AI | 8개 |
+| **수** | Secure AI | 5개 |
 
 ### 호출 방법
 
 ```
 /weekly-monitor agentic-ai
+/weekly-monitor voice-ai
 /weekly-monitor secure-ai
-/weekly-monitor axops
 ```
 
 ### 산출물
