@@ -74,7 +74,7 @@ Write the result in Korean. Structure:
 ```markdown
 # WTIS SKILL-2 진행검증: {project_name}
 
-## 경영진 요약
+## Executive Summary
 > (3~5문장)
 
 ## 1. 목표 유효성 재검증

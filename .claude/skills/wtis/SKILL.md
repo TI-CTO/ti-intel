@@ -157,7 +157,7 @@ outputs/reports/{domain}/portfolio.md       # 포트폴리오 종합
 ### 관련 파일 로딩
 매칭 파일은 frontmatter만 읽어 요약한다 (전체 내용 읽기 불필요):
 - `topic`, `date`, `confidence`, `verdict`(있으면), `score`(있으면) 값 추출
-- `## 경영진 요약` 섹션 앞 5줄만 발췌
+- `## Executive Summary` 섹션 앞 5줄만 발췌
 
 ### 빠른 시작
 
@@ -323,7 +323,7 @@ prior_reports:
     score: {점수 — 있으면}             # e.g. "128/200"
     confidence: {신뢰도}
     summary_excerpt: |
-      {## 경영진 요약 섹션 첫 3~5줄}
+      {## Executive Summary 섹션 첫 3~5줄}
 
 지시 (최근 ≤ 30일):
   - 이전 분석 결과를 선행 지식으로 활용한다
@@ -407,7 +407,7 @@ prior_report_date: {이전 분석 날짜 — 없으면 생략}
 
 # WTIS Report: {topic}
 
-## 경영진 요약
+## Executive Summary
 > 판정(Go/Conditional Go/No-Go), 종합 점수(N/200), 3B 전략(Buy/Borrow/Build),
 > 핵심 리스크를 3~5문장으로 요약한다.
 

@@ -78,7 +78,7 @@ Write the result in Korean. Structure:
 ```markdown
 # WTIS SKILL-3 발굴: {focus_domain}
 
-## 경영진 요약
+## Executive Summary
 > (3~5문장)
 
 ## 1. 현황 분석

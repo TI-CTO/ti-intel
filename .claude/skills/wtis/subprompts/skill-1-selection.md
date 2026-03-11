@@ -160,7 +160,7 @@ Evaluate each factor with evidence:
 ```markdown
 # WTIS 선정검증: {project_name}
 
-## 경영진 요약
+## Executive Summary
 > (3~5문장. 결론 먼저: 판정(Go/Conditional Go/No-Go) + 총점 + 핵심 근거. 신뢰도 명시.)
 
 ## 평가 항목 및 배점 안내

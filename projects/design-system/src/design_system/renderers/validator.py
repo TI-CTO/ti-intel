@@ -429,15 +429,17 @@ def _validate_wtis(source: str, meta: dict) -> list[CheckResult]:
     """Run WTIS analysis specific checks."""
     results: list[CheckResult] = []
 
-    # T-01: 경영진 요약 exists (Korean heading)
-    has_exec_kr = bool(re.search(r"^## 경영진 요약", source, re.MULTILINE))
+    # T-01: Executive Summary exists (Korean or English heading)
+    has_exec_summary = bool(
+        re.search(r"^## (경영진 요약|Executive Summary)", source, re.MULTILINE)
+    )
     results.append(
         CheckResult(
             check_id="T-01",
-            name="경영진 요약 exists",
-            passed=has_exec_kr,
+            name="Executive Summary exists",
+            passed=has_exec_summary,
             severity="warning",
-            message="" if has_exec_kr else "No '## 경영진 요약' section found",
+            message="" if has_exec_summary else "No '## Executive Summary' section found",
         )
     )
 

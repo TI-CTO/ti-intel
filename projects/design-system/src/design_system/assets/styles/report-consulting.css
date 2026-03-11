@@ -6,7 +6,7 @@
  * Typography: body 10pt, H2 14pt (magenta underline), H3 12pt (bg + left bar), H4 10pt (gray underline)
  * Pagination: paged.js polyfill, @page margin 20/14/18/14mm, first page margin 0 (full-bleed cover)
  * Page numbers: JS-injected via paged.js afterRendered (p2+: "WTIS" left, "N / total" right)
- * Tables: nowrap first 2 cols only, references tables allow page breaks
+ * Tables: nowrap first 2 cols + last col, references tables allow page breaks
  * Key rule: NEVER set fixed width (210mm) on body/wrapper — use width: 100%, @page controls margins
  *
  * CSS variables are injected by PdfRenderer from design tokens.
@@ -113,11 +113,10 @@ body {
 /* ── Executive Summary Callout Box (Design 1) ───────────────────── */
 /* Left magenta border, surface background */
 .callout-box {
-    border-left: 4px solid var(--color-primary);
-    background: var(--color-surface);
-    padding: 6mm 8mm;
+    background: none;
+    padding: 0;
+    margin-top: 30mm;
     margin-bottom: 6mm;
-    border-radius: 0 4px 4px 0;
 }
 
 .callout-title {
@@ -137,6 +136,15 @@ body {
 
 .callout-box p:last-child {
     margin-bottom: 0;
+}
+
+/* Remove duplicate left border when executive summary uses blockquote */
+.callout-box blockquote {
+    border-left: none;
+    background: transparent;
+    margin: 0;
+    padding: 0;
+    font-style: normal;
 }
 
 /* ── Meta Info Grid (Design 1 top info cards) ───────────────────── */
@@ -244,6 +252,13 @@ hr {
     font-weight: 700;
 }
 
+/* Bold title in ordered list items: line break after title
+   mistune wraps li content in <p>, so target li > p > strong */
+.section-content li > p > strong:first-child {
+    display: block;
+    margin-bottom: 2px;
+}
+
 .section-content em {
     font-style: italic;
     color: var(--color-text-secondary);
@@ -267,7 +282,7 @@ blockquote p {
 .data-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 8pt;
+    font-size: 10pt;
     margin: 3mm 0;
     page-break-inside: avoid;
     caption-side: bottom;
@@ -286,7 +301,7 @@ blockquote p {
     padding: 5px 8px;
     text-align: left;
     font-weight: 600;
-    font-size: 8pt;
+    font-size: 10pt;
     line-height: 1.3;
 }
 
@@ -297,15 +312,19 @@ blockquote p {
     line-height: 1.4;
 }
 
-/* First column only: nowrap for short labels (기업명, #, 등) */
+/* Short-content columns: nowrap (first 2 cols + last col) */
 .data-table th:first-child,
-.data-table td:first-child {
+.data-table td:first-child,
+.data-table th:nth-child(2),
+.data-table td:nth-child(2),
+.data-table th:last-child,
+.data-table td:last-child {
     white-space: nowrap;
 }
 
-/* Remaining columns: allow wrapping to prevent overflow */
-.data-table th:nth-child(n+2),
-.data-table td:nth-child(n+2) {
+/* Content columns (3rd ~ second-to-last): allow wrapping */
+.data-table th:nth-child(n+3):not(:last-child),
+.data-table td:nth-child(n+3):not(:last-child) {
     white-space: normal;
     word-wrap: break-word;
     overflow-wrap: break-word;
