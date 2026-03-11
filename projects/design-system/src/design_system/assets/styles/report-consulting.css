@@ -312,19 +312,17 @@ blockquote p {
     line-height: 1.4;
 }
 
-/* Short-content columns: nowrap (first 2 cols + last col) */
+/* Short-content columns: nowrap (first col + last col only) */
 .data-table th:first-child,
 .data-table td:first-child,
-.data-table th:nth-child(2),
-.data-table td:nth-child(2),
 .data-table th:last-child,
 .data-table td:last-child {
     white-space: nowrap;
 }
 
-/* Content columns (3rd ~ second-to-last): allow wrapping */
-.data-table th:nth-child(n+3):not(:last-child),
-.data-table td:nth-child(n+3):not(:last-child) {
+/* Content columns (2nd ~ second-to-last): allow wrapping */
+.data-table th:nth-child(n+2):not(:last-child),
+.data-table td:nth-child(n+2):not(:last-child) {
     white-space: normal;
     word-wrap: break-word;
     overflow-wrap: break-word;

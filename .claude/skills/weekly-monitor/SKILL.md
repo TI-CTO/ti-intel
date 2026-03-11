@@ -391,14 +391,15 @@ deep_count: {Deep 실행된 L3 수}
 
 ## Executive Summary
 
-| 세부기술 | 전주 | 금주 | 핵심 내용 | 분석 |
-|----------|------|------|----------|------|
-| OnDevice sLM | 🟡 | 🔴 ↑ | Apple sLM 3.0 발표, 온디바이스 추론 2배 향상 | Deep |
-| ondevice-pqc | 🔴 | 🔴 → | NIST PQC 마이그레이션 가이드 v2 공개 | Deep |
-| speaker-diarization | 🟢 | 🟢 → | 특이사항 없음 | Quick |
+| 세부기술 | 신호 | 핵심 내용 | 분석 |
+|----------|------|----------|------|
+| OnDevice sLM | 🔴 | Apple sLM 3.0 발표, 온디바이스 추론 2배 향상 | Deep |
+| ondevice-pqc | 🔴 | NIST PQC 마이그레이션 가이드 v2 공개 | Deep |
+| speaker-diarization | 🟢 | 특이사항 없음 | Quick |
 
-※ 전주 열: 이전 주 리포트 또는 trend-tracker 스냅샷에서 로드. 첫 실행(이전 데이터 없음) 시 `—`으로 표시.
-※ 변화 방향: ↑ 상승, ↓ 하향, → 유지.
+> **신호** : 🔴 긴급 — 경쟁사 출시, 규제 변경, 기술 돌파 | 🟡 주목 — 주요 발표·논문·표준 변화 감지 | 🟢 평온 — 유의미 변화 없음
+>
+> **분석** : Deep = 심층 리서치 수행 | Quick = 1줄 요약만
 
 ---
 
