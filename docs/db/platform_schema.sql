@@ -1,6 +1,6 @@
 -- Tech Intelligence Platform — Full Schema
 -- Supabase project: tech-intel (ref: wzkmucknomctkyygciof)
--- Last updated: 2026-03-04
+-- Last updated: 2026-03-11
 -- Tables: 11 total (migration 003 완료, deprecated 9개 삭제 완료)
 --
 -- KEEP (telco-factbook — real data, no changes):
@@ -32,6 +32,15 @@ CREATE TABLE IF NOT EXISTS topics (
 );
 
 CREATE INDEX IF NOT EXISTS idx_topics_slug ON topics(slug);
+
+-- ── RLS POLICIES (migrations 005, 006, 007) ──────────────────────────────────
+-- topics:           service_role_all (ALL), anon_read (SELECT)
+-- watch_topics:     service_role_all (ALL), anon_all (ALL)
+-- trend_snapshots:  service_role_all (ALL), anon_all (ALL)
+-- intel_items:      service_role_all (ALL), anon_all (ALL)
+-- intel_item_topics: service_role_all (ALL), anon_all (ALL)
+-- intel_item_relations: service_role_all (ALL), anon_all (ALL)
+-- See: docs/db/migrations/005_intel_store_rls.sql, 007_anon_rls_policies.sql
 
 -- ── INTEL-STORE (migration 003) ────────────────────────────────────────────
 -- Full DDL: projects/intel-store/src/intel_store/db/migrations/003_intel_items.sql

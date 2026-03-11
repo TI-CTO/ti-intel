@@ -217,7 +217,6 @@ cd projects/design-system && ~/.local/bin/uv sync && cd ../..
 ## 7. 자주 쓰는 패턴 정리
 
 ```
-빠른 조사        /wtis quick {질문}
 구조화 조사      /research-session {주제}
 신기술 발굴      /discover {도메인}  또는  /wtis deep {주제}
 제안서 검증      /wtis proposal {파일경로}
@@ -230,13 +229,23 @@ Obsidian 동기화  /obsidian-bridge {파일}
 
 ---
 
-## 8. 파일 구조 참조
+## 8. 스킬 체이닝
+
+스킬 간 연결 관계와 데이터 흐름은 별도 가이드 참조:
+→ `docs/guide-skill-chaining.md` — 전체 체이닝 맵, I/O Contract 요약, 워크플로우 시나리오
+
+모든 분석 스킬은 통일된 I/O Contract(Input/Output/Return)를 갖고 있으며,
+각 SKILL.md에 `## I/O Contract` 섹션과 `## Next Steps` 섹션이 정의되어 있다.
+
+---
+
+## 9. 파일 구조 참조
 
 ```
 ti-intel/
 ├── .claude/
 │   ├── agents/          ← 에이전트 정의 (*.md)
-│   ├── skills/          ← 스킬 정의 (*/SKILL.md)
+│   ├── skills/          ← 스킬 정의 (*/SKILL.md) — I/O Contract + Next Steps 포함
 │   └── rules/           ← 코딩 컨벤션
 ├── docs/                ← 설계·가이드 문서 (원본, git 관리)
 ├── projects/            ← MCP 서버 프로젝트

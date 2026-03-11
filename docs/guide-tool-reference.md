@@ -96,6 +96,16 @@
 | **Work Log** | `/work-log` | 오늘 작업 → 업무일지 기록 |
 | **New Project** | `/new-project {이름}` | 표준 구조 프로젝트 생성 |
 
+### 스킬 I/O Contract
+
+모든 분석 스킬은 통일된 입출력 계약(`## I/O Contract`)을 가진다:
+- **Input**: 필수/선택 파라미터 테이블
+- **Output Files**: 생성되는 파일 경로 패턴
+- **Return**: 표준화된 반환값 (`status`, `summary`, `file_path` + 스킬별 추가 필드)
+
+스킬 완료 후에는 `## Next Steps` 섹션이 후속 가능한 스킬을 명시적으로 제안한다.
+전체 연결 관계는 `docs/guide-skill-chaining.md` 참조.
+
 ---
 
 ## 2. 스킬 상세
