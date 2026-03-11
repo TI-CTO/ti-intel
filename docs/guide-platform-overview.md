@@ -229,7 +229,86 @@ Obsidian 동기화  /obsidian-bridge {파일}
 
 ---
 
-## 8. 스킬 체이닝
+## 8. 주간 운영 사이클
+
+### 정기 루틴 (매주 반복)
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                        주간 운영 타임라인                              │
+├─────────┬───────────────────────────────────────────────────────────┤
+│         │                                                           │
+│   월    │  /weekly-monitor agentic-ai                               │
+│         │  └ Quick (12 L3) → Deep (🟡🔴) → 경쟁사 SKT/KT → PDF     │
+│         │                                                           │
+│   화    │  /weekly-monitor voice-ai                                  │
+│         │  └ Quick (8 L3) → Deep (🟡🔴) → 경쟁사 SKT/KT → PDF      │
+│         │                                                           │
+│   수    │  /weekly-monitor secure-ai                                 │
+│         │  └ Quick (5 L3) → Deep (🟡🔴) → 경쟁사 SKT/KT → PDF      │
+│         │                                                           │
+│   목    │  경쟁사 Broad Scan (L3 밖 포착)                             │
+│         │  └ collect_news skt/kt → /monitor skt-strategy            │
+│         │  └ collect_news skt/kt → /monitor kt-strategy             │
+│         │                                                           │
+│   금    │  주간 정리                                                  │
+│         │  └ /obsidian-bridge 리포트 동기화                           │
+│         │  └ /work-log 주간 작업 기록                                 │
+│         │  └ (선택) 다음 주 이슈 사전 조사                              │
+│         │                                                           │
+└─────────┴───────────────────────────────────────────────────────────┘
+```
+
+### 이벤트 트리거 (수시)
+
+주간 루틴 중 또는 외부 요청에 의해 발생하는 비정기 작업:
+
+```
+🔴 긴급 시그널 감지 (weekly-monitor/monitor에서)
+  → /wtis standard {L2 기술}         Go/No-Go 판정
+  → /obsidian-bridge {세션폴더} wtis  Obsidian 동기화
+
+📄 과제 제안서 접수
+  → /wtis proposal {파일경로}         200점 채점 + 전략
+
+🔍 신기술/기회 탐색 요청
+  → /discover {도메인}               2×2 매트릭스
+  → /wtis deep {주제}               기회 발굴 + 선정검증
+
+❓ 특정 주제 심화 필요
+  → /research-session {주제}         자유 형식 심층 리서치
+
+📊 발표 자료 필요
+  → /slides {리포트 경로}            PPTX 변환
+  → /report-pdf {리포트 경로}        PDF 변환
+```
+
+### 월간 사이클 (4주 단위)
+
+```
+W1~W3: 주간 루틴 반복 (위 스케줄)
+W4:    월간 종합 (TODO — 설계 예정)
+       └ 4주 누적 delta → 트렌드 분석
+       └ 도메인별 포트폴리오 갱신
+       └ WTIS 미평가 L2 → standard 실행 검토
+```
+
+### 데이터 수집 흐름
+
+```
+              정기 수집 (주간 루틴)              수시 수집 (이벤트)
+              ────────────────────             ─────────────────
+월~수         weekly-monitor 내부에서            /wtis 실행 시
+              research-deep가 자동 수집          research-deep가 자동 수집
+              (논문/특허/뉴스 → intel-store)     (논문/특허/뉴스 → intel-store)
+
+목            collect_news skt/kt               사용자 직접 collect_all
+              (경쟁사 뉴스 → intel-store)        (관심 토픽 시딩)
+```
+
+---
+
+## 9. 스킬 체이닝
 
 스킬 간 연결 관계와 데이터 흐름은 별도 가이드 참조:
 → `docs/guide-skill-chaining.md` — 전체 체이닝 맵, I/O Contract 요약, 워크플로우 시나리오
@@ -239,7 +318,7 @@ Obsidian 동기화  /obsidian-bridge {파일}
 
 ---
 
-## 9. 파일 구조 참조
+## 10. 파일 구조 참조
 
 ```
 ti-intel/
