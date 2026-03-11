@@ -101,6 +101,17 @@ argument-hint: "<agentic-ai | voice-ai | secure-ai>"
 
 목적: 전체 L3에 대해 **신호등(🟢🟡🔴)을 판정**한다. ~5분.
 
+### Step 1-0: 이전 주 데이터 로드
+
+Executive Summary의 `전주` 열과 Deep의 "이전 대비 변화" 섹션에 사용할 이전 데이터를 로드한다.
+
+**소스 우선순위**:
+1. `trend-tracker: get_topic_summary(topic={slug})` — 최근 스냅샷의 `change_level`, `summary` 사용
+2. 이전 주 리포트 파일 (`outputs/reports/weekly/` 에서 같은 도메인의 가장 최근 `_weekly-{domain}.md`) — Executive Summary 테이블 파싱
+3. 둘 다 없으면: `전주` 열에 `—` 표시, "이전 대비 변화" 섹션 생략
+
+**로드 결과**: L3별 `{prev_signal, prev_summary}` 딕셔너리를 Step 1-2, Step 2-1에서 참조.
+
 ### Step 1-1: 데이터 수집
 
 `tech-taxonomy.md`에서 해당 도메인의 L3 slug + 검색 키워드를 로드한다.
@@ -320,11 +331,14 @@ deep_count: {Deep 실행된 L3 수}
 
 ## Executive Summary
 
-| 세부기술 | 신호 | 핵심 내용 | 분석 |
-|----------|------|----------|------|
-| OnDevice sLM | 🔴 긴급 | Apple sLM 3.0 발표, 온디바이스 추론 2배 향상 | Deep |
-| ondevice-pqc | 🟡 주목 | NIST PQC 마이그레이션 가이드 v2 공개 | Deep |
-| speaker-diarization | 🟢 평온 | 특이사항 없음 | Quick |
+| 세부기술 | 전주 | 금주 | 핵심 내용 | 분석 |
+|----------|------|------|----------|------|
+| OnDevice sLM | 🟡 | 🔴 ↑ | Apple sLM 3.0 발표, 온디바이스 추론 2배 향상 | Deep |
+| ondevice-pqc | 🔴 | 🔴 → | NIST PQC 마이그레이션 가이드 v2 공개 | Deep |
+| speaker-diarization | 🟢 | 🟢 → | 특이사항 없음 | Quick |
+
+※ 전주 열: 이전 주 리포트 또는 trend-tracker 스냅샷에서 로드. 첫 실행(이전 데이터 없음) 시 `—`으로 표시.
+※ 변화 방향: ↑ 상승, ↓ 하향, → 유지.
 
 ---
 
@@ -338,6 +352,13 @@ deep_count: {Deep 실행된 L3 수}
 ## 🟡🔴 Deep 심층 분석
 
 ### {세부기술 이름} — 🔴 긴급
+
+#### 이전 대비 변화
+- 전주: {이전 주 핵심 상황 1줄}
+- 금주: {이번 주 핵심 변화 1줄}
+- 변화 방향: {실증→상용화 가속 / 신규 진입 / 규제 강화 등}
+
+※ 이전 데이터 없으면(첫 실행) 이 섹션 생략.
 
 #### 기술 동향
 
