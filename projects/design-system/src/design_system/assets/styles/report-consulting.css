@@ -527,6 +527,8 @@ pre code {
     margin-bottom: 5mm;
     padding-bottom: 3px;
     border-bottom: 2px solid var(--color-primary);
+    page-break-after: avoid;
+    break-after: avoid;
 }
 
 .reference-group {
@@ -544,22 +546,44 @@ pre code {
     border-left: 3px solid var(--color-primary);
 }
 
-/* References tables: allow page breaks, smaller font, wrap all columns */
+/* References tables: split into ≤30-row chunks by renderer to avoid paged.js
+   table duplication bug. Allow page breaks within each chunk table. */
 .references-section .table-wrapper {
-    page-break-inside: auto !important;
-    break-inside: auto !important;
+    page-break-inside: auto;
+    break-inside: auto;
 }
 
 .references-section .data-table {
-    page-break-inside: auto !important;
-    break-inside: auto !important;
+    page-break-inside: auto;
+    break-inside: auto;
+    table-layout: fixed;
     font-size: 7pt;
 }
 
 .references-section .data-table tr {
-    page-break-inside: auto !important;
-    break-inside: auto !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
 }
+
+.references-section .data-table td {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    overflow: hidden;
+}
+
+/* Fixed column widths to keep consistent layout across page breaks */
+.references-section .data-table th:nth-child(1),
+.references-section .data-table td:nth-child(1) { width: 8%; }
+.references-section .data-table th:nth-child(2),
+.references-section .data-table td:nth-child(2) { width: 42%; }
+.references-section .data-table th:nth-child(3),
+.references-section .data-table td:nth-child(3) { width: 8%; }
+.references-section .data-table th:nth-child(4),
+.references-section .data-table td:nth-child(4) { width: 12%; }
+.references-section .data-table th:nth-child(5),
+.references-section .data-table td:nth-child(5) { width: 15%; }
+.references-section .data-table th:nth-child(6),
+.references-section .data-table td:nth-child(6) { width: 15%; }
 
 .references-section .data-table th,
 .references-section .data-table td {

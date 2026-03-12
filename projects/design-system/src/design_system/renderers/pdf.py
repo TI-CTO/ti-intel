@@ -66,7 +66,7 @@ def _preprocess(md_text: str) -> str:
     def _replace_wikilink(m: re.Match) -> str:
         inner = m.group(1)
         # Skip citation patterns like [G-01] — these are markdown links, not wikilinks
-        if re.match(r"^[GNEPTI]-\d+[a-z]?$", inner):
+        if re.match(r"^[A-Z]+-\d+[a-z]?$", inner):
             return m.group(0)
         if "|" in inner:
             path, alias = inner.split("|", 1)
@@ -76,6 +76,52 @@ def _preprocess(md_text: str) -> str:
         return f"[{display}]({inner.strip()})"
 
     return re.sub(r"\[\[([^\]]+)\]\]", _replace_wikilink, md_text)
+
+
+def _split_large_tables(html: str, max_rows: int = 30) -> str:
+    """Split large tables into smaller chunks to work around paged.js duplication bug.
+
+    paged.js has a known issue where tables spanning multiple pages get duplicated.
+    This splits any table with more than max_rows into multiple tables, each with
+    the same thead, so paged.js can handle them without duplication.
+    """
+    def _split_table(match: re.Match) -> str:
+        full = match.group(0)
+        thead_m = re.search(r"<thead>(.*?)</thead>", full, re.DOTALL)
+        tbody_m = re.search(r"<tbody>(.*?)</tbody>", full, re.DOTALL)
+        if not thead_m or not tbody_m:
+            return full
+
+        thead = thead_m.group(0)
+        rows = re.findall(r"<tr>.*?</tr>", tbody_m.group(1), re.DOTALL)
+        if len(rows) <= max_rows:
+            return full
+
+        # Extract wrapper div attrs
+        wrapper_prefix = match.group(1) if match.group(1) else ""
+        table_tag = re.search(r"<table[^>]*>", full)
+        table_open = table_tag.group(0) if table_tag else "<table>"
+
+        chunks: list[str] = []
+        for i in range(0, len(rows), max_rows):
+            chunk_rows = rows[i : i + max_rows]
+            chunk = (
+                f'{table_open}\n{thead}\n<tbody>\n'
+                + "\n".join(chunk_rows)
+                + "\n</tbody>\n</table>"
+            )
+            chunks.append(chunk)
+
+        return "</div>\n".join(
+            f'<div class="table-wrapper">{c}' for c in chunks
+        ) + "</div>"
+
+    return re.sub(
+        r'(<div class="table-wrapper">)\s*(<table[^>]*>.*?</table>)\s*</div>',
+        _split_table,
+        html,
+        flags=re.DOTALL,
+    )
 
 
 def _postprocess(html: str) -> str:
@@ -96,16 +142,21 @@ def _postprocess(html: str) -> str:
         r'\2<caption>&lt; \1 &gt;</caption>',
         html,
     )
-    # Case 1: mistune converted [[G-01]](#ref-g-01) → <a href="#ref-...">[G-01]</a>
-    # Keep the <a href> for clickable jump, wrap badge inside it
+    # Case 1a: mistune converted [[G-01]](#ref-g-01) → <a href="#ref-...">[G-01]</a>
     html = re.sub(
-        r'<a href="(#ref-[^"]*)">\[([GNEPTI]-\d+[a-z]?)\]</a>',
+        r'<a href="(#ref-[^"]*)">\[([A-Z]+-\d+[a-z]?)\]</a>',
+        r'<a href="\1" class="citation-badge">\2</a>',
+        html,
+    )
+    # Case 1b: mistune converted [S-01](#ref-s-01) → <a href="#ref-...">S-01</a> (no brackets)
+    html = re.sub(
+        r'<a href="(#ref-[^"]*)">([A-Z]+-\d+[a-z]?)</a>',
         r'<a href="\1" class="citation-badge">\2</a>',
         html,
     )
     # Case 2: raw [G-01] or [G-01b] not yet parsed by mistune (no link target)
     html = re.sub(
-        r"\[([GNEPTI]-\d+[a-z]?)\]",
+        r"\[([A-Z]+-\d+[a-z]?)\]",
         r'<span class="citation-badge">\1</span>',
         html,
     )
@@ -405,7 +456,7 @@ class PdfRenderer(BaseRenderer):
             intro_html=intro_html,
             executive_summary_html=exec_summary.html if exec_summary else "",
             main_sections=main_sections,
-            references_html=references.html if references else "",
+            references_html=_split_large_tables(references.html) if references else "",
             css=css,
             pagedjs_script=_build_pagedjs_script(),
         )

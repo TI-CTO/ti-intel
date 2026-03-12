@@ -102,9 +102,9 @@ def _detect_report_type(meta: dict) -> str:
 # Level 1: Markdown source validation
 # ---------------------------------------------------------------------------
 
-_CITATION_PATTERN = re.compile(r"\[([GNEPTI]-\d+[a-z]?)\]")
+_CITATION_PATTERN = re.compile(r"\[([A-Z]+-\d+[a-z]?)\]")
 _CITATION_LINK_PATTERN = re.compile(
-    r"\[\[([GNEPTI]-\d+[a-z]?)\]\]\(#ref-[a-z]+-\d+[a-z]?\)"
+    r"\[\[([A-Z]+-\d+[a-z]?)\]\]\(#ref-[a-z]+-\d+[a-z]?\)"
 )
 _ANCHOR_PATTERN = re.compile(r'<a\s+id="ref-([a-z]+-\d+[a-z]?)"\s*>\s*</a>')
 
