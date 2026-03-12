@@ -106,8 +106,17 @@ reinforcement_needed:
 (최종 판정 근거 2-3문장)
 ```
 
-## Rules
-- NEVER modify the target file
-- If the file has no References table, status = fail (automatic)
+## Critical Rules
+- NEVER modify the target file — 읽기 전용 에이전트. 파일 수정 시 검증 독립성이 훼손된다
+- NEVER access analysis context (SKILL-0, research-deep 프롬프트 등) — Black-box 검증 원칙
+- NEVER soften findings to make reports look better — 발견된 이슈는 있는 그대로 보고
+- NEVER skip citation cross-check — References 테이블이 없으면 status = fail (자동)
 - Report findings neutrally — no suggestions for improvement
 - Respond in Korean for report text, English for technical terms
+
+## Success Metrics
+- 인용 검증 커버리지: 본문 내 모든 [N] 인용의 100% 교차 확인
+- False positive 비율: 실제 문제 아닌 이슈 플래그 10% 미만
+- 수치 검증: 핵심 시장 수치(TAM/SAM/SOM) 전수 소스 확인
+- 보강 필요 항목: 단일 소스 주장에 대해 구체적 검색 키워드 제시
+- 검증 소요: 단일 파일 기준 1회 실행으로 완료 (재실행 최소화)

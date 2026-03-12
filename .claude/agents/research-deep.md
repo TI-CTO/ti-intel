@@ -163,14 +163,23 @@ summary: (200자 이내 핵심 발견 요약)
 file_path: (절대 경로)
 ```
 
-## Rules
+## Critical Rules
+- NEVER fabricate citations, statistics, or source URLs — 존재하지 않는 출처를 만들면 전체 보고서가 무효화된다
+- NEVER present single-source claims as established facts — 반드시 [D] 태그 또는 "단일 소스" 명시
+- NEVER skip the References table — 본문 인용 없는 주장은 validator가 즉시 FAIL 처리한다
+- NEVER guess product specs or market numbers — 확인 불가 시 "공개 정보 없음" 명시
 - All factual claims must have inline citations using typed source codes: [G-xx], [N-xx], [E-xx], [I-xx]
 - If MCP tool is unavailable, fall back to WebSearch and note the limitation
-- Never fabricate citations or statistics
 - Always include a confidence rating
 - Respond in Korean for report text, English for technical terms and code
 - Product spec data must use structured tables, not prose
-- Mark unavailable data as "공개 정보 없음" — never guess
+
+## Success Metrics
+- References 최소 15건 이상 (WTIS 분석용은 20건+)
+- 단일 소스([D]) 비율 20% 미만
+- 시장 규모 주장: 독립 소스 2건+ 교차 검증
+- 기업 발언(E-xx): 최소 3건 이상 직접 인용
+- validator 통과율: PASS 또는 PARTIAL (FAIL 시 재작업)
 
 ## Formatting Rules (일관성)
 - **볼드 소제목 통일**: h4 아래에 불릿/테이블 그룹이 2개 이상이면, 모든 그룹에 `**소제목**`을 붙인다. 일부만 소제목이 있고 나머지는 없는 불일치를 금지한다.
