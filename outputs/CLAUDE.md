@@ -4,7 +4,7 @@
 
 ## Structure
 - `reports/` — 비정기 분석 리포트 (YYYY-MM-DD_topic-slug.md)
-- `reports/weekly/` — 주간 기술 동향 리포트 (YYYY-MM-DD_weekly-{domain}.md)
+- `reports/weekly/` — 주간 기술 동향 + 경쟁사 모니터 리포트
 - `summaries/` — 여러 리포트를 종합한 정리 (summary_topic-slug.md)
 
 ## Rules
@@ -18,6 +18,6 @@
 | `/wtis` | `outputs/reports/YYYY-MM-DD_wtis-{slug}-{step}.md` |
 | `/research-session` | `outputs/reports/YYYY-MM-DD_{topic-slug}.md` |
 | `/discover` | `outputs/reports/YYYY-MM-DD_discover-{domain}.md` |
-| `/monitor` | `outputs/reports/YYYY-MM-DD_monitor-{topic}.md` |
+| `/monitor` | `outputs/reports/weekly/YYYY-MM-DD_monitor-{topic}.md` |
 | `research-deep` agent | `outputs/reports/YYYY-MM-DD_deep-{slug}.md` |
 | `/weekly-monitor` | `outputs/reports/weekly/YYYY-MM-DD_weekly-{domain}.md` |

@@ -31,8 +31,8 @@ argument-hint: "[topic-slug | all]"
 🔴 긴급:      0개
 
 저장된 보고서:
-- outputs/reports/2026-02-26_monitor-ai-network.md
-- outputs/reports/2026-02-26_monitor-llm-telecom.md
+- outputs/reports/weekly/2026-02-26_monitor-ai-network.md
+- outputs/reports/weekly/2026-02-26_monitor-llm-telecom.md
 ```
 
 ---
@@ -51,7 +51,7 @@ argument-hint: "[topic-slug | all]"
 ### Output Files
 | Artifact | Path Pattern | Description |
 |----------|-------------|-------------|
-| 보고서 | `outputs/reports/YYYY-MM-DD_monitor-{topic-slug}.md` | 🟡🔴 토픽만 생성 |
+| 보고서 | `outputs/reports/weekly/YYYY-MM-DD_monitor-{topic-slug}.md` | 🟡🔴 토픽만 생성 |
 
 ### Return
 ```yaml
@@ -103,7 +103,7 @@ files: ["생성된 보고서 절대 경로 목록"]
 각 토픽별:
 1. `trend-tracker`: `upsert_snapshot(...)` — 새 스냅샷 DB 저장
 2. 🟡/🔴 토픽에 대해 파일 저장:
-   `/Users/ctoti/Project/ClaudeCode/outputs/reports/{YYYY-MM-DD}_monitor-{topic-slug}.md`
+   `/Users/ctoti/Project/ClaudeCode/outputs/reports/weekly/{YYYY-MM-DD}_monitor-{topic-slug}.md`
 3. 종합 요약 출력
 
 ## Output Format
