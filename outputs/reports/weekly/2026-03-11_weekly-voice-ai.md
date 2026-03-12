@@ -12,7 +12,7 @@ deep_count: 4
 ## Executive Summary
 
 | 세부기술 | 신호 | 핵심 내용 | 분석 |
-|----------|------|----------|------|
+| ---------- | ------ | ---------- | ------ |
 | Voice Cloning | 🔴 | ElevenLabs $500M Series D ($11B), Deutsche Telekom 망 AI 통합, Qwen3-TTS 오픈소스 경쟁 | Deep |
 | Voice Synthesis | 🔴 | 오픈소스 TTS 폭발 (Qwen3-TTS, Kani-TTS-2, Orpheus), 네이버 한국어 MOS 4.22/5 — 자체 구축 전략 재검토 필요 | Deep |
 | Emotional Analysis | 🟡 | Google DeepMind Hume AI acqui-hire, 마고 CES 2026 감정인식 데모 | Deep |
@@ -74,7 +74,7 @@ deep_count: 4
 #### 플레이어 동향
 
 | 기업 | 동향 | 출처 |
-|------|------|------|
+| ------ | ------ | ------ |
 | ElevenLabs | Series D $500M ($11B 밸류에이션, Sequoia 리드). ARR $330M+. Conversational AI 2.0, 11.ai, Deutsche Telekom 파트너십 동시 진행 | [[G-06]](#ref-g-06) |
 | Deutsche Telekom | MWC 2026 "Magenta AI Call Assistant" 세계 최초 공개. 50개 언어 실시간 통역, 앱 없이 "Hey Magenta" 호출 | [[G-07]](#ref-g-07), [[G-08]](#ref-g-08) |
 | Alibaba (Qwen) | Qwen3-TTS Apache 2.0 오픈소스. 0.6B~1.7B, 3초 클로닝, 97ms 지연 | [[G-01]](#ref-g-01) |
@@ -95,7 +95,7 @@ deep_count: 4
 #### 학술 동향 (주요 논문)
 
 | 논문 | 핵심 | 출처 |
-|------|------|------|
+| ------ | ------ | ------ |
 | Voice Cloning: Comprehensive Survey (2025) | 보이스 클로닝 전반(few-shot, zero-shot, 다국어) 체계적 서베이 | [[P-01]](#ref-p-01) |
 | DiffGAN-ZSTTS (2025) | FastSpeech2 + Diffusion decoder 제로샷 화자 적응 | [[P-02]](#ref-p-02) |
 | Zero-Shot Voice Cloning for Dysphonia (2024) | 음성 장애 화자 대상 제로샷 TTS — 의료 접근성 확장 | [[P-03]](#ref-p-03) |
@@ -142,7 +142,7 @@ deep_count: 4
 #### 플레이어 동향
 
 | 기업 | 동향 | 출처 |
-|------|------|------|
+| ------ | ------ | ------ |
 | ElevenLabs | Eleven v3 GA. Audio Tags, 70+ 언어, 복잡 텍스트 오류 68%↓ | [[G-22]](#ref-g-22) |
 | Google | Gemini 2.5 TTS Flash/Pro GA. 자연어 스타일, 24언어 30화자 | [[G-39]](#ref-g-39) |
 | Alibaba (Qwen) | Qwen3-TTS Apache 2.0. 1.7B/0.6B, 97ms, 10언어 | [[G-01]](#ref-g-01) |
@@ -159,7 +159,7 @@ deep_count: 4
 #### 학술 동향 (주요 논문)
 
 | 논문 | 핵심 | 출처 |
-|------|------|------|
+| ------ | ------ | ------ |
 | HyperCLOVA X 8B Omni (NAVER, 2026) | 한국어 TTS MOS 4.22/5, any-to-any 옴니모달 | [[P-10]](#ref-p-10) |
 | ARCHI-TTS (2026-02) | 플로우 매칭 + 의미 정렬기, 추론 가속 | [[P-11]](#ref-p-11) |
 | VoiceCraft-X (EMNLP 2025) | 11개 언어 Zero-shot TTS + 음성 편집 통합 | [[P-12]](#ref-p-12) |
@@ -200,7 +200,7 @@ deep_count: 4
 #### 플레이어 동향
 
 | 기업 | 동향 | 출처 |
-|------|------|------|
+| ------ | ------ | ------ |
 | Google DeepMind | Hume AI CEO + 7명 acqui-hire. EVI 비독점 라이선스 취득, Gemini 감정 인식 통합 | [[G-15]](#ref-g-15) |
 | Hume AI | Andrew Ettinger 신임 CEO. EVI·Octave(TTS)·Expression Measurement API 3개 제품 유지 | [[G-21]](#ref-g-21) |
 | ElevenLabs | Eleven v3 Audio Tags — [sigh], [excited] 등 감정 맥락 TTS. 70+ 언어 | [[G-22]](#ref-g-22) |
@@ -219,7 +219,7 @@ deep_count: 4
 #### 학술 동향 (주요 논문)
 
 | 논문 | 핵심 | 출처 |
-|------|------|------|
+| ------ | ------ | ------ |
 | Explainable AI for early Parkinson's (Kim et al., 2025) | 파킨슨 조기 진단 98.0%, ROC-AUC 0.991 | [[P-04]](#ref-p-04) |
 | Multimodal Emotion Recognition Survey (Dzedzickis et al., 2025) | 2022년 후 40%+ 트리모달 트랜스포머 채택 | [[P-05]](#ref-p-05) |
 | Behavioral Health via Vocal Biomarkers (Canary Speech, 2026) | MDD UAR 0.71, GAD UAR 0.66 | [[P-06]](#ref-p-06) |
@@ -260,7 +260,7 @@ deep_count: 4
 #### 플레이어 동향
 
 | 기업 | 동향 | 출처 |
-|------|------|------|
+| ------ | ------ | ------ |
 | ElevenLabs | Conversational AI 2.0 — 고유 턴테이킹 모델, 인터럽트 감지 95%+, HIPAA 준수 | [[G-33]](#ref-g-33) |
 | LiveKit | EOU Transformer 오픈소스. VAD 대비 오탐 85% 감소, 월 100만+ 다운로드 | [[G-28]](#ref-g-28) |
 | Deepgram | Flux — End-of-Turn 감지 + mid-stream 동적 설정. Voice Agent API 내장 | [[G-31]](#ref-g-31) |
@@ -277,7 +277,7 @@ deep_count: 4
 #### 학술 동향 (주요 논문)
 
 | 논문 | 핵심 | 출처 |
-|------|------|------|
+| ------ | ------ | ------ |
 | Full-Duplex-Bench (Gao et al., 2025) | Full-duplex SDM 턴 전환 능력 최초 정량 벤치마크 | [[P-07]](#ref-p-07) |
 | ICASSP 2026 HumDial Challenge (2026) | Full-Duplex Interaction 공식 챌린지 트랙 정의 | [[P-08]](#ref-p-08) |
 | FireRedChat (2025) | pVAD+EoT 턴테이킹 컨트롤러, 셀프호스팅 오픈소스 | [[P-09]](#ref-p-09) |
@@ -303,7 +303,7 @@ deep_count: 4
 ### SKT
 
 | 항목 | 내용 | 관련 L3 | 출처 |
-|------|------|---------|------|
+| ------ | ------ | --------- | ------ |
 | MWC 2026 "AI Native" 전략 | A.X 모델 기반 AI Native 플랫폼 전략 발표. A. 서비스 MAU 1,000만 돌파 | (L3 밖) | [[G-35]](#ref-g-35) |
 | 멀티모달 확장 계획 | 음성·이미지·영상 처리 2026 상반기 확장 예정 | voice-synthesis | [[G-35]](#ref-g-35) |
 | AI 멘탈케어 기술 개발 | 음성 심리상태(불안·우울) 분석 AI 개발, 멘탈케어 기업 MOU | emotional-analysis | [[G-23]](#ref-g-23) |
@@ -312,7 +312,7 @@ deep_count: 4
 ### KT
 
 | 항목 | 내용 | 관련 L3 | 출처 |
-|------|------|---------|------|
+| ------ | ------ | --------- | ------ |
 | AI 보이스피싱 탐지 2.0 | 화자인식+딥보이스(AI 변조음성) 탐지 통합 실시간 서비스 상용화 | voice-cloning | [[G-45]](#ref-g-45) |
 | Microsoft 5년 파트너십 | AI·클라우드·IT 공동 투자 ₩2.4조. 한국형 AI 모델 2026 상반기 출시 | (L3 밖) | [[G-26]](#ref-g-26) |
 | AICC 보이스봇 | KT 전용 클라우드 콜 인프라 + 음성인식·대화처리·음성합성 통합 | voice-synthesis | [[G-46]](#ref-g-46) |
@@ -346,63 +346,63 @@ deep_count: 4
 
 ## References
 
-| # | 출처 | URL | 유형 | 날짜 | 신뢰도 |
-|---|------|-----|------|------|--------|
-| <a id="ref-g-01"></a>G-01 | Qwen.ai — Qwen3-TTS Family Open Sourced | [링크](https://qwen.ai/blog?id=qwen3tts-0115) | blog | 2026-01-22 | [A] |
-| <a id="ref-g-02"></a>G-02 | Resemble AI — Chatterbox (GitHub) | [링크](https://github.com/resemble-ai/chatterbox) | repo | 2026 | [A] |
-| <a id="ref-g-03"></a>G-03 | ElevenLabs — Conversational AI 2.0 | [링크](https://elevenlabs.io/blog/conversational-ai-2-0) | blog | 2026 | [A] |
-| <a id="ref-g-04"></a>G-04 | ElevenLabs — Introducing 11.ai | [링크](https://elevenlabs.io/blog/introducing-11ai) | blog | 2026-03 | [A] |
-| <a id="ref-g-05"></a>G-05 | The Register — Azure AI Speech Personal Voice | [링크](https://www.theregister.com/2025/07/31/microsoft_updates_azure_ai_speech/) | news | 2025-07-31 | [B] |
-| <a id="ref-g-06"></a>G-06 | TechCrunch — ElevenLabs raises $500M at $11B | [링크](https://techcrunch.com/2026/02/04/elevenlabs-raises-500m-from-sequioia-at-a-11-billion-valuation/) | news | 2026-02-04 | [B] |
-| <a id="ref-g-07"></a>G-07 | ElevenLabs — Deutsche Telekom AI Call Assistant | [링크](https://elevenlabs.io/blog/deutsche-telekom-ai-call-assistant) | blog | 2026-03-02 | [A] |
-| <a id="ref-g-08"></a>G-08 | Deutsche Telekom — MWC 2026 AI Call Assistant | [링크](https://www.telekom.com/en/media/media-information/archive/deutsche-telekom-reimagines-phone-calls-with-ai-embedded-in-the-network-1102890) | press | 2026-03-02 | [A] |
-| <a id="ref-g-09"></a>G-09 | TechCrunch — NPR host sues Google over NotebookLM voice | [링크](https://techcrunch.com/2026/02/15/longtime-npr-host-david-greene-sues-google-over-notebooklm-voice/) | news | 2026-02-15 | [B] |
-| <a id="ref-g-10"></a>G-10 | TechCrunch — Alexa+ available to everyone in US | [링크](https://techcrunch.com/2026/02/04/alexa-amazons-ai-assistant-is-now-available-to-everyone-in-the-u-s/) | news | 2026-02-04 | [B] |
-| <a id="ref-g-11"></a>G-11 | MAGO — Next Generation Voice Recognition AI | [링크](https://www.holamago.com/en/) | web | 2026 | [A] |
-| <a id="ref-g-12"></a>G-12 | Naver CLOVA — TTS Premium API | [링크](https://api.ncloud-docs.com/docs/en/ai-naver-clovavoice-ttspremium) | doc | 2026 | [A] |
-| <a id="ref-g-13"></a>G-13 | Gaga.art — PlayHT Service Shutdown | [링크](https://gaga.art/blog/playht/) | blog | 2026 | [C] |
-| <a id="ref-g-14"></a>G-14 | Grand View Research — AI Voice Cloning Market 2030 | [링크](https://www.grandviewresearch.com/industry-analysis/ai-voice-cloning-market-report) | report | 2026 | [B] |
-| <a id="ref-g-15"></a>G-15 | TechCrunch — Google snags Hume AI team | [링크](https://techcrunch.com/2026/01/22/google-reportedly-snags-up-team-behind-ai-voice-startup-hume-ai/) | news | 2026-01-22 | [B] |
-| <a id="ref-g-16"></a>G-16 | Sensory — Edge AI 2026 Predictions | [링크](https://sensory.com/edge-ai-2026/) | blog | 2026 | [B] |
-| <a id="ref-g-17"></a>G-17 | Canary Speech — 5 Vocal Biomarker Trends 2026 | [링크](https://canaryspeech.com/blog/5-trends-in-2026/) | blog | 2026 | [C] |
-| <a id="ref-g-18"></a>G-18 | Utah Business — Canary Speech + Intermountain Study | [링크](https://www.utahbusiness.com/press-releases/2026/02/13/canary-speech-intermountain-ventures-launch-groundbreaking-study-sclerosis/) | news | 2026-02-13 | [B] |
-| <a id="ref-g-19"></a>G-19 | PMC — Multimodal Emotion Recognition Review | [링크](https://pmc.ncbi.nlm.nih.gov/articles/PMC12292624/) | paper | 2025 | [A] |
-| <a id="ref-g-20"></a>G-20 | 시사저널e — K-음성 AI 진화 | [링크](https://www.sisajournal-e.com/news/articleView.html?idxno=415319) | news | 2026 | [B] |
-| <a id="ref-g-21"></a>G-21 | Hume AI — EVI Product | [링크](https://www.hume.ai/empathic-voice-interface) | product | 2026 | [A] |
-| <a id="ref-g-22"></a>G-22 | ElevenLabs — Eleven v3 Audio Tags | [링크](https://elevenlabs.io/blog/eleven-v3) | blog | 2026-02-12 | [A] |
-| <a id="ref-g-23"></a>G-23 | SKT 뉴스룸 — AI 멘탈케어 / A.X K1 | [링크](https://news.sktelecom.com/218112) | IR | 2026-03 | [A] |
-| <a id="ref-g-24"></a>G-24 | CLOVA Tech Blog — 감정 이해 AI | [링크](https://clova.ai/tech-blog/%EC%9D%8C%EC%84%B1%EC%9C%BC%EB%A1%9C-%EC%86%8C%ED%86%B5%ED%95%98%EB%8A%94-ai-%EC%82%AC%EB%9E%8C%EC%9D%98-%EA%B0%90%EC%A0%95%EA%B9%8C%EC%A7%80-%EC%9D%B4%ED%95%B4%ED%95%98%EB%8B%A4) | blog | 2025 | [B] |
-| <a id="ref-g-25"></a>G-25 | GlobeNewswire — Emotion AI Market 2025-2035 | [링크](https://www.globenewswire.com/news-release/2026/01/20/3221854/28124/en/Emotion-AI-Market-Trends-and-Global-Forecasts-Report-2025-2035-Opportunities-in-Enhancing-Customer-Experiences-and-Mental-Health-Monitoring-Driven-by-Advancements-in-ML-and-NLP.html) | report | 2026-01-20 | [B] |
-| <a id="ref-g-26"></a>G-26 | Straightnews — SK·KT·LG AI 삼국지 | [링크](https://www.straightnews.co.kr/news/articleView.html?idxno=296616) | news | 2026 | [B] |
-| <a id="ref-g-27"></a>G-27 | ICASSP 2026 HumDial Challenge | [링크](https://aslp-lab.github.io/HumDial-Challenge/) | news | 2026-02-04 | [A] |
-| <a id="ref-g-28"></a>G-28 | LiveKit — Transformer End-of-Turn Detection | [링크](https://livekit.com/blog/using-a-transformer-to-improve-end-of-turn-detection/) | blog | 2025 | [B] |
-| <a id="ref-g-29"></a>G-29 | Speechmatics — Semantic Turn Detection | [링크](https://blog.speechmatics.com/semantic-turn-detection) | blog | 2025 | [B] |
-| <a id="ref-g-30"></a>G-30 | NVIDIA Research — PersonaPlex | [링크](https://research.nvidia.com/labs/adlr/personaplex/) | news | 2026-01-15 | [A] |
-| <a id="ref-g-31"></a>G-31 | Deepgram — Introducing Flux | [링크](https://deepgram.com/learn/introducing-flux-conversational-speech-recognition) | news | 2026-02-27 | [B] |
-| <a id="ref-g-32"></a>G-32 | GitHub — FireRedChat | [링크](https://github.com/FireRedTeam/FireRedChat) | repo | 2025 | [B] |
-| <a id="ref-g-33"></a>G-33 | VentureBeat — ElevenLabs Conversational AI 2.0 | [링크](https://venturebeat.com/ai/elevenlabs-debuts-conversational-ai-2-0-voice-assistants-that-understand-when-to-pause-speak-and-take-turns-talking) | news | 2025-05-30 | [B] |
-| <a id="ref-g-34"></a>G-34 | AssemblyAI — Turn Detection Endpointing | [링크](https://www.assemblyai.com/blog/turn-detection-endpointing-voice-agent) | blog | 2025 | [B] |
-| <a id="ref-g-35"></a>G-35 | AI News — MWC 2026 SK Telecom AI Native | [링크](https://www.artificialintelligence-news.com/news/mwc-2026-sk-telecom-lays-out-plan-to-rebuild-its-core-around-ai/) | news | 2026-03-02 | [B] |
-| <a id="ref-g-36"></a>G-36 | MarkTechPost — Kani-TTS-2 | [링크](https://www.marktechpost.com/2026/02/15/meet-kani-tts-2-a-400m-param-open-source-text-to-speech-model-that-runs-in-3gb-vram-with-voice-cloning-support/) | news | 2026-02-15 | [B] |
-| <a id="ref-g-37"></a>G-37 | Communeify — Orpheus TTS | [링크](https://www.communeify.com/en/blog/orpheus-tts-emotional-human-speech-synthesis/) | blog | 2026-03 | [C] |
-| <a id="ref-g-38"></a>G-38 | HuggingFace — Kokoro-82M | [링크](https://huggingface.co/hexgrad/Kokoro-82M) | repo | 2025 | [A] |
-| <a id="ref-g-39"></a>G-39 | Google Blog — Gemini 2.5 TTS | [링크](https://blog.google/innovation-and-ai/technology/developers-tools/gemini-2-5-text-to-speech/) | news | 2026 | [A] |
-| <a id="ref-g-40"></a>G-40 | NAVER Corp — HyperCLOVA X Omni | [링크](https://www.navercorp.com/en/media/pressReleasesDetail?seq=34256) | press | 2026-01 | [A] |
-| <a id="ref-g-41"></a>G-41 | CLOVA Tech Blog — HyperCLOVA X OMNI | [링크](https://clova.ai/en/tech-blog/hyperclova-x-omni-koreas-flagship-ai-on-the-road-to-omnimodality) | blog | 2026-01 | [A] |
-| <a id="ref-g-42"></a>G-42 | MBW — Supertone SYNDI8 (HYBE) | [링크](https://www.musicbusinessworldwide.com/hybe-owned-voice-cloning-startup-supertone-launches-ai-powered-virtual-pop-group-syndi81/) | news | 2024 | [B] |
-| <a id="ref-g-43"></a>G-43 | MarketsandMarkets — AI Voice Generator Market $20.71B by 2031 | [링크](https://www.marketsandmarkets.com/PressReleases/ai-voice-generator.asp) | report | 2025 | [B] |
-| <a id="ref-g-44"></a>G-44 | Jones Day — EU AI Act Labelling Code of Practice | [링크](https://www.jonesday.com/en/insights/2026/01/european-commission-publishes-draft-code-of-practice-on-ai-labelling-and-transparency) | legal | 2026-01 | [A] |
-| <a id="ref-g-45"></a>G-45 | Digital Today — KT AI 보이스피싱 탐지 2.0 | [링크](https://www.digitaltoday.co.kr/news/articleView.html?idxno=580815) | news | 2026 | [B] |
-| <a id="ref-g-46"></a>G-46 | KT AICC — 보이스봇 | [링크](https://www.kt-aicc.com/user/voiceBot) | product | 2026 | [A] |
-| <a id="ref-p-01"></a>P-01 | Voice Cloning: Comprehensive Survey (2025) | [링크](https://arxiv.org/html/2505.00579v1) | paper | 2025 | [A] |
-| <a id="ref-p-02"></a>P-02 | DiffGAN-ZSTTS: Zero-Shot Speaker Adaptation (Nature SR, 2025) | [링크](https://www.nature.com/articles/s41598-025-90507-0) | paper | 2025 | [A] |
-| <a id="ref-p-03"></a>P-03 | Zero-Shot Voice Cloning for Dysphonia (IEEE, 2024) | [링크](https://ieeexplore.ieee.org/document/10517609/) | paper | 2024 | [A] |
-| <a id="ref-p-04"></a>P-04 | Kim et al. — Explainable AI Parkinson's via Voice (Nature SR, 2025) | [링크](https://www.nature.com/articles/s41598-025-96575-6) | paper | 2025 | [A] |
-| <a id="ref-p-05"></a>P-05 | Dzedzickis et al. — Multimodal Emotion Recognition Survey (PMC, 2025) | [링크](https://pmc.ncbi.nlm.nih.gov/articles/PMC12292624/) | paper | 2025 | [A] |
-| <a id="ref-p-06"></a>P-06 | Canary Speech — Behavioral Health Vocal Biomarkers (2026) | [링크](https://canaryspeech.com/wp-content/uploads/2025/04/canary-behavioralhealth-technicalreport-2026.pdf) | paper | 2026 | [B] |
-| <a id="ref-p-07"></a>P-07 | Gao et al. — Full-Duplex-Bench (arXiv, 2025) | [링크](https://arxiv.org/abs/2503.04721) | paper | 2025-03 | [A] |
-| <a id="ref-p-08"></a>P-08 | ICASSP 2026 HumDial Challenge Paper | [링크](https://arxiv.org/abs/2601.05564) | paper | 2026-02 | [A] |
-| <a id="ref-p-09"></a>P-09 | FireRedChat: Full-Duplex Voice Interaction (arXiv, 2025) | [링크](https://arxiv.org/abs/2509.06502) | paper | 2025-09 | [A] |
-| <a id="ref-p-10"></a>P-10 | HyperCLOVA X 8B Omni (NAVER, arXiv 2026) | [링크](https://arxiv.org/abs/2601.01792) | paper | 2026-01 | [A] |
-| <a id="ref-p-11"></a>P-11 | ARCHI-TTS: Flow-Matching TTS (arXiv, 2026) | [링크](https://arxiv.org/abs/2602.05207) | paper | 2026-02 | [A] |
-| <a id="ref-p-12"></a>P-12 | VoiceCraft-X: Multilingual TTS (EMNLP 2025) | [링크](https://aclanthology.org/2025.emnlp-main.137/) | paper | 2025 | [A] |
+| # | 출처 | URL | 유형 | 날짜 |
+|---|------|-----|------|------|
+| <a id="ref-g-01"></a>G-01 | Qwen.ai — Qwen3-TTS Family Open Sourced | [링크](https://qwen.ai/blog?id=qwen3tts-0115) | blog | 2026-01-22 |
+| <a id="ref-g-02"></a>G-02 | Resemble AI — Chatterbox (GitHub) | [링크](https://github.com/resemble-ai/chatterbox) | repo | 2026 |
+| <a id="ref-g-03"></a>G-03 | ElevenLabs — Conversational AI 2.0 | [링크](https://elevenlabs.io/blog/conversational-ai-2-0) | blog | 2026 |
+| <a id="ref-g-04"></a>G-04 | ElevenLabs — Introducing 11.ai | [링크](https://elevenlabs.io/blog/introducing-11ai) | blog | 2026-03 |
+| <a id="ref-g-05"></a>G-05 | The Register — Azure AI Speech Personal Voice | [링크](https://www.theregister.com/2025/07/31/microsoft_updates_azure_ai_speech/) | news | 2025-07-31 |
+| <a id="ref-g-06"></a>G-06 | TechCrunch — ElevenLabs raises $500M at $11B | [링크](https://techcrunch.com/2026/02/04/elevenlabs-raises-500m-from-sequioia-at-a-11-billion-valuation/) | news | 2026-02-04 |
+| <a id="ref-g-07"></a>G-07 | ElevenLabs — Deutsche Telekom AI Call Assistant | [링크](https://elevenlabs.io/blog/deutsche-telekom-ai-call-assistant) | blog | 2026-03-02 |
+| <a id="ref-g-08"></a>G-08 | Deutsche Telekom — MWC 2026 AI Call Assistant | [링크](https://www.telekom.com/en/media/media-information/archive/deutsche-telekom-reimagines-phone-calls-with-ai-embedded-in-the-network-1102890) | press | 2026-03-02 |
+| <a id="ref-g-09"></a>G-09 | TechCrunch — NPR host sues Google over NotebookLM voice | [링크](https://techcrunch.com/2026/02/15/longtime-npr-host-david-greene-sues-google-over-notebooklm-voice/) | news | 2026-02-15 |
+| <a id="ref-g-10"></a>G-10 | TechCrunch — Alexa+ available to everyone in US | [링크](https://techcrunch.com/2026/02/04/alexa-amazons-ai-assistant-is-now-available-to-everyone-in-the-u-s/) | news | 2026-02-04 |
+| <a id="ref-g-11"></a>G-11 | MAGO — Next Generation Voice Recognition AI | [링크](https://www.holamago.com/en/) | web | 2026 |
+| <a id="ref-g-12"></a>G-12 | Naver CLOVA — TTS Premium API | [링크](https://api.ncloud-docs.com/docs/en/ai-naver-clovavoice-ttspremium) | doc | 2026 |
+| <a id="ref-g-13"></a>G-13 | Gaga.art — PlayHT Service Shutdown | [링크](https://gaga.art/blog/playht/) | blog | 2026 |
+| <a id="ref-g-14"></a>G-14 | Grand View Research — AI Voice Cloning Market 2030 | [링크](https://www.grandviewresearch.com/industry-analysis/ai-voice-cloning-market-report) | report | 2026 |
+| <a id="ref-g-15"></a>G-15 | TechCrunch — Google snags Hume AI team | [링크](https://techcrunch.com/2026/01/22/google-reportedly-snags-up-team-behind-ai-voice-startup-hume-ai/) | news | 2026-01-22 |
+| <a id="ref-g-16"></a>G-16 | Sensory — Edge AI 2026 Predictions | [링크](https://sensory.com/edge-ai-2026/) | blog | 2026 |
+| <a id="ref-g-17"></a>G-17 | Canary Speech — 5 Vocal Biomarker Trends 2026 | [링크](https://canaryspeech.com/blog/5-trends-in-2026/) | blog | 2026 |
+| <a id="ref-g-18"></a>G-18 | Utah Business — Canary Speech + Intermountain Study | [링크](https://www.utahbusiness.com/press-releases/2026/02/13/canary-speech-intermountain-ventures-launch-groundbreaking-study-sclerosis/) | news | 2026-02-13 |
+| <a id="ref-g-19"></a>G-19 | PMC — Multimodal Emotion Recognition Review | [링크](https://pmc.ncbi.nlm.nih.gov/articles/PMC12292624/) | paper | 2025 |
+| <a id="ref-g-20"></a>G-20 | 시사저널e — K-음성 AI 진화 | [링크](https://www.sisajournal-e.com/news/articleView.html?idxno=415319) | news | 2026 |
+| <a id="ref-g-21"></a>G-21 | Hume AI — EVI Product | [링크](https://www.hume.ai/empathic-voice-interface) | product | 2026 |
+| <a id="ref-g-22"></a>G-22 | ElevenLabs — Eleven v3 Audio Tags | [링크](https://elevenlabs.io/blog/eleven-v3) | blog | 2026-02-12 |
+| <a id="ref-g-23"></a>G-23 | SKT 뉴스룸 — AI 멘탈케어 / A.X K1 | [링크](https://news.sktelecom.com/218112) | IR | 2026-03 |
+| <a id="ref-g-24"></a>G-24 | CLOVA Tech Blog — 감정 이해 AI | [링크](https://clova.ai/tech-blog/%EC%9D%8C%EC%84%B1%EC%9C%BC%EB%A1%9C-%EC%86%8C%ED%86%B5%ED%95%98%EB%8A%94-ai-%EC%82%AC%EB%9E%8C%EC%9D%98-%EA%B0%90%EC%A0%95%EA%B9%8C%EC%A7%80-%EC%9D%B4%ED%95%B4%ED%95%98%EB%8B%A4) | blog | 2025 |
+| <a id="ref-g-25"></a>G-25 | GlobeNewswire — Emotion AI Market 2025-2035 | [링크](https://www.globenewswire.com/news-release/2026/01/20/3221854/28124/en/Emotion-AI-Market-Trends-and-Global-Forecasts-Report-2025-2035-Opportunities-in-Enhancing-Customer-Experiences-and-Mental-Health-Monitoring-Driven-by-Advancements-in-ML-and-NLP.html) | report | 2026-01-20 |
+| <a id="ref-g-26"></a>G-26 | Straightnews — SK·KT·LG AI 삼국지 | [링크](https://www.straightnews.co.kr/news/articleView.html?idxno=296616) | news | 2026 |
+| <a id="ref-g-27"></a>G-27 | ICASSP 2026 HumDial Challenge | [링크](https://aslp-lab.github.io/HumDial-Challenge/) | news | 2026-02-04 |
+| <a id="ref-g-28"></a>G-28 | LiveKit — Transformer End-of-Turn Detection | [링크](https://livekit.com/blog/using-a-transformer-to-improve-end-of-turn-detection/) | blog | 2025 |
+| <a id="ref-g-29"></a>G-29 | Speechmatics — Semantic Turn Detection | [링크](https://blog.speechmatics.com/semantic-turn-detection) | blog | 2025 |
+| <a id="ref-g-30"></a>G-30 | NVIDIA Research — PersonaPlex | [링크](https://research.nvidia.com/labs/adlr/personaplex/) | news | 2026-01-15 |
+| <a id="ref-g-31"></a>G-31 | Deepgram — Introducing Flux | [링크](https://deepgram.com/learn/introducing-flux-conversational-speech-recognition) | news | 2026-02-27 |
+| <a id="ref-g-32"></a>G-32 | GitHub — FireRedChat | [링크](https://github.com/FireRedTeam/FireRedChat) | repo | 2025 |
+| <a id="ref-g-33"></a>G-33 | VentureBeat — ElevenLabs Conversational AI 2.0 | [링크](https://venturebeat.com/ai/elevenlabs-debuts-conversational-ai-2-0-voice-assistants-that-understand-when-to-pause-speak-and-take-turns-talking) | news | 2025-05-30 |
+| <a id="ref-g-34"></a>G-34 | AssemblyAI — Turn Detection Endpointing | [링크](https://www.assemblyai.com/blog/turn-detection-endpointing-voice-agent) | blog | 2025 |
+| <a id="ref-g-35"></a>G-35 | AI News — MWC 2026 SK Telecom AI Native | [링크](https://www.artificialintelligence-news.com/news/mwc-2026-sk-telecom-lays-out-plan-to-rebuild-its-core-around-ai/) | news | 2026-03-02 |
+| <a id="ref-g-36"></a>G-36 | MarkTechPost — Kani-TTS-2 | [링크](https://www.marktechpost.com/2026/02/15/meet-kani-tts-2-a-400m-param-open-source-text-to-speech-model-that-runs-in-3gb-vram-with-voice-cloning-support/) | news | 2026-02-15 |
+| <a id="ref-g-37"></a>G-37 | Communeify — Orpheus TTS | [링크](https://www.communeify.com/en/blog/orpheus-tts-emotional-human-speech-synthesis/) | blog | 2026-03 |
+| <a id="ref-g-38"></a>G-38 | HuggingFace — Kokoro-82M | [링크](https://huggingface.co/hexgrad/Kokoro-82M) | repo | 2025 |
+| <a id="ref-g-39"></a>G-39 | Google Blog — Gemini 2.5 TTS | [링크](https://blog.google/innovation-and-ai/technology/developers-tools/gemini-2-5-text-to-speech/) | news | 2026 |
+| <a id="ref-g-40"></a>G-40 | NAVER Corp — HyperCLOVA X Omni | [링크](https://www.navercorp.com/en/media/pressReleasesDetail?seq=34256) | press | 2026-01 |
+| <a id="ref-g-41"></a>G-41 | CLOVA Tech Blog — HyperCLOVA X OMNI | [링크](https://clova.ai/en/tech-blog/hyperclova-x-omni-koreas-flagship-ai-on-the-road-to-omnimodality) | blog | 2026-01 |
+| <a id="ref-g-42"></a>G-42 | MBW — Supertone SYNDI8 (HYBE) | [링크](https://www.musicbusinessworldwide.com/hybe-owned-voice-cloning-startup-supertone-launches-ai-powered-virtual-pop-group-syndi81/) | news | 2024 |
+| <a id="ref-g-43"></a>G-43 | MarketsandMarkets — AI Voice Generator Market $20.71B by 2031 | [링크](https://www.marketsandmarkets.com/PressReleases/ai-voice-generator.asp) | report | 2025 |
+| <a id="ref-g-44"></a>G-44 | Jones Day — EU AI Act Labelling Code of Practice | [링크](https://www.jonesday.com/en/insights/2026/01/european-commission-publishes-draft-code-of-practice-on-ai-labelling-and-transparency) | legal | 2026-01 |
+| <a id="ref-g-45"></a>G-45 | Digital Today — KT AI 보이스피싱 탐지 2.0 | [링크](https://www.digitaltoday.co.kr/news/articleView.html?idxno=580815) | news | 2026 |
+| <a id="ref-g-46"></a>G-46 | KT AICC — 보이스봇 | [링크](https://www.kt-aicc.com/user/voiceBot) | product | 2026 |
+| <a id="ref-p-01"></a>P-01 | Voice Cloning: Comprehensive Survey (2025) | [링크](https://arxiv.org/html/2505.00579v1) | paper | 2025 |
+| <a id="ref-p-02"></a>P-02 | DiffGAN-ZSTTS: Zero-Shot Speaker Adaptation (Nature SR, 2025) | [링크](https://www.nature.com/articles/s41598-025-90507-0) | paper | 2025 |
+| <a id="ref-p-03"></a>P-03 | Zero-Shot Voice Cloning for Dysphonia (IEEE, 2024) | [링크](https://ieeexplore.ieee.org/document/10517609/) | paper | 2024 |
+| <a id="ref-p-04"></a>P-04 | Kim et al. — Explainable AI Parkinson's via Voice (Nature SR, 2025) | [링크](https://www.nature.com/articles/s41598-025-96575-6) | paper | 2025 |
+| <a id="ref-p-05"></a>P-05 | Dzedzickis et al. — Multimodal Emotion Recognition Survey (PMC, 2025) | [링크](https://pmc.ncbi.nlm.nih.gov/articles/PMC12292624/) | paper | 2025 |
+| <a id="ref-p-06"></a>P-06 | Canary Speech — Behavioral Health Vocal Biomarkers (2026) | [링크](https://canaryspeech.com/wp-content/uploads/2025/04/canary-behavioralhealth-technicalreport-2026.pdf) | paper | 2026 |
+| <a id="ref-p-07"></a>P-07 | Gao et al. — Full-Duplex-Bench (arXiv, 2025) | [링크](https://arxiv.org/abs/2503.04721) | paper | 2025-03 |
+| <a id="ref-p-08"></a>P-08 | ICASSP 2026 HumDial Challenge Paper | [링크](https://arxiv.org/abs/2601.05564) | paper | 2026-02 |
+| <a id="ref-p-09"></a>P-09 | FireRedChat: Full-Duplex Voice Interaction (arXiv, 2025) | [링크](https://arxiv.org/abs/2509.06502) | paper | 2025-09 |
+| <a id="ref-p-10"></a>P-10 | HyperCLOVA X 8B Omni (NAVER, arXiv 2026) | [링크](https://arxiv.org/abs/2601.01792) | paper | 2026-01 |
+| <a id="ref-p-11"></a>P-11 | ARCHI-TTS: Flow-Matching TTS (arXiv, 2026) | [링크](https://arxiv.org/abs/2602.05207) | paper | 2026-02 |
+| <a id="ref-p-12"></a>P-12 | VoiceCraft-X: Multilingual TTS (EMNLP 2025) | [링크](https://aclanthology.org/2025.emnlp-main.137/) | paper | 2025 |
