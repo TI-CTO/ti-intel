@@ -80,23 +80,23 @@
 
 | 스킬 | 호출 | 한 줄 설명 | 산출물 |
 |------|------|-----------|--------|
-| **WTIS** | `/wtis` | 기술 투자 Go/No-Go 판정 | 200점 리포트 + PDF + 포트폴리오 |
-| **Weekly Monitor** | `/weekly-monitor {domain}` | 주간 기술 동향 2단계 스캔 | 주간 리포트 + 심층 리서치 + PDF |
-| **Research Session** | `/research-session {주제}` | 자유 주제 구조화 리서치 | 리서치 노트 |
-| **Discover** | `/discover {분야}` | 신기술/기회 탐색 | 2×2 매트릭스 + 발굴 리포트 |
-| **Monitor** | `/monitor {topic}` | 등록 토픽 변화 감지 | 변화 알림 |
-| **Startup Scout** | `/startup-scout {도메인}` | 스타트업 후보 발굴 | 쇼트리스트 |
-| **Startup Analyst** | `/startup-analyst {기업명}` | 스타트업 심층 분석 + DB JSON | 분석 리포트 |
+| **WTIS** | `/wtis` 또는 자연어 | 기술 투자 Go/No-Go 판정 | 200점 리포트 + PDF + 포트폴리오 |
+| **Weekly Monitor** | `/weekly-monitor {domain}` 또는 자연어 | 주간 기술 동향 2단계 스캔 | 주간 리포트 + 심층 리서치 + PDF |
+| **Research Session** | `/research-session {주제}` 또는 자연어 | 자유 주제 구조화 리서치 | 리서치 노트 |
+| **Discover** | `/discover {분야}` 또는 자연어 | 신기술/기회 탐색 | 2×2 매트릭스 + 발굴 리포트 |
+| **Monitor** | `/monitor {topic}` 또는 자연어 | 등록 토픽 변화 감지 | 변화 알림 |
+| **Startup Scout** | `/startup-scout {도메인}` 또는 자연어 | 스타트업 후보 발굴 | 쇼트리스트 |
+| **Startup Analyst** | `/startup-analyst {기업명}` 또는 자연어 | 스타트업 심층 분석 + DB JSON | 분석 리포트 |
 
 ### 출력/동기화 스킬
 
 | 스킬 | 호출 | 한 줄 설명 |
 |------|------|-----------|
-| **Report PDF** | `/report-pdf {파일}` | 마크다운 → 컨설팅 스타일 PDF |
-| **Slides** | `/slides {파일}` | 마크다운 → 테마 적용 PPTX |
-| **Obsidian Bridge** | `/obsidian-bridge {파일} {유형}` | 산출물 → 옵시디언 볼트 동기화 |
-| **Work Log** | `/work-log` | 오늘 작업 → 업무일지 기록 |
-| **New Project** | `/new-project {이름}` | 표준 구조 프로젝트 생성 |
+| **Report PDF** | `/report-pdf {파일}` 또는 자연어 | 마크다운 → 컨설팅 스타일 PDF |
+| **Slides** | `/slides {파일}` 또는 자연어 | 마크다운 → 테마 적용 PPTX |
+| **Obsidian Bridge** | `/obsidian-bridge {파일} {유형}` 또는 자연어 | 산출물 → 옵시디언 볼트 동기화 |
+| **Work Log** | `/work-log` 또는 자연어 | 오늘 작업 → 업무일지 기록 |
+| **New Project** | `/new-project {이름}` 또는 자연어 | 표준 구조 프로젝트 생성 |
 
 ### 스킬 I/O Contract
 
@@ -338,8 +338,8 @@ collect_news(topic="competitor-strategy", query="경쟁사 AI 투자", source="a
 
 **사용 흐름**:
 ```
-[발굴] /startup-scout {도메인} → 후보 쇼트리스트
-[분석] /startup-analyst {기업명} → 심층 리포트 + DB 입력용 JSON
+[발굴] /startup-scout {도메인} (또는 자연어) → 후보 쇼트리스트
+[분석] /startup-analyst {기업명} (또는 자연어) → 심층 리포트 + DB 입력용 JSON
 [저장] 사용자 승인 → upsert_company + add_funding_round
 [조회] search_companies / get_company → 대시보드 또는 즉석 검색
 ```
@@ -407,9 +407,11 @@ get_weekly_diff(topic="secure-ai")
 ```
 # 도메인별 스타트업 탐색
 → /startup-scout voice AI
+→ 또는: "voice AI 관련 스타트업 찾아줘"
 
 # 특정 기업 심층 조사
 → /startup-analyst SIM2REAL
+→ 또는: "SIM2REAL 심층 분석해줘"
 
 # DB에서 검색
 search_companies(query="AI 번역", country="한국")

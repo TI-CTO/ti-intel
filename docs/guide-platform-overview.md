@@ -219,16 +219,18 @@ cd projects/startup-db && ~/.local/bin/uv sync && cd ../..
 ## 7. 자주 쓰는 패턴 정리
 
 ```
-구조화 조사      /research-session {주제}
-신기술 발굴      /discover {도메인}  또는  /wtis deep {주제}
-제안서 검증      /wtis proposal {파일경로}
-정기 모니터링    /weekly-monitor {domain}
-결과 시각화      /slides {마크다운 파일}
-PDF 변환        /report-pdf {마크다운 파일}
-Obsidian 동기화  /obsidian-bridge {파일}
-작업 기록        /work-log
-스타트업 발굴    /startup-scout {도메인}
-스타트업 분석    /startup-analyst {기업명}
+구조화 조사      /research-session {주제}          또는 "{주제}에 대해 조사해줘"
+신기술 발굴      /discover {도메인}               또는 "{도메인} 기회 탐색해줘"
+기술 검증        /wtis standard {기술명}          또는 "{기술명} Go/No-Go 검증해줘"
+제안서 검증      /wtis proposal {파일경로}         또는 "이 제안서 검증해줘"
+정기 모니터링    /weekly-monitor {domain}          또는 "{도메인} 주간 동향 분석해줘"
+토픽 스캔        /monitor {topic}                 또는 "등록된 토픽 변화 확인해줘"
+결과 시각화      /slides {마크다운 파일}            또는 "이 리포트 PPTX로 만들어줘"
+PDF 변환        /report-pdf {마크다운 파일}        또는 "이 리포트 PDF로 변환해줘"
+Obsidian 동기화  /obsidian-bridge {파일}           또는 "이 파일 옵시디언에 동기화해줘"
+작업 기록        /work-log                        또는 "오늘 작업 기록해줘"
+스타트업 발굴    /startup-scout {도메인}            또는 "voice AI 관련 스타트업 찾아줘"
+스타트업 분석    /startup-analyst {기업명}          또는 "{기업명} 심층 분석해줘"
 ```
 
 ---
