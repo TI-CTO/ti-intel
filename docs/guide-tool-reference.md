@@ -27,8 +27,6 @@
 │ researcher            │    │ design-system (4 도구)      │
 │ reviewer              │    │ startup-db (6 도구)         │
 │ implementer           │    └────────────────────────────┘
-│ startup-scout         │
-│ startup-analyst       │
 └───────────────────────┘
 ```
 
@@ -87,6 +85,8 @@
 | **Research Session** | `/research-session {주제}` | 자유 주제 구조화 리서치 | 리서치 노트 |
 | **Discover** | `/discover {분야}` | 신기술/기회 탐색 | 2×2 매트릭스 + 발굴 리포트 |
 | **Monitor** | `/monitor {topic}` | 등록 토픽 변화 감지 | 변화 알림 |
+| **Startup Scout** | `/startup-scout {도메인}` | 스타트업 후보 발굴 | 쇼트리스트 |
+| **Startup Analyst** | `/startup-analyst {기업명}` | 스타트업 심층 분석 + DB JSON | 분석 리포트 |
 
 ### 출력/동기화 스킬
 
@@ -226,8 +226,6 @@
 | **researcher** | 빠른 탐색/비교 | (범용) | 읽기 전용 |
 | **reviewer** | 코드 리뷰 | (범용) | 읽기 전용 |
 | **implementer** | 코드 구현/수정 | (범용) | 쓰기 가능 |
-| **startup-scout** | 스타트업 후보 발굴 (쇼트리스트) | (사용자 직접 호출) | 쓰기 가능 |
-| **startup-analyst** | 스타트업 심층 분석 (팩트 검증 + DB JSON) | (사용자 직접 호출) | 쓰기 가능 |
 
 ---
 
@@ -340,8 +338,8 @@ collect_news(topic="competitor-strategy", query="경쟁사 AI 투자", source="a
 
 **사용 흐름**:
 ```
-[발굴] startup-scout 에이전트 → 후보 쇼트리스트
-[분석] startup-analyst 에이전트 → 심층 리포트 + DB 입력용 JSON
+[발굴] /startup-scout {도메인} → 후보 쇼트리스트
+[분석] /startup-analyst {기업명} → 심층 리포트 + DB 입력용 JSON
 [저장] 사용자 승인 → upsert_company + add_funding_round
 [조회] search_companies / get_company → 대시보드 또는 즉석 검색
 ```
@@ -408,10 +406,10 @@ get_weekly_diff(topic="secure-ai")
 
 ```
 # 도메인별 스타트업 탐색
-→ startup-scout 에이전트로 "voice AI" 관련 스타트업 찾아줘
+→ /startup-scout voice AI
 
 # 특정 기업 심층 조사
-→ startup-analyst 에이전트로 "SIM2REAL" 조사해줘
+→ /startup-analyst SIM2REAL
 
 # DB에서 검색
 search_companies(query="AI 번역", country="한국")

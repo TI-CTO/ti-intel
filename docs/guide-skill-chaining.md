@@ -137,9 +137,9 @@ file_path: "주요 산출물 절대 경로"
 
 ### 시나리오 4: 스타트업 발굴 → 분석 → DB 저장
 ```
-startup-scout 에이전트로 "voice AI security" 관련 스타트업 찾아줘
+/startup-scout voice AI security
   → 후보 5건 발굴
-  → startup-analyst 에이전트로 {선택 기업} 조사해줘
+  → /startup-analyst {선택 기업}
   → 분석 리포트 + DB 입력용 JSON
   → 사용자 승인 → upsert_company + add_funding_round
   → /obsidian-bridge {리포트} research

@@ -227,8 +227,8 @@ cd projects/startup-db && ~/.local/bin/uv sync && cd ../..
 PDF 변환        /report-pdf {마크다운 파일}
 Obsidian 동기화  /obsidian-bridge {파일}
 작업 기록        /work-log
-스타트업 발굴    startup-scout 에이전트로 {도메인} 관련 스타트업 찾아줘
-스타트업 분석    startup-analyst 에이전트로 {기업명} 조사해줘
+스타트업 발굴    /startup-scout {도메인}
+스타트업 분석    /startup-analyst {기업명}
 ```
 
 ---

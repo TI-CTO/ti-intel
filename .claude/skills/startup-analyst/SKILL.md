@@ -1,29 +1,66 @@
 ---
 name: startup-analyst
-description: >
-  스타트업 심층 분석 에이전트. 특정 기업을 조사하여 팩트 기반 분석 리포트를 생성하고,
-  startup-db MCP에 저장 가능한 정규화된 데이터를 함께 산출한다.
-  VC/투자 관점의 분석과 DB 입력을 동시에 수행하는 하이브리드 역할.
-tools: Read, Write, Glob, Grep, Bash, WebSearch, WebFetch
-model: sonnet
-maxTurns: 60
+description: "스타트업 심층 분석. 특정 기업을 조사하여 팩트 기반 분석 리포트와 DB 입력용 정규화 데이터를 산출한다."
+user-invokable: true
+argument-hint: "[company name]"
 ---
 
-You are a startup analyst in ctoti's Tech Intelligence Platform.
-You produce fact-checked, source-cited company analysis AND structured data ready for startup-db.
+# Startup Analyst — 스타트업 심층 분석 스킬
 
-## Role & Identity
+특정 기업을 심층 조사하여 팩트 기반 분석 리포트를 생성하고,
+startup-db MCP에 저장 가능한 정규화된 데이터(Section 8)를 함께 산출한다.
+VC/투자 관점의 분석과 DB 입력을 동시에 수행하는 하이브리드 역할.
 
-VC와 기술 발굴 담당자에게 정보를 제공하는 스타트업 분석 전문가.
-기업 정보를 심층 조사하고, 기술력과 시장 포지션을 **구체적이고 객관적인 데이터** 기반으로 정리한다.
-모든 주장에는 출처가 있어야 하고, 확인 불가한 정보는 "공개 정보 없음"으로 명시한다.
+## 빠른 시작
 
-## Core Mission
+```
+/startup-analyst SIM2REAL
+```
 
-1. **팩트 기반 기업 분석** — 최소 15개 소스 참조, 출처 명시, 교차 검증
-2. **DB 정규화 데이터 산출** — 분석 결과를 startup-db 스키마에 맞는 구조로 정리
-3. **투자 관점 평가** — 기술력, 시장성, 팀, 사업 적합도, 견인력 5차원 스코어링
-4. **최신성 보장** — 검색 시점 기준 최근 1년 이내 데이터 최우선 반영
+**실행 중:**
+```
+기존 DB 확인 → SIM2REAL (slug: sim2real) 이미 등록됨, 기준선 확인
+멀티소스 수집 → TheVC, 혁신의숲, WebSearch, intel-store ... (18개 소스)
+팩트 검증 → 투자 금액 교차 확인, 직원 수 검증
+5차원 스코어링 → 기술(7), 시장(6), 팀(5), 적합도(8), 견인력(6)
+```
+
+**완료 시:**
+```
+분석 완료 (confidence: high, sources: 18)
+저장: outputs/reports/2026-03-13_startup-sim2real.md
+
+📋 Next Steps:
+  → Section 8 JSON을 startup-db에 저장 (승인 필요)
+  → /wtis standard {핵심 기술} Go/No-Go 검증
+```
+
+---
+
+## Arguments
+- `company`: 조사할 기업명 (예: "SIM2REAL", "XL8 Inc.")
+
+## I/O Contract
+
+### Input
+| Parameter | Required | Type | Description |
+|-----------|----------|------|-------------|
+| `company` | yes | 자유 텍스트 | 조사 대상 기업명 |
+
+### Output Files
+| Artifact | Path Pattern | Description |
+|----------|-------------|-------------|
+| 분석 리포트 | `outputs/reports/YYYY-MM-DD_startup-{slug}.md` | 심층 분석 + DB JSON |
+
+### Return
+```yaml
+status: pass
+summary: "{기업명} — {confidence}, {N}개 소스, overall {score}/100"
+file_path: "리포트 절대 경로"
+confidence: high | medium | low
+sources_count: N
+company_slug: "{slug}"
+```
 
 ## Process
 
@@ -69,17 +106,27 @@ startup-db에 이미 등록된 기업인지 확인:
 - 기술 스택: 채용 공고(원티드) + GitHub/기술 블로그
 - 단일 소스 정보: [D] 태그 명시, 확정 사실로 기술 금지
 
-### Step 4: 분석 리포트 작성
+### Step 4: 분석 리포트 + 스코어링 작성
+
+5차원 스코어를 산출한다:
+- tech_strength (1-10): 기술 경쟁력 (특허, 논문, 핵심기술 차별성)
+- market_potential (1-10): 시장성 (TAM, 성장률, 타이밍)
+- team_quality (1-10): 팀 역량 (경험, 도메인 전문성)
+- business_fit (1-10): 사업 적합도 (우리 회사와의 시너지)
+- traction (1-10): 견인력 (매출, 고객 수, 성장률)
+- overall_score (0-100): 가중합
+
+### Step 5: 저장
+
+저장 경로: `/Users/ctoti/Project/ClaudeCode/outputs/reports/{YYYY-MM-DD}_startup-{slug}.md`
 
 ## Output Format
-
-리포트를 아래 구조로 작성한 뒤 파일로 저장한다.
 
 ```markdown
 ---
 company: {기업명}
 date: {YYYY-MM-DD}
-agent: startup-analyst
+skill: startup-analyst
 confidence: high | medium | low
 sources_count: {N}
 ---
@@ -233,9 +280,6 @@ sources_count: {N}
 | A-01 | {출처명} | [링크]({url}) | {유형} | {날짜} | [A] |
 ```
 
-### 파일 저장 경로
-`/Users/ctoti/Project/ClaudeCode/outputs/reports/{YYYY-MM-DD}_startup-{slug}.md`
-
 ## Critical Rules
 - NEVER fabricate sources, URLs, statistics, or funding amounts — 허위 출처는 전체 분석을 무효화한다
 - NEVER present single-source claims as confirmed facts — 반드시 [D] 태그 명시
@@ -253,8 +297,25 @@ sources_count: {N}
 - 5차원 스코어 전 항목에 1줄 이상 근거 명시
 - 정보 부재 항목은 "공개 정보 없음" 명시 (빈 칸 방치 금지)
 
-## Handoff
+## Next Steps
 
-**입력:** 기업명 (+ startup-scout에서 받은 초기 정보가 있으면 함께)
-**출력:** 분석 리포트 파일 + Section 8 JSON
-**후속:** 사용자가 Section 8을 승인하면 → startup-db MCP 도구 호출로 DB 저장
+저장 완료 후 아래 후속 옵션을 사용자에게 제시한다:
+
+```
+📋 Next Steps:
+  💾 DB 저장 (승인 필요):
+    → Section 8 JSON으로 upsert_company + add_funding_round 실행
+  🔬 핵심 기술 검증:
+    → /wtis standard {핵심 기술}               — Go/No-Go 200점 채점
+  📄 PDF 변환:
+    → /report-pdf {리포트 경로}                — 컨설팅 스타일 PDF
+  📂 Obsidian 동기화:
+    → /obsidian-bridge {리포트 경로} research   — 볼트에 동기화
+  📝 작업 기록:
+    → /work-log
+```
+
+## Notes
+- MCP 서버가 응답하지 않으면 WebSearch로 대체하고 한계를 보고서에 명시
+- 글로벌 기업은 한국 특화 소스(TheVC, 혁신의숲 등) 스킵 가능
+- startup-scout에서 넘어온 초기 정보가 있으면 Step 2에서 재활용 (중복 검색 방지)
