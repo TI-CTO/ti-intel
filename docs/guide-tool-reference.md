@@ -25,8 +25,10 @@
 │ research-deep         │    │ intel-store (14 도구)       │
 │ validator             │    │ trend-tracker (5 도구)      │
 │ researcher            │    │ design-system (4 도구)      │
-│ reviewer              │    └────────────────────────────┘
-│ implementer           │
+│ reviewer              │    │ startup-db (6 도구)         │
+│ implementer           │    └────────────────────────────┘
+│ startup-scout         │
+│ startup-analyst       │
 └───────────────────────┘
 ```
 
@@ -224,6 +226,8 @@
 | **researcher** | 빠른 탐색/비교 | (범용) | 읽기 전용 |
 | **reviewer** | 코드 리뷰 | (범용) | 읽기 전용 |
 | **implementer** | 코드 구현/수정 | (범용) | 쓰기 가능 |
+| **startup-scout** | 스타트업 후보 발굴 (쇼트리스트) | (사용자 직접 호출) | 쓰기 가능 |
+| **startup-analyst** | 스타트업 심층 분석 (팩트 검증 + DB JSON) | (사용자 직접 호출) | 쓰기 가능 |
 
 ---
 
@@ -316,6 +320,34 @@ collect_news(topic="competitor-strategy", query="경쟁사 AI 투자", source="a
 
 ---
 
+### startup-db — 스타트업 데이터베이스
+
+> 한국/글로벌 스타트업의 회사정보, 펀딩, 인물, 평가 데이터 저장·검색. `su_` 접두사 12개 테이블.
+
+**6개 도구 (Phase 1)**:
+
+| 구분 | 도구 | 설명 | 예시 |
+|------|------|------|------|
+| 검색 | `search_companies` | 이름/카테고리/국가/태그 필터 검색 | `search_companies(query="AI", country="한국")` |
+| | `get_company` | slug로 상세 조회 (라운드, 인물, 스코어 포함) | `get_company(slug="sim2real")` |
+| | `get_company_stats` | 카테고리별/국가별/상태별 통계 | `get_company_stats()` |
+| 저장 | `upsert_company` | 스타트업 추가/업데이트 (slug 기준) | `upsert_company(name="NewCo", country="한국")` |
+| | `add_funding_round` | 펀딩 라운드 + 투자자 연결 | `add_funding_round(company_slug="newco", round_type="seed")` |
+| | `upsert_investor` | 투자자 추가/업데이트 | `upsert_investor(name="Y Combinator", investor_type="accelerator")` |
+
+**데이터 현황**: 807개 스타트업, 627건 펀딩, 602명 인물
+**카테고리**: Service(275), S/W Platform(212), AI 산업 특화(116), Model/Engine(69), Infra(57), Ops(48), Data(30)
+
+**사용 흐름**:
+```
+[발굴] startup-scout 에이전트 → 후보 쇼트리스트
+[분석] startup-analyst 에이전트 → 심층 리포트 + DB 입력용 JSON
+[저장] 사용자 승인 → upsert_company + add_funding_round
+[조회] search_companies / get_company → 대시보드 또는 즉석 검색
+```
+
+---
+
 ## 5. 역할별 활용 시나리오
 
 ### 전략 기획 — "이 기술에 투자해야 하나?"
@@ -370,6 +402,22 @@ get_weekly_diff(topic="secure-ai")
 
 # 포트폴리오 (L2 기술별 점수/판정 한 페이지)
 → outputs/reports/{domain}/portfolio.md
+```
+
+### 스타트업 발굴 — "이 분야에서 누가 하고 있나?"
+
+```
+# 도메인별 스타트업 탐색
+→ startup-scout 에이전트로 "voice AI" 관련 스타트업 찾아줘
+
+# 특정 기업 심층 조사
+→ startup-analyst 에이전트로 "SIM2REAL" 조사해줘
+
+# DB에서 검색
+search_companies(query="AI 번역", country="한국")
+
+# 통계 확인
+get_company_stats()
 ```
 
 ---

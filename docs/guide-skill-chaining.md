@@ -28,6 +28,20 @@
          │report-pdf│ │ slides │ │obsidian-bridge│
          │  PDF     │ │ PPTX   │ │  Obsidian    │
          └──────────┘ └────────┘ └──────────────┘
+
+
+── 스타트업 발굴 레인 ──────────────────────────────
+
+┌────────────────┐     ┌─────────────────┐     ┌──────────┐
+│ startup-scout  │────▶│startup-analyst  │────▶│startup-db│
+│ 후보 발굴       │     │ 심층 분석 + JSON  │     │ DB 저장   │
+└────────────────┘     └─────────────────┘     └──────────┘
+                              │
+                    ┌─────────┼─────────┐
+                    ▼         ▼         ▼
+              ┌──────────┐ ┌────────┐ ┌──────────────┐
+              │report-pdf│ │ slides │ │obsidian-bridge│
+              └──────────┘ └────────┘ └──────────────┘
 ```
 
 ## 스킬별 연결 상세
@@ -47,6 +61,10 @@
 | **wtis** (all) | Phase 2 | research-deep 에이전트 | Brief + domain-params → 심층 리서치 |
 | **research-session** | 기술 검증 필요 | wtis standard | 주제 → 200점 채점 |
 | **research-session** | 넓은 탐색 필요 | discover | 도메인 → 기회 발굴 |
+| **startup-scout** | 사용자 승인 | startup-analyst | 기업명 + 초기 정보 → 심층 분석 |
+| **startup-analyst** | 분석 완료 | startup-db MCP | Section 8 JSON → upsert_company / add_funding_round |
+| **startup-analyst** | WTIS 검증 필요 | wtis standard | 기업의 핵심 기술 → Go/No-Go 검증 |
+| **discover** | 플레이어 탐색 | startup-scout | 도메인 키워드 → 스타트업 후보 발굴 |
 
 ### 출력 변환 스킬 (하류)
 
@@ -59,6 +77,7 @@
 | **wtis** | **obsidian-bridge** (portfolio) | portfolio.md + PDF |
 | **weekly-monitor** | **obsidian-bridge** (weekly) | 메인 리포트 + PDF |
 | **weekly-monitor** | **obsidian-bridge** (research) | Deep 리서치 파일 |
+| **startup-analyst** | **obsidian-bridge** (research) | 분석 리포트 → 30-Reports/startups/ |
 
 ### 보조 스킬
 
@@ -84,6 +103,8 @@ file_path: "주요 산출물 절대 경로"
 | wtis | `verdict`, `score`, `strategy`, `session_dir` |
 | monitor | `files` (생성된 보고서 목록) |
 | research-session | `confidence` |
+| startup-scout | `candidates` (후보 리스트), `domain` |
+| startup-analyst | `confidence`, `sources_count`, `company_slug` |
 
 ## 워크플로우 시나리오
 
@@ -112,4 +133,15 @@ file_path: "주요 산출물 절대 경로"
   → /research-session ai-network 최근 동향
   → /report-pdf {리포트}
   → /obsidian-bridge {리포트} research
+```
+
+### 시나리오 4: 스타트업 발굴 → 분석 → DB 저장
+```
+startup-scout 에이전트로 "voice AI security" 관련 스타트업 찾아줘
+  → 후보 5건 발굴
+  → startup-analyst 에이전트로 {선택 기업} 조사해줘
+  → 분석 리포트 + DB 입력용 JSON
+  → 사용자 승인 → upsert_company + add_funding_round
+  → /obsidian-bridge {리포트} research
+  → /work-log
 ```

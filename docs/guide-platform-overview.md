@@ -186,6 +186,7 @@ L1 도메인 전체 스캔                    L2 기술 하나에 집중
 | **WebSearch** | 실시간 웹 검색 | 최신 뉴스, 기업 발표, 블로그 |
 | **trend-tracker** | 트렌드 스냅샷 | 주간 비교, 변화 감지 |
 | **design-system** | PDF/PPTX 렌더링 | 컨설팅 스타일 리포트 생성 |
+| **startup-db** | 스타트업 회사·투자·인물·평가 (807건) | 스타트업 발굴·조사·DB 저장 |
 
 ---
 
@@ -208,6 +209,7 @@ cp .mcp.json.example .mcp.json
 cd projects/intel-store && ~/.local/bin/uv sync && cd ../..
 cd projects/trend-tracker && ~/.local/bin/uv sync && cd ../..
 cd projects/design-system && ~/.local/bin/uv sync && cd ../..
+cd projects/startup-db && ~/.local/bin/uv sync && cd ../..
 ```
 
 > **Supabase 연결 정보**는 팀 관리자에게 문의. `.env`와 `.mcp.json`은 `.gitignore`에 등록되어 있어 커밋되지 않는다.
@@ -225,6 +227,8 @@ cd projects/design-system && ~/.local/bin/uv sync && cd ../..
 PDF 변환        /report-pdf {마크다운 파일}
 Obsidian 동기화  /obsidian-bridge {파일}
 작업 기록        /work-log
+스타트업 발굴    startup-scout 에이전트로 {도메인} 관련 스타트업 찾아줘
+스타트업 분석    startup-analyst 에이전트로 {기업명} 조사해줘
 ```
 
 ---
@@ -331,7 +335,8 @@ ti-intel/
 │   ├── intel-store/     ← 통합 인텔리전스 (논문·특허·뉴스)
 │   ├── trend-tracker/   ← 트렌드 스냅샷
 │   ├── design-system/   ← PDF/PPTX 렌더링
-│   └── telco-factbook/  ← SKT/KT 재무 지표 (CLI 전용)
+│   ├── telco-factbook/  ← SKT/KT 재무 지표 (CLI 전용)
+│   └── startup-db/      ← 스타트업 DB (회사·투자·인물)
 ├── outputs/
 │   └── reports/         ← 모든 스킬/에이전트 산출물
 ├── references/          ← 리포트 참조 파일 (PDF, 사내 문서)
