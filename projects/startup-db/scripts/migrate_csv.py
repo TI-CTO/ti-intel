@@ -146,7 +146,7 @@ def migrate(csv_path: Path) -> None:
         fr: dict = {
             "company_id": slug_to_id[slug],
             "round_type": round_type.value,
-            "currency": "KRW",
+            "currency": "USD",
         }
         if amount:
             try:

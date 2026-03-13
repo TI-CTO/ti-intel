@@ -19,6 +19,25 @@
 | `add_funding_round` | 펀딩 라운드 + 참여 투자자 기록 |
 | `upsert_investor` | 투자자 추가/업데이트 |
 
+## MCP 도구 (Phase 2 — 7개)
+| 도구 | 설명 |
+|------|------|
+| `score_company` | 5차원 스코어 기록 (tech/market/team/fit/traction) |
+| `add_company_relation` | 회사 간 관계 추가 (competitor/partner/customer 등) |
+| `search_investors` | 투자자 검색 (이름/유형/국가 필터) |
+| `get_investor_portfolio` | 투자자별 포트폴리오 조회 |
+| `get_funding_stats` | 펀딩 집계 (연도/라운드/카테고리별) |
+| `manage_collection` | 컬렉션 CRUD (워치리스트, 마켓맵) |
+| `search_people` | 인물 검색 (이름/조직/역할 필터) |
+
+## Obsidian 연동
+- `scripts/export_to_obsidian.py` — 807건 회사 → Obsidian 노트 (wikilink 포함)
+- 출력: `/Users/ctoti/Obsidian/Obsidian_Work/50-Startups/companies/`
+- Dataview 인덱스: `50-Startups/_index.md`
+
+## 데이터 보강 스크립트
+- `scripts/backfill_relations.py` — sub_category+country 기반 competitor 자동 생성
+
 ## DB 테이블 (`su_` 접두사)
 - `su_companies` — 스타트업 마스터 (이름, 카테고리, 기술, 제품)
 - `su_people` — 인물 (창업자, 임원)

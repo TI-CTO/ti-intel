@@ -260,5 +260,239 @@ def upsert_investor(
     return repo.upsert_investor(inv)
 
 
+# ── Phase 2 Tools ────────────────────────────────────────────
+
+
+@mcp.tool()
+def score_company(
+    company_slug: str,
+    tech_strength: int | None = None,
+    market_potential: int | None = None,
+    team_quality: int | None = None,
+    business_fit: int | None = None,
+    traction: int | None = None,
+    overall_score: int | None = None,
+    scored_by: str | None = None,
+    rationale: str | None = None,
+) -> dict:
+    """Record a multi-dimensional score for a company (1-10 per dimension, 0-100 overall).
+
+    Args:
+        company_slug: Target company slug.
+        tech_strength: Technology strength score (1-10).
+        market_potential: Market potential score (1-10).
+        team_quality: Team quality score (1-10).
+        business_fit: Business fit score (1-10).
+        traction: Traction/momentum score (1-10).
+        overall_score: Overall composite score (0-100).
+        scored_by: Who performed the scoring (e.g. "analyst", "auto").
+        rationale: Free-text explanation for the scores.
+
+    Returns:
+        The created score record. Error dict if company not found.
+    """
+    repo = _get_repo()
+    company = repo.get_company_by_slug(company_slug)
+    if not company:
+        return {"error": f"Company not found: {company_slug}"}
+
+    return repo.score_company(
+        company_id=company["id"],
+        tech_strength=tech_strength,
+        market_potential=market_potential,
+        team_quality=team_quality,
+        business_fit=business_fit,
+        traction=traction,
+        overall_score=overall_score,
+        scored_by=scored_by,
+        rationale=rationale,
+    )
+
+
+@mcp.tool()
+def add_company_relation(
+    company_slug: str,
+    related_company_slug: str,
+    relation_type: str,
+    description: str | None = None,
+    bidirectional: bool = False,
+) -> dict:
+    """Add a relationship between two companies.
+
+    Args:
+        company_slug: Source company slug.
+        related_company_slug: Related company slug.
+        relation_type: Relation type: competitor, partner, customer, supplier, spin_off.
+        description: Optional description of the relationship.
+        bidirectional: If true, create the reverse relation as well.
+
+    Returns:
+        The created relation record. Error dict if company not found.
+    """
+    repo = _get_repo()
+    company = repo.get_company_by_slug(company_slug)
+    if not company:
+        return {"error": f"Company not found: {company_slug}"}
+
+    related = repo.get_company_by_slug(related_company_slug)
+    if not related:
+        return {"error": f"Related company not found: {related_company_slug}"}
+
+    result = repo.add_company_relation(
+        company_id=company["id"],
+        related_company_id=related["id"],
+        relation_type=relation_type,
+        description=description,
+    )
+
+    if bidirectional:
+        repo.add_company_relation(
+            company_id=related["id"],
+            related_company_id=company["id"],
+            relation_type=relation_type,
+            description=description,
+        )
+
+    return result
+
+
+@mcp.tool()
+def search_investors(
+    query: str | None = None,
+    investor_type: str | None = None,
+    country: str | None = None,
+    limit: int = 50,
+    offset: int = 0,
+) -> list[dict]:
+    """Search investors by name, type, or country.
+
+    Args:
+        query: Free-text search across investor name and description.
+        investor_type: Filter by type: vc, angel, pe, cvc, accelerator, government, other.
+        country: Filter by country.
+        limit: Max results (default 50).
+        offset: Pagination offset.
+
+    Returns:
+        List of matching investor records.
+    """
+    repo = _get_repo()
+    return repo.search_investors(
+        query=query,
+        investor_type=investor_type,
+        country=country,
+        limit=limit,
+        offset=offset,
+    )
+
+
+@mcp.tool()
+def get_investor_portfolio(investor_slug: str) -> dict:
+    """Get all companies that received funding from a specific investor.
+
+    Args:
+        investor_slug: Investor's URL-safe slug.
+
+    Returns:
+        Investor info with a 'portfolio' key listing companies and their rounds.
+        Error dict if investor not found.
+    """
+    repo = _get_repo()
+    investor = repo.get_investor_by_slug(investor_slug)
+    if not investor:
+        return {"error": f"Investor not found: {investor_slug}"}
+
+    companies = repo.get_investor_portfolio(investor["id"])
+    return {
+        "investor": investor,
+        "portfolio_count": len(companies),
+        "portfolio": companies,
+    }
+
+
+@mcp.tool()
+def get_funding_stats() -> dict:
+    """Get funding statistics: totals, breakdown by round type, year, and category.
+
+    Returns:
+        Dict with total_rounds, total_raised, by_round_type, by_year, by_category.
+    """
+    repo = _get_repo()
+    return repo.get_funding_stats()
+
+
+@mcp.tool()
+def manage_collection(
+    action: str,
+    name: str | None = None,
+    collection_id: str | None = None,
+    description: str | None = None,
+    collection_type: str | None = None,
+    company_slugs: list[str] | None = None,
+) -> dict | list[dict]:
+    """Manage watchlists and market map collections.
+
+    Args:
+        action: Operation: create, get, add_items, remove_items, list, delete.
+        name: Collection name (required for 'create').
+        collection_id: Collection UUID (required for get/add_items/remove_items/delete).
+        description: Collection description (for 'create').
+        collection_type: Type tag (for 'create', e.g. "watchlist", "market_map").
+        company_slugs: Company slugs to add/remove (for 'add_items'/'remove_items').
+
+    Returns:
+        Collection record(s) or operation result.
+    """
+    repo = _get_repo()
+
+    # Resolve slugs to IDs
+    company_ids = None
+    if company_slugs:
+        company_ids = []
+        for s in company_slugs:
+            c = repo.get_company_by_slug(s)
+            if c:
+                company_ids.append(c["id"])
+
+    return repo.manage_collection(
+        action=action,
+        name=name,
+        collection_id=collection_id,
+        description=description,
+        collection_type=collection_type,
+        company_ids=company_ids,
+    )
+
+
+@mcp.tool()
+def search_people(
+    query: str | None = None,
+    organization: str | None = None,
+    role: str | None = None,
+    limit: int = 50,
+    offset: int = 0,
+) -> list[dict]:
+    """Search people (founders, executives, advisors) by name, organization, or role.
+
+    Args:
+        query: Free-text search across name, title, organization.
+        organization: Filter by organization name.
+        role: Filter by role: founder, ceo, cto, advisor, board_member, employee, other.
+        limit: Max results (default 50).
+        offset: Pagination offset.
+
+    Returns:
+        List of matching person records.
+    """
+    repo = _get_repo()
+    return repo.search_people(
+        query=query,
+        organization=organization,
+        role=role,
+        limit=limit,
+        offset=offset,
+    )
+
+
 if __name__ == "__main__":
     mcp.run()

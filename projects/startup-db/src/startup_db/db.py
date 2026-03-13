@@ -16,6 +16,7 @@ from startup_db.models import (
     FundingRound,
     Investor,
     RoundType,
+    Score,  # noqa: F401 — re-exported for callers
 )
 
 logger = logging.getLogger(__name__)
@@ -43,32 +44,18 @@ class StartupRepository:
         """Insert or update a company by slug."""
         company.ensure_slug()
         row = _company_to_row(company)
-        result = (
-            self._client.table("su_companies")
-            .upsert(row, on_conflict="slug")
-            .execute()
-        )
+        result = self._client.table("su_companies").upsert(row, on_conflict="slug").execute()
         return result.data[0] if result.data else {}
 
     def get_company_by_slug(self, slug: str) -> dict | None:
         """Fetch a single company by slug."""
-        result = (
-            self._client.table("su_companies")
-            .select("*")
-            .eq("slug", slug)
-            .limit(1)
-            .execute()
-        )
+        result = self._client.table("su_companies").select("*").eq("slug", slug).limit(1).execute()
         return result.data[0] if result.data else None
 
     def get_company_by_id(self, company_id: str) -> dict | None:
         """Fetch a single company by ID."""
         result = (
-            self._client.table("su_companies")
-            .select("*")
-            .eq("id", company_id)
-            .limit(1)
-            .execute()
+            self._client.table("su_companies").select("*").eq("id", company_id).limit(1).execute()
         )
         return result.data[0] if result.data else None
 
@@ -89,8 +76,7 @@ class StartupRepository:
 
         if query:
             q = q.or_(
-                f"name.ilike.%{query}%,description.ilike.%{query}%,"
-                f"technology.ilike.%{query}%"
+                f"name.ilike.%{query}%,description.ilike.%{query}%,technology.ilike.%{query}%"
             )
         if main_category:
             q = q.eq("main_category", main_category)
@@ -170,12 +156,7 @@ class StartupRepository:
         )
         if people_links.data:
             person_ids = [p["person_id"] for p in people_links.data]
-            people = (
-                self._client.table("su_people")
-                .select("*")
-                .in_("id", person_ids)
-                .execute()
-            )
+            people = self._client.table("su_people").select("*").in_("id", person_ids).execute()
             people_map = {p["id"]: p for p in (people.data or [])}
             company["people"] = [
                 {
@@ -211,11 +192,7 @@ class StartupRepository:
     ) -> dict:
         """Add a funding round and optionally link investors."""
         row = _funding_to_row(round_data)
-        result = (
-            self._client.table("su_funding_rounds")
-            .insert(row)
-            .execute()
-        )
+        result = self._client.table("su_funding_rounds").insert(row).execute()
         if not result.data:
             return {}
 
@@ -237,22 +214,12 @@ class StartupRepository:
         """Insert or update an investor by slug."""
         investor.ensure_slug()
         row = _investor_to_row(investor)
-        result = (
-            self._client.table("su_investors")
-            .upsert(row, on_conflict="slug")
-            .execute()
-        )
+        result = self._client.table("su_investors").upsert(row, on_conflict="slug").execute()
         return result.data[0] if result.data else {}
 
     def get_investor_by_slug(self, slug: str) -> dict | None:
         """Fetch a single investor by slug."""
-        result = (
-            self._client.table("su_investors")
-            .select("*")
-            .eq("slug", slug)
-            .limit(1)
-            .execute()
-        )
+        result = self._client.table("su_investors").select("*").eq("slug", slug).limit(1).execute()
         return result.data[0] if result.data else None
 
     # ── People ───────────────────────────────────────────────
@@ -305,28 +272,430 @@ class StartupRepository:
 
         return person
 
+    # ── Scoring ───────────────────────────────────────────────
+
+    def score_company(
+        self,
+        company_id: str,
+        tech_strength: float | None = None,
+        market_potential: float | None = None,
+        team_quality: float | None = None,
+        business_fit: float | None = None,
+        traction: float | None = None,
+        overall_score: float | None = None,
+        scored_by: str | None = None,
+        rationale: str | None = None,
+    ) -> dict:
+        """Insert a score record for a company.
+
+        Args:
+            company_id: UUID of the company to score.
+            tech_strength: Technology strength score (0–10).
+            market_potential: Market potential score (0–10).
+            team_quality: Team quality score (0–10).
+            business_fit: Business fit score (0–10).
+            traction: Traction score (0–10).
+            overall_score: Composite overall score (0–10).
+            scored_by: Identifier of the scorer (user, agent name, etc.).
+            rationale: Free-text explanation for the scores.
+
+        Returns:
+            The created score row as a dict.
+        """
+        row: dict[str, Any] = {"company_id": company_id}
+        for field, val in (
+            ("tech_strength", tech_strength),
+            ("market_potential", market_potential),
+            ("team_quality", team_quality),
+            ("business_fit", business_fit),
+            ("traction", traction),
+            ("overall_score", overall_score),
+            ("scored_by", scored_by),
+            ("rationale", rationale),
+        ):
+            if val is not None:
+                row[field] = val
+        result = self._client.table("su_scores").insert(row).execute()
+        return result.data[0] if result.data else {}
+
+    # ── Company Relations ─────────────────────────────────────
+
+    def add_company_relation(
+        self,
+        company_id: str,
+        related_company_id: str,
+        relation_type: str,
+        description: str | None = None,
+    ) -> dict:
+        """Upsert a directional relation between two companies.
+
+        Args:
+            company_id: UUID of the source company.
+            related_company_id: UUID of the related company.
+            relation_type: Type of relation (e.g. 'competitor', 'partner', 'customer').
+            description: Optional free-text description of the relation.
+
+        Returns:
+            The upserted relation row as a dict.
+        """
+        row: dict[str, Any] = {
+            "company_id": company_id,
+            "related_company_id": related_company_id,
+            "relation_type": relation_type,
+        }
+        if description is not None:
+            row["description"] = description
+        result = (
+            self._client.table("su_company_relations")
+            .upsert(row, on_conflict="company_id,related_company_id,relation_type")
+            .execute()
+        )
+        return result.data[0] if result.data else {}
+
+    # ── Investor Search & Portfolio ───────────────────────────
+
+    def search_investors(
+        self,
+        query: str | None = None,
+        investor_type: str | None = None,
+        country: str | None = None,
+        limit: int = 50,
+        offset: int = 0,
+    ) -> list[dict]:
+        """Search investors with optional text and attribute filters.
+
+        Args:
+            query: Free-text search applied to investor name and description.
+            investor_type: Filter by investor type (e.g. 'vc', 'angel', 'cvc').
+            country: Filter by country code / name.
+            limit: Maximum number of results to return.
+            offset: Number of results to skip (for pagination).
+
+        Returns:
+            List of matching investor rows ordered by name.
+        """
+        q = self._client.table("su_investors").select("*")
+        if query:
+            q = q.or_(f"name.ilike.%{query}%,description.ilike.%{query}%")
+        if investor_type:
+            q = q.eq("investor_type", investor_type)
+        if country:
+            q = q.eq("country", country)
+        q = q.order("name").range(offset, offset + limit - 1)
+        result = q.execute()
+        return result.data or []
+
+    def get_investor_portfolio(self, investor_id: str) -> list[dict]:
+        """Return companies that received funding from a given investor.
+
+        Performs a three-step join:
+        su_round_investors → su_funding_rounds → su_companies.
+
+        Args:
+            investor_id: UUID of the investor.
+
+        Returns:
+            List of company dicts, each augmented with a ``funding_rounds``
+            key containing only the rounds where this investor participated.
+        """
+        # Step 1: round IDs for this investor
+        ri_result = (
+            self._client.table("su_round_investors")
+            .select("round_id")
+            .eq("investor_id", investor_id)
+            .execute()
+        )
+        round_ids = [r["round_id"] for r in (ri_result.data or [])]
+        if not round_ids:
+            return []
+
+        # Step 2: funding rounds → company_ids
+        rounds_result = (
+            self._client.table("su_funding_rounds").select("*").in_("id", round_ids).execute()
+        )
+        rounds = rounds_result.data or []
+        company_ids = list({r["company_id"] for r in rounds})
+        if not company_ids:
+            return []
+
+        # Step 3: companies
+        companies_result = (
+            self._client.table("su_companies").select("*").in_("id", company_ids).execute()
+        )
+        companies = companies_result.data or []
+
+        # Attach relevant rounds to each company
+        rounds_by_company: dict[str, list[dict]] = {}
+        for r in rounds:
+            rounds_by_company.setdefault(r["company_id"], []).append(r)
+
+        for company in companies:
+            company["funding_rounds"] = rounds_by_company.get(company["id"], [])
+
+        return companies
+
+    # ── Funding Stats ─────────────────────────────────────────
+
+    def get_funding_stats(self) -> dict:
+        """Aggregate statistics across all funding rounds.
+
+        Fetches all su_funding_rounds joined with su_companies and computes:
+        - total_rounds and total_raised
+        - breakdown by round type
+        - breakdown by year (from announced_date)
+        - breakdown by company main_category
+
+        Returns:
+            Dict with keys: total_rounds, total_raised, by_round_type,
+            by_year, by_category.
+        """
+        # Fetch rounds with company main_category
+        rounds_result = (
+            self._client.table("su_funding_rounds")
+            .select("id,round_type,raised_amount,announced_date,company_id")
+            .execute()
+        )
+        rounds = rounds_result.data or []
+
+        # Fetch company categories
+        company_ids = list({r["company_id"] for r in rounds if r.get("company_id")})
+        category_map: dict[str, str] = {}
+        if company_ids:
+            companies_result = (
+                self._client.table("su_companies")
+                .select("id,main_category")
+                .in_("id", company_ids)
+                .execute()
+            )
+            for c in companies_result.data or []:
+                category_map[c["id"]] = c.get("main_category") or "unknown"
+
+        total_rounds = len(rounds)
+        total_raised = 0.0
+        by_round_type: dict[str, dict[str, Any]] = {}
+        by_year: dict[str, dict[str, Any]] = {}
+        by_category: dict[str, dict[str, Any]] = {}
+
+        for r in rounds:
+            amount = r.get("raised_amount") or 0
+            total_raised += amount
+
+            # by round type
+            rt = r.get("round_type") or "unknown"
+            bucket = by_round_type.setdefault(rt, {"count": 0, "total_raised": 0.0})
+            bucket["count"] += 1
+            bucket["total_raised"] += amount
+
+            # by year
+            announced = r.get("announced_date")
+            year = str(announced)[:4] if announced else "unknown"
+            ybucket = by_year.setdefault(year, {"count": 0, "total_raised": 0.0})
+            ybucket["count"] += 1
+            ybucket["total_raised"] += amount
+
+            # by category
+            cat = category_map.get(r.get("company_id", ""), "unknown")
+            cbucket = by_category.setdefault(cat, {"count": 0, "total_raised": 0.0})
+            cbucket["count"] += 1
+            cbucket["total_raised"] += amount
+
+        return {
+            "total_rounds": total_rounds,
+            "total_raised": total_raised,
+            "by_round_type": dict(sorted(by_round_type.items(), key=lambda x: -x[1]["count"])),
+            "by_year": dict(sorted(by_year.items())),
+            "by_category": dict(sorted(by_category.items(), key=lambda x: -x[1]["count"])),
+        }
+
+    # ── Collections ───────────────────────────────────────────
+
+    def manage_collection(
+        self,
+        action: str,
+        name: str | None = None,
+        collection_id: str | None = None,
+        description: str | None = None,
+        collection_type: str | None = None,
+        company_ids: list[str] | None = None,
+    ) -> dict | list[dict]:
+        """CRUD operations for collections and their items.
+
+        Args:
+            action: One of 'create', 'get', 'add_items', 'remove_items',
+                'list', 'delete'.
+            name: Collection name (required for 'create').
+            collection_id: UUID of the collection (required for most actions
+                except 'create' and 'list').
+            description: Optional description (used in 'create').
+            collection_type: Optional type tag (used in 'create').
+            company_ids: List of company UUIDs (used in 'add_items' /
+                'remove_items').
+
+        Returns:
+            For 'list': list of collection dicts with item counts.
+            For all other actions: a single dict describing the result.
+
+        Raises:
+            ValueError: If a required argument is missing for the given action.
+        """
+        if action == "create":
+            if not name:
+                raise ValueError("'name' is required for action='create'")
+            row: dict[str, Any] = {"name": name}
+            if description:
+                row["description"] = description
+            if collection_type:
+                row["collection_type"] = collection_type
+            result = self._client.table("su_collections").insert(row).execute()
+            return result.data[0] if result.data else {}
+
+        if action == "list":
+            collections_result = (
+                self._client.table("su_collections").select("*").order("name").execute()
+            )
+            collections = collections_result.data or []
+            for col in collections:
+                count_result = (
+                    self._client.table("su_collection_items")
+                    .select("id", count="exact")
+                    .eq("collection_id", col["id"])
+                    .execute()
+                )
+                col["item_count"] = count_result.count or 0
+            return collections
+
+        if not collection_id:
+            raise ValueError(f"'collection_id' is required for action='{action}'")
+
+        if action == "get":
+            col_result = (
+                self._client.table("su_collections")
+                .select("*")
+                .eq("id", collection_id)
+                .limit(1)
+                .execute()
+            )
+            if not col_result.data:
+                return {}
+            collection = col_result.data[0]
+
+            items_result = (
+                self._client.table("su_collection_items")
+                .select("company_id,added_at")
+                .eq("collection_id", collection_id)
+                .execute()
+            )
+            items = items_result.data or []
+            if items:
+                cids = [i["company_id"] for i in items]
+                companies_result = (
+                    self._client.table("su_companies")
+                    .select("id,name,slug,main_category")
+                    .in_("id", cids)
+                    .execute()
+                )
+                company_map = {c["id"]: c for c in (companies_result.data or [])}
+                collection["items"] = [
+                    {**company_map.get(i["company_id"], {}), "added_at": i["added_at"]}
+                    for i in items
+                    if i["company_id"] in company_map
+                ]
+            else:
+                collection["items"] = []
+            return collection
+
+        if action == "add_items":
+            if not company_ids:
+                return {"added": 0}
+            rows = [{"collection_id": collection_id, "company_id": cid} for cid in company_ids]
+            result = (
+                self._client.table("su_collection_items")
+                .upsert(rows, on_conflict="collection_id,company_id")
+                .execute()
+            )
+            return {"added": len(result.data or [])}
+
+        if action == "remove_items":
+            if not company_ids:
+                return {"removed": 0}
+            result = (
+                self._client.table("su_collection_items")
+                .delete()
+                .eq("collection_id", collection_id)
+                .in_("company_id", company_ids)
+                .execute()
+            )
+            return {"removed": len(result.data or [])}
+
+        if action == "delete":
+            self._client.table("su_collections").delete().eq("id", collection_id).execute()
+            return {"deleted": collection_id}
+
+        raise ValueError(f"Unknown action: '{action}'")
+
+    # ── People Search ─────────────────────────────────────────
+
+    def search_people(
+        self,
+        query: str | None = None,
+        organization: str | None = None,
+        role: str | None = None,
+        limit: int = 50,
+        offset: int = 0,
+    ) -> list[dict]:
+        """Search people with optional text and attribute filters.
+
+        When *role* is specified, only people linked to at least one company
+        with that role (via su_company_people) are returned.
+
+        Args:
+            query: Free-text search applied to name, title, and organization.
+            organization: Filter by exact organization name.
+            role: Filter by role in su_company_people (e.g. 'founder', 'ceo').
+            limit: Maximum number of results to return.
+            offset: Number of results to skip (for pagination).
+
+        Returns:
+            List of matching person rows ordered by name.
+        """
+        if role:
+            # Collect person_ids that have the requested role
+            role_result = (
+                self._client.table("su_company_people")
+                .select("person_id")
+                .eq("role", role)
+                .execute()
+            )
+            person_ids = list({r["person_id"] for r in (role_result.data or [])})
+            if not person_ids:
+                return []
+            q = self._client.table("su_people").select("*").in_("id", person_ids)
+        else:
+            q = self._client.table("su_people").select("*")
+
+        if query:
+            q = q.or_(f"name.ilike.%{query}%,title.ilike.%{query}%,organization.ilike.%{query}%")
+        if organization:
+            q = q.eq("organization", organization)
+
+        q = q.order("name").range(offset, offset + limit - 1)
+        result = q.execute()
+        return result.data or []
+
     # ── Batch operations (for migration) ─────────────────────
 
     def batch_insert_companies(self, rows: list[dict]) -> list[dict]:
         """Bulk insert company rows."""
         if not rows:
             return []
-        result = (
-            self._client.table("su_companies")
-            .upsert(rows, on_conflict="slug")
-            .execute()
-        )
+        result = self._client.table("su_companies").upsert(rows, on_conflict="slug").execute()
         return result.data or []
 
     def batch_insert_funding_rounds(self, rows: list[dict]) -> list[dict]:
         """Bulk insert funding round rows."""
         if not rows:
             return []
-        result = (
-            self._client.table("su_funding_rounds")
-            .insert(rows)
-            .execute()
-        )
+        result = self._client.table("su_funding_rounds").insert(rows).execute()
         return result.data or []
 
     def batch_insert_people(self, rows: list[dict]) -> list[dict]:
@@ -363,8 +732,17 @@ def _company_to_row(c: Company) -> dict:
     if c.id:
         row["id"] = c.id
     for field in (
-        "description", "website", "logo_url", "founded_date", "main_category",
-        "sub_category", "country", "city", "technology", "main_product", "discovery_source",
+        "description",
+        "website",
+        "logo_url",
+        "founded_date",
+        "main_category",
+        "sub_category",
+        "country",
+        "city",
+        "technology",
+        "main_product",
+        "discovery_source",
     ):
         val = getattr(c, field, None)
         if val is not None:
