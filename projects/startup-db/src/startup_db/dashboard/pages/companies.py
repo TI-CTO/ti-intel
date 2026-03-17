@@ -31,9 +31,15 @@ from startup_db.taxonomy import (
 )
 
 
-def _fmt_money_short(amount: float | None) -> str:
+def _fmt_money_short(amount: float | int | str | None) -> str:
     """Format money amount compactly."""
-    if not amount:
+    if amount is None:
+        return ""
+    try:
+        amount = float(amount)
+    except (ValueError, TypeError):
+        return ""
+    if amount <= 0:
         return ""
     if amount >= 1_000_000_000:
         return f"${amount / 1_000_000_000:.1f}B"
@@ -82,7 +88,11 @@ def _render_list_table(
 
     def _safe(val: object) -> str:
         s = str(val) if val else ""
-        return "" if s in ("None", "nan") else _html.escape(s)
+        if s in ("None", "nan"):
+            return ""
+        # Remove newlines that break HTML table structure
+        s = s.replace("\n", " ").replace("\r", "")
+        return _html.escape(s)
 
     rows = []
     for comp in companies:
@@ -113,23 +123,29 @@ def _render_list_table(
             )
 
         # Truncate one_liner
-        if len(one_liner) > 80:
-            one_liner = one_liner[:77] + "..."
+        if len(one_liner) > 120:
+            one_liner = one_liner[:117] + "..."
 
         rows.append(
             f'<tr>'
             f'<td><a href="{href}" target="_self">{name}</a></td>'
+            f'<td><a href="{href}" target="_self">{l1_html}</a></td>'
             f'<td><a href="{href}" target="_self">{one_liner}</a></td>'
             f'<td><a href="{href}" target="_self">{country}</a></td>'
             f'<td><a href="{href}" target="_self">{stage}</a></td>'
             f'<td><a href="{href}" target="_self">{raised}</a></td>'
-            f'<td><a href="{href}" target="_self">{l1_html}</a></td>'
             f'</tr>'
         )
 
     header = (
-        "<tr><th>Name</th><th>One-liner</th><th>Country</th>"
-        "<th>Stage</th><th>Raised</th><th>L1 Domain</th></tr>"
+        "<tr>"
+        '<th style="width:12%">Name</th>'
+        '<th style="width:10%">Domain</th>'
+        '<th style="width:40%">기업 개요</th>'
+        '<th style="width:8%">Country</th>'
+        '<th style="width:8%">Stage</th>'
+        '<th style="width:8%">Raised</th>'
+        "</tr>"
     )
     body = "".join(rows)
     return (
@@ -187,7 +203,7 @@ with st.sidebar:
         if selected_l3_raw != "All":
             selected_l3 = selected_l3_raw
 
-    page_size = st.select_slider("Per page", [25, 50, 100, 200], value=50)
+    page_size = st.selectbox("Per page", [20, 40, 60, 80], index=0)
 
 # ── State ────────────────────────────────────────────────────
 if "companies_page" not in st.session_state:
@@ -302,13 +318,17 @@ if companies:
         )
 
     # ── Pagination ───────────────────────────────────────────
-    pag_left, pag_mid, pag_right = st.columns([1, 6, 1])
+    pag_left, _, pag_right = st.columns([1, 8, 1])
     with pag_left:
-        if st.button("← Prev", disabled=st.session_state.companies_page == 0):
+        if st.button(
+            "← Prev",
+            disabled=st.session_state.companies_page == 0,
+            use_container_width=True,
+        ):
             st.session_state.companies_page -= 1
             st.rerun()
     with pag_right:
-        if st.button("Next →"):
+        if st.button("Next →", use_container_width=True):
             st.session_state.companies_page += 1
             st.rerun()
 else:
