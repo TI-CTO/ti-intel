@@ -147,6 +147,64 @@ body {
     font-style: normal;
 }
 
+/* ── Verdict Card (Executive Summary) ────────────────────────────── */
+.verdict-card {
+    display: flex;
+    gap: 0;
+    margin-bottom: 16px;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1.5px solid var(--color-border);
+}
+
+.verdict-item {
+    flex: 1;
+    padding: 10px 14px;
+    text-align: center;
+    border-right: 1px solid var(--color-border);
+}
+
+.verdict-item:last-child {
+    border-right: none;
+}
+
+.verdict-label {
+    font-size: 7pt;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-secondary);
+    margin-bottom: 3px;
+    font-weight: 600;
+}
+
+.verdict-value {
+    font-size: 13pt;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+/* Verdict colors by type */
+.verdict-go .verdict-value {
+    color: #16a34a;
+}
+
+.verdict-conditional-go .verdict-value {
+    color: #d97706;
+}
+
+.verdict-no-go .verdict-value {
+    color: #dc2626;
+}
+
+.verdict-score .verdict-value {
+    color: var(--color-primary);
+}
+
+.verdict-strategy .verdict-value {
+    color: var(--color-text);
+    font-size: 11pt;
+}
+
 /* ── Meta Info Grid (Design 1 top info cards) ───────────────────── */
 .meta-grid {
     display: grid;
@@ -312,20 +370,23 @@ blockquote p {
     line-height: 1.4;
 }
 
-/* Short-content columns: nowrap (first col + last col only) */
-.data-table th:first-child,
-.data-table td:first-child,
-.data-table th:last-child,
-.data-table td:last-child {
-    white-space: nowrap;
-}
-
-/* Content columns (2nd ~ second-to-last): allow wrapping */
-.data-table th:nth-child(n+2):not(:last-child),
-.data-table td:nth-child(n+2):not(:last-child) {
+/* All columns: allow wrapping */
+.data-table th,
+.data-table td {
     white-space: normal;
     word-wrap: break-word;
     overflow-wrap: break-word;
+}
+
+/* Wide tables (5+ cols): added via postprocessor as .wide-table class */
+.data-table.wide-table {
+    font-size: 8pt;
+    table-layout: fixed;
+}
+
+.data-table.wide-table th,
+.data-table.wide-table td {
+    padding: 4px 5px;
 }
 
 .data-table tr {

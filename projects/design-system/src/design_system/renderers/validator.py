@@ -102,11 +102,14 @@ def _detect_report_type(meta: dict) -> str:
 # Level 1: Markdown source validation
 # ---------------------------------------------------------------------------
 
-_CITATION_PATTERN = re.compile(r"\[([A-Z]+-\d+[a-z]?)\]")
+# Citation ID format: G-01, P-03, G-13-S, G-01-C (optional hyphen-suffix)
+_ID_PART = r"[A-Z]+-\d+(?:-[A-Za-z]+)?"
+_ID_PART_LOWER = r"[a-z]+-\d+(?:-[a-z]+)?"
+_CITATION_PATTERN = re.compile(rf"\[({_ID_PART})\]")
 _CITATION_LINK_PATTERN = re.compile(
-    r"\[\[([A-Z]+-\d+[a-z]?)\]\]\(#ref-[a-z]+-\d+[a-z]?\)"
+    rf"\[\[({_ID_PART})\]\]\(#ref-{_ID_PART_LOWER}\)"
 )
-_ANCHOR_PATTERN = re.compile(r'<a\s+id="ref-([a-z]+-\d+[a-z]?)"\s*>\s*</a>')
+_ANCHOR_PATTERN = re.compile(rf'<a\s+id="ref-({_ID_PART_LOWER})"\s*>\s*</a>')
 
 
 def validate_markdown(source: str, meta: dict) -> list[CheckResult]:

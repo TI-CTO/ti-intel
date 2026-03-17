@@ -57,16 +57,27 @@ def _make_md() -> mistune.Markdown:
 
 
 def _preprocess(md_text: str) -> str:
-    """Convert Obsidian wikilinks to standard markdown links before mistune parsing.
+    """Pre-process markdown before mistune parsing.
 
     Handles:
-      [[path/to/file]]       → [file](path/to/file)
-      [[path/to/file|alias]] → [alias](path/to/file)
+      1. Citation double-brackets: [[G-06-S]](#ref-g-06-s) → [G-06-S](#ref-g-06-s)
+         (mistune cannot parse nested brackets with hyphenated suffixes)
+      2. Obsidian wikilinks: [[path/to/file]] → [file](path/to/file)
     """
+    # Step 1: Flatten citation double-bracket links to single-bracket
+    # [[G-01]](#ref-g-01) → [G-01](#ref-g-01)
+    # [[G-06-S]](#ref-g-06-s) → [G-06-S](#ref-g-06-s)
+    _cid = r"[A-Z]+-\d+(?:-[A-Za-z]+)?"
+    md_text = re.sub(
+        rf"\[\[({_cid})\]\]\((#ref-[^)]+)\)",
+        r"[\1](\2)",
+        md_text,
+    )
+
     def _replace_wikilink(m: re.Match) -> str:
         inner = m.group(1)
-        # Skip citation patterns like [G-01] — these are markdown links, not wikilinks
-        if re.match(r"^[A-Z]+-\d+[a-z]?$", inner):
+        # Skip citation patterns like [G-01], [G-06-S] — not wikilinks
+        if re.match(r"^[A-Z]+-\d+(?:-[A-Za-z]+)?$", inner):
             return m.group(0)
         if "|" in inner:
             path, alias = inner.split("|", 1)
@@ -130,6 +141,21 @@ def _postprocess(html: str) -> str:
         r"<table>", '<div class="table-wrapper"><table class="data-table">', html
     )
     html = re.sub(r"</table>", "</table></div>", html)
+    # Add wide-table class to tables with 5+ columns
+    def _add_wide_class(m: re.Match) -> str:
+        table_html = m.group(0)
+        th_count = len(re.findall(r"<th\b", table_html.split("</tr>")[0]))
+        if th_count >= 5:
+            return table_html.replace(
+                'class="data-table"', 'class="data-table wide-table"', 1
+            )
+        return table_html
+    html = re.sub(
+        r'<table class="data-table">.*?</table>',
+        _add_wide_class,
+        html,
+        flags=re.DOTALL,
+    )
     # Move bold text before table into <caption> (displayed below table via CSS)
     html = re.sub(
         r"<p><strong>(.*?)</strong></p>\s*(<div class=\"table-wrapper\"><table class=\"data-table\">)",
@@ -142,21 +168,23 @@ def _postprocess(html: str) -> str:
         r'\2<caption>&lt; \1 &gt;</caption>',
         html,
     )
+    # Citation ID pattern: G-01, P-03, G-13-S, G-01-C (optional hyphen-suffix)
+    _cid = r"[A-Z]+-\d+(?:-[A-Za-z]+)?"
     # Case 1a: mistune converted [[G-01]](#ref-g-01) → <a href="#ref-...">[G-01]</a>
     html = re.sub(
-        r'<a href="(#ref-[^"]*)">\[([A-Z]+-\d+[a-z]?)\]</a>',
+        rf'<a href="(#ref-[^"]*)">\[({_cid})\]</a>',
         r'<a href="\1" class="citation-badge">\2</a>',
         html,
     )
     # Case 1b: mistune converted [S-01](#ref-s-01) → <a href="#ref-...">S-01</a> (no brackets)
     html = re.sub(
-        r'<a href="(#ref-[^"]*)">([A-Z]+-\d+[a-z]?)</a>',
+        rf'<a href="(#ref-[^"]*)">({_cid})</a>',
         r'<a href="\1" class="citation-badge">\2</a>',
         html,
     )
     # Case 2: raw [G-01] or [G-01b] not yet parsed by mistune (no link target)
     html = re.sub(
-        r"\[([A-Z]+-\d+[a-z]?)\]",
+        rf"\[({_cid})\]",
         r'<span class="citation-badge">\1</span>',
         html,
     )
@@ -452,6 +480,9 @@ class PdfRenderer(BaseRenderer):
             date=str(meta.get("date", "")),
             confidence=meta.get("confidence"),
             status=meta.get("status", ""),
+            verdict=meta.get("verdict", ""),
+            score=meta.get("score", ""),
+            strategy=meta.get("strategy", ""),
             sources_count=len(sources_used) if isinstance(sources_used, list) else 0,
             intro_html=intro_html,
             executive_summary_html=exec_summary.html if exec_summary else "",

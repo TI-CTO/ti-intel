@@ -36,6 +36,26 @@
       {% if executive_summary_html %}
       <div class="callout-box no-break">
         <div class="callout-title">Executive Summary</div>
+        {% if verdict %}
+        <div class="verdict-card">
+          <div class="verdict-item verdict-{{ verdict | lower | replace(' ', '-') }}">
+            <div class="verdict-label">판정</div>
+            <div class="verdict-value">{{ verdict }}</div>
+          </div>
+          {% if score %}
+          <div class="verdict-item verdict-score">
+            <div class="verdict-label">점수</div>
+            <div class="verdict-value">{{ score }}</div>
+          </div>
+          {% endif %}
+          {% if strategy %}
+          <div class="verdict-item verdict-strategy">
+            <div class="verdict-label">전략</div>
+            <div class="verdict-value">{{ strategy }}</div>
+          </div>
+          {% endif %}
+        </div>
+        {% endif %}
         {{ executive_summary_html | safe }}
       </div>
       {% endif %}
