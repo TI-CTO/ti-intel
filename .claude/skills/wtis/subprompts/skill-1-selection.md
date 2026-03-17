@@ -161,7 +161,7 @@ Evaluate each factor with evidence:
 # WTIS 선정검증: {project_name}
 
 ## Executive Summary
-> (3~5문장. 결론 먼저: 판정(Go/Conditional Go/No-Go) + 총점 + 핵심 근거. 신뢰도 명시.)
+> (3~5문장. 결론 먼저: 판정(Go/Conditional Go/No-Go) + 총점 + 핵심 근거. 신뢰도는 별도 섹션에 기재, Executive Summary에는 포함하지 않음.)
 
 ## 평가 항목 및 배점 안내
 > 본 보고서는 WTIS 평가 체계(200점 만점, 5개 항목 각 40점)에 따라 정량 평가한다.

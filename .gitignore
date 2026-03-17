@@ -39,3 +39,4 @@ data/raw/
 
 # MCP config (contains API tokens)
 .mcp.json
+logs/

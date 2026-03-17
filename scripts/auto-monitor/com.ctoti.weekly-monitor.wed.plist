@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.ctoti.weekly-monitor.wed</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/zsh</string>
+    <string>/Users/ctoti/Project/ClaudeCode/scripts/auto-monitor/run-weekly-monitor.sh</string>
+    <string>secure-ai</string>
+  </array>
+  <key>StartCalendarInterval</key>
+  <dict>
+    <key>Weekday</key>
+    <integer>3</integer>
+    <key>Hour</key>
+    <integer>9</integer>
+    <key>Minute</key>
+    <integer>0</integer>
+  </dict>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/Users/ctoti/.local/bin:/Users/ctoti/.claude/local:/usr/local/bin:/usr/bin:/bin</string>
+    <key>HOME</key>
+    <string>/Users/ctoti</string>
+  </dict>
+  <key>WorkingDirectory</key>
+  <string>/Users/ctoti/Project/ClaudeCode</string>
+  <key>StandardOutPath</key>
+  <string>/Users/ctoti/Project/ClaudeCode/logs/auto-monitor/launchd-wed.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/ctoti/Project/ClaudeCode/logs/auto-monitor/launchd-wed.err</string>
+</dict>
+</plist>
