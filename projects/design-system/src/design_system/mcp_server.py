@@ -138,7 +138,7 @@ def _dispatch(name: str, args: dict) -> dict:
         if output:
             output_path = Path(output)
         else:
-            output_path = md_path.with_suffix(f".{theme_name}.pptx")
+            output_path = md_path.with_suffix(".pptx")
 
         renderer = PptxRenderer()
         result = renderer.render(presentation, theme, output_path)
@@ -165,7 +165,7 @@ def _dispatch(name: str, args: dict) -> dict:
         if output:
             output_path = Path(output)
         else:
-            output_path = md_path.with_suffix(f".{theme_name}.pdf")
+            output_path = md_path.with_suffix(".pdf")
 
         renderer = PdfRenderer()
         result = renderer.render_markdown(md_path, theme, output_path)

@@ -11,9 +11,9 @@ evaluated: 3
 
 | L2 기술 | 최근 평가일 | 점수 | 판정 | 전략 | 세션 링크 |
 |---------|-----------|------|------|------|----------|
-| 온디바이스 AI | **2026-03-10** | **107/200** | **재검토** | **Borrow(SDK) + Build(한국어) + B2B 선회** | [[2026-03-10_ondevice-ai/final]] |
-| 스팸/피싱/탐지 | 2026-03-03 | 120/200 | Conditional | Borrow + Build | [[2026-03-03_secure-ai-v2/final]] |
-| 양자동형암호 | 2026-03-03 | 120/200 | Conditional | Borrow(PQC) + Watch(HE) | [[2026-03-03_secure-ai-v2/final]] |
+| 온디바이스 AI | **2026-03-10** | **107/200** | **재검토** | **Borrow(SDK) + Build(한국어) + B2B 선회** | [[2026-03-10_ondevice-ai/2026-03-10_wtis-ondevice-ai]] |
+| 스팸/피싱/탐지 | 2026-03-03 | 120/200 | Conditional | Borrow + Build | [[2026-03-03_secure-ai-v2/2026-03-03_wtis-secure-ai-v2]] |
+| 양자동형암호 | 2026-03-03 | 120/200 | Conditional | Borrow(PQC) + Watch(HE) | [[2026-03-03_secure-ai-v2/2026-03-03_wtis-secure-ai-v2]] |
 
 > **참고**: 온디바이스 AI는 v4.1에서 L2 단위 독립 분석 완료 (v4.0 통합 분석 120점 → v4.1 독립 분석 107점). 스팸/피싱/탐지, 양자동형암호는 v4.0 통합 분석 점수 유지 중 (개별 재평가 시 점수 변동 가능).
 
