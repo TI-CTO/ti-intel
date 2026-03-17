@@ -238,7 +238,8 @@ with tab_trend:
             repo._client.table("su_companies")
             .select(
                 "id,name,slug,total_raised,"
-                "country,sub_category,last_funding_type"
+                "country,sub_category,last_funding_type,"
+                "last_funding_date"
             )
             .gt("total_raised", 0)
             .order("total_raised", desc=True)
@@ -266,6 +267,9 @@ with tab_trend:
                 (c.get("round") or "").replace("_", " ").title()
             )
             raised = c.get("raised", 0)
+            last_date = c.get("date") or c.get("last_funding_date") or ""
+            if last_date:
+                last_date = str(last_date)[:10]
             href = f"/company_detail?slug={slug}"
             rows_html.append(
                 f'<tr style="border-bottom:1px solid {border};">'
@@ -287,6 +291,9 @@ with tab_trend:
                 f'<td style="padding:10px 8px;text-align:right;'
                 f'font-weight:600;color:{C["text"]};">'
                 f'{_fmt_money(raised)}</td>'
+                f'<td style="padding:10px 8px;'
+                f'color:{C["text_secondary"]};'
+                f'font-size:0.85rem;">{_html.escape(last_date)}</td>'
                 f'</tr>'
             )
         st.markdown(
@@ -311,6 +318,9 @@ with tab_trend:
             f'<th style="text-align:right;padding:8px;'
             f'color:{C["text_secondary"]};font-size:0.75rem;'
             f'text-transform:uppercase;">Raised</th>'
+            f'<th style="text-align:left;padding:8px;'
+            f'color:{C["text_secondary"]};font-size:0.75rem;'
+            f'text-transform:uppercase;">Last Funded</th>'
             f'</tr></thead>'
             f'<tbody>{"".join(rows_html)}</tbody></table>',
             unsafe_allow_html=True,

@@ -102,6 +102,9 @@ def _render_list_table(
         country = _safe(comp.get("country", ""))
         stage = _safe(comp.get("growth_stage", ""))
         raised = _fmt_money_short(comp.get("total_raised"))
+        last_fund = _safe(comp.get("last_funding_date", ""))
+        if last_fund:
+            last_fund = last_fund[:10]  # YYYY-MM-DD only
 
         href = f"{detail_path}?slug={slug}"
 
@@ -134,17 +137,19 @@ def _render_list_table(
             f'<td><a href="{href}" target="_self">{country}</a></td>'
             f'<td><a href="{href}" target="_self">{stage}</a></td>'
             f'<td><a href="{href}" target="_self">{raised}</a></td>'
+            f'<td><a href="{href}" target="_self">{last_fund}</a></td>'
             f'</tr>'
         )
 
     header = (
         "<tr>"
-        '<th style="width:12%">Name</th>'
-        '<th style="width:10%">Domain</th>'
-        '<th style="width:40%">기업 개요</th>'
-        '<th style="width:8%">Country</th>'
-        '<th style="width:8%">Stage</th>'
+        '<th style="width:11%">Name</th>'
+        '<th style="width:9%">Domain</th>'
+        '<th style="width:34%">기업 개요</th>'
+        '<th style="width:7%">Country</th>'
+        '<th style="width:7%">Stage</th>'
         '<th style="width:8%">Raised</th>'
+        '<th style="width:9%">Last Funded</th>'
         "</tr>"
     )
     body = "".join(rows)
