@@ -85,21 +85,21 @@ v4.1: L2 단위 분석 + 포트폴리오 구조 전환.
 ### Output Files
 | Artifact | Path Pattern | Description |
 |----------|-------------|-------------|
-| SKILL-0 | `outputs/reports/{domain}/{date}_{slug}/skill0.md` | 제안서 분석 (proposal만) |
-| Research | `outputs/reports/{domain}/{date}_{slug}/research.md` | 심층 리서치 |
-| SKILL-1 | `outputs/reports/{domain}/{date}_{slug}/skill1.md` | 선정검증 |
-| Validator | `outputs/reports/{domain}/{date}_{slug}/validator.md` | 교차검증 |
-| Discover | `outputs/reports/{domain}/{date}_{slug}/discover.md` | 기회 탐색 (deep만) |
-| **Final** | `outputs/reports/{domain}/{date}_{slug}/final.md` | **최종 보고서** |
-| Final PDF | `.../{date}_{slug}/final.professional.pdf` | PDF 변환 |
+| SKILL-0 | `outputs/reports/{domain}/{date}_{slug}/{date}_wtis-skill0.md` | 제안서 분석 (proposal만) |
+| Research | `outputs/reports/{domain}/{date}_{slug}/{date}_wtis-research.md` | 심층 리서치 |
+| SKILL-1 | `outputs/reports/{domain}/{date}_{slug}/{date}_wtis-skill1.md` | 선정검증 |
+| Validator | `outputs/reports/{domain}/{date}_{slug}/{date}_wtis-validator.md` | 교차검증 |
+| Discover | `outputs/reports/{domain}/{date}_{slug}/{date}_wtis-discover.md` | 기회 탐색 (deep만) |
+| **Final** | `outputs/reports/{domain}/{date}_{slug}/{date}_wtis-{slug}.md` | **최종 보고서** |
+| Final PDF | `.../{date}_{slug}/{date}_wtis-{slug}.pdf` | PDF 변환 |
 | Portfolio | `outputs/reports/{domain}/portfolio.md` | 포트폴리오 (자동 갱신) |
-| Portfolio PDF | `outputs/reports/{domain}/portfolio.professional.pdf` | 포트폴리오 PDF |
+| Portfolio PDF | `outputs/reports/{domain}/portfolio.pdf` | 포트폴리오 PDF |
 
 ### Return
 ```yaml
 status: pass | fail | needs-followup
 summary: "{l2_topic} — {verdict} ({score}/200) — {strategy}"
-file_path: "final.md 절대 경로"
+file_path: "{date}_wtis-{slug}.md 절대 경로"
 session_dir: "세션 폴더 절대 경로"
 verdict: "Go | Conditional Go | No-Go"
 score: "N/200"
@@ -142,23 +142,23 @@ strategy: "Buy | Borrow | Build | Watch"
 outputs/reports/
   {domain}/                         ← L1 도메인 (agentic-ai / voice-ai / secure-ai)
     portfolio.md                    ← 포트폴리오 (L2 분석 후 자동 갱신)
-    portfolio.professional.pdf
+    portfolio.pdf
     {date}_{slug}/                  ← L2 분석 세션
-      final.md                     # 최종 보고서
-      final.professional.pdf       # PDF 변환
-      skill0.md                    # SKILL-0 결과 (중간 산출물)
-      research.md                  # research-deep 결과 (중간 산출물)
-      skill1.md                    # SKILL-1 결과 (중간 산출물)
-      validator.md                 # validator 결과 (중간 산출물)
-      discover.md                  # discover 결과 (deep mode, 중간 산출물)
+      {date}_wtis-{slug}.md        # 최종 보고서
+      {date}_wtis-{slug}.pdf  # PDF 변환
+      {date}_wtis-skill0.md        # SKILL-0 결과 (중간 산출물)
+      {date}_wtis-research.md      # research-deep 결과 (중간 산출물)
+      {date}_wtis-skill1.md        # SKILL-1 결과 (중간 산출물)
+      {date}_wtis-validator.md     # validator 결과 (중간 산출물)
+      {date}_wtis-discover.md      # discover 결과 (deep mode, 중간 산출물)
   weekly/                           ← 주간 모니터링 (기존 유지)
 ```
 
 ### 검색 대상 파일
 ```
-outputs/reports/{domain}/*/final.md         # WTIS 최종 리포트
-outputs/reports/{domain}/*/research.md      # research-deep 결과
-outputs/reports/{domain}/*/discover.md      # discover 결과
+outputs/reports/{domain}/*/{date}_wtis-{slug}.md    # WTIS 최종 리포트
+outputs/reports/{domain}/*/{date}_wtis-research.md  # research-deep 결과
+outputs/reports/{domain}/*/{date}_wtis-discover.md  # discover 결과
 outputs/reports/{domain}/portfolio.md       # 포트폴리오 종합
 ```
 (skill0, skill1, validator 파일은 제외 — 중간 산출물)
@@ -221,12 +221,12 @@ outputs/reports/{domain}/portfolio.md       # 포트폴리오 종합
     ├─ [1] SKILL-0 실행 (subagent_type: researcher, model: sonnet)
     │   └─ 프롬프트: skill-0-proposal.md 로드
     │   └─ 제안서 파싱 → Analysis Brief 생성 (domain, l2_topic 필드 포함)
-    │   └─ 결과 파일: outputs/reports/{domain}/{date}_{slug}/skill0.md
+    │   └─ 결과 파일: outputs/reports/{domain}/{date}_{slug}/{date}_wtis-skill0.md
     │
     ├─ [2] research-deep 에이전트 호출 (Layer 2 위임)
     │   └─ 입력: SKILL-0 결과 파일 경로 + 도메인 파라미터
     │   └─ 지시: "WTIS 제안서 분석을 위한 심층 리서치. domain-params.md의 소스 우선순위 준수"
-    │   └─ 결과 파일: outputs/reports/{domain}/{date}_{slug}/research.md
+    │   └─ 결과 파일: outputs/reports/{domain}/{date}_{slug}/{date}_wtis-research.md
     │
     ├─ [3] SKILL-1 실행 (subagent_type: researcher, model: opus)
     │   └─ 프롬프트: skill-1-selection.md 로드
@@ -248,7 +248,7 @@ outputs/reports/{domain}/portfolio.md       # 포트폴리오 종합
     │   └─ 최대 1회만 실행 (무한 루프 방지)
     │
     ├─ [5] 최종 보고서 생성
-    │   └─ 경로: outputs/reports/{domain}/{date}_{slug}/final.md
+    │   └─ 경로: outputs/reports/{domain}/{date}_{slug}/{date}_wtis-{slug}.md
     │
     ├─ [5.5] 포트폴리오 갱신 (자동)
     │   └─ outputs/reports/{domain}/portfolio.md 읽기 (없으면 신규 생성)
@@ -257,8 +257,8 @@ outputs/reports/{domain}/portfolio.md       # 포트폴리오 종합
     │   └─ 평가 이력 행 추가
     │
     └─ [6] PDF 생성
-        └─ design-system MCP → render_pdf(final.md) → final.professional.pdf
-        └─ design-system MCP → render_pdf(portfolio.md) → portfolio.professional.pdf
+        └─ design-system MCP → render_pdf({date}_wtis-{slug}.md) → {date}_wtis-{slug}.pdf
+        └─ design-system MCP → render_pdf(portfolio.md) → portfolio.pdf
 ```
 
 ### Quick Mode — 폐지 (v4.1)
@@ -279,20 +279,20 @@ outputs/reports/{domain}/portfolio.md       # 포트폴리오 종합
     │
     ├─ research-deep 에이전트 호출 (Layer 2 위임)
     │   └─ 입력: 검증 대상 + 도메인 파라미터 + prior_reports (있으면)
-    │   └─ 결과 파일: outputs/reports/{domain}/{date}_{slug}/research.md
+    │   └─ 결과 파일: outputs/reports/{domain}/{date}_{slug}/{date}_wtis-research.md
     │
     ├─ SKILL-1 또는 SKILL-2 실행 (선정 또는 진행 검증)
-    │   └─ 결과 파일: outputs/reports/{domain}/{date}_{slug}/skill1.md
+    │   └─ 결과 파일: outputs/reports/{domain}/{date}_{slug}/{date}_wtis-skill1.md
     │
     ├─ validator 에이전트 호출 (Layer 2 위임)
-    │   └─ 결과 파일: outputs/reports/{domain}/{date}_{slug}/validator.md
+    │   └─ 결과 파일: outputs/reports/{domain}/{date}_{slug}/{date}_wtis-validator.md
     │
     ├─ 최종 보고서 생성
-    │   └─ 경로: outputs/reports/{domain}/{date}_{slug}/final.md
+    │   └─ 경로: outputs/reports/{domain}/{date}_{slug}/{date}_wtis-{slug}.md
     │
     ├─ [5.5] 포트폴리오 갱신 (자동)
     │
-    └─ [자동] design-system MCP → render_pdf(final.md + portfolio.md)
+    └─ [자동] design-system MCP → render_pdf({date}_wtis-{slug}.md + portfolio.md)
 ```
 
 ### Deep Mode
@@ -309,25 +309,25 @@ outputs/reports/{domain}/portfolio.md       # 포트폴리오 종합
     ├─ [1] discover 스킬 호출 (Layer 2 위임) — SKILL-3 대체
     │   └─ 입력: 도메인 + domain-params.md의 competitors, taxonomy 전달
     │   └─ prior_reports 있으면: "기존 포트폴리오" 파라미터로 전달 (중복 방지)
-    │   └─ 결과 파일: outputs/reports/{domain}/{date}_{slug}/discover.md
+    │   └─ 결과 파일: outputs/reports/{domain}/{date}_{slug}/{date}_wtis-discover.md
     │
     ├─ [2] research-deep 에이전트 호출 (Layer 2 위임) — SKILL-4 대체
     │   └─ 입력: discover 결과 파일 + 도메인 파라미터 + prior_reports (있으면)
-    │   └─ 결과 파일: outputs/reports/{domain}/{date}_{slug}/research.md
+    │   └─ 결과 파일: outputs/reports/{domain}/{date}_{slug}/{date}_wtis-research.md
     │
     ├─ [3] SKILL-1 실행 (subagent_type: researcher, model: opus)
     │   └─ discover + research-deep 결과를 입력으로 전달
-    │   └─ 결과 파일: outputs/reports/{domain}/{date}_{slug}/skill1.md
+    │   └─ 결과 파일: outputs/reports/{domain}/{date}_{slug}/{date}_wtis-skill1.md
     │
     ├─ [4] validator 에이전트 호출 (Layer 2 위임) — SKILL-5 대체
-    │   └─ 결과 파일: outputs/reports/{domain}/{date}_{slug}/validator.md
+    │   └─ 결과 파일: outputs/reports/{domain}/{date}_{slug}/{date}_wtis-validator.md
     │
     ├─ [5] 최종 보고서 생성
-    │   └─ 경로: outputs/reports/{domain}/{date}_{slug}/final.md
+    │   └─ 경로: outputs/reports/{domain}/{date}_{slug}/{date}_wtis-{slug}.md
     │
     ├─ [5.5] 포트폴리오 갱신 (자동)
     │
-    └─ [6] design-system MCP → render_pdf(final.md + portfolio.md)
+    └─ [6] design-system MCP → render_pdf({date}_wtis-{slug}.md + portfolio.md)
 ```
 
 ---
@@ -562,7 +562,7 @@ design-system MCP → render_pdf(
 )
 ```
 
-- 성공 시: `{domain}/{date}_{slug}/final.professional.pdf` + `{domain}/portfolio.professional.pdf` 생성
+- 성공 시: `{domain}/{date}_{slug}/{date}_wtis-{slug}.pdf` + `{domain}/portfolio.pdf` 생성
 - 실패 시: 오류 메시지 출력 후 마크다운 파일 경로를 대신 안내 (파이프라인 중단 없음)
 
 ### Step C: Next Steps 안내

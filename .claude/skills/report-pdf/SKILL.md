@@ -63,8 +63,8 @@ render_pdf(
 
 ## 출력 위치
 
-- 기본: 소스 `.md` 파일과 같은 디렉토리, `.professional.pdf` 확장자
-- 예: `outputs/reports/2026-02-25_research-secure-ai.professional.pdf`
+- 기본: 소스 `.md` 파일과 같은 디렉토리, `.pdf` 확장자
+- 예: `outputs/reports/2026-02-25_research-secure-ai.pdf`
 
 ## 사용 예시
 
@@ -75,7 +75,7 @@ render_pdf(
 **완료 시:**
 ```
 PDF 생성 완료
-파일: outputs/reports/2026-02-25_research-secure-ai.professional.pdf
+파일: outputs/reports/2026-02-25_research-secure-ai.pdf
 테마: professional  용지: A4
 ```
 

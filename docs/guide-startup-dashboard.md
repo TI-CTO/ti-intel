@@ -5,7 +5,7 @@
 
 ---
 
-## 1. 현황 (2026-03-13)
+## 1. 현황 (2026-03-16)
 
 ### 데이터 현황
 
@@ -15,9 +15,9 @@
 | su_funding_rounds | 627 | 통화: USD |
 | su_people | 602 | 창업자·임원 |
 | su_company_relations | 13,354 | competitor 6,631쌍 + partner 46쌍 |
-| su_scores | 806 | tech_strength 초기값 (CSV 기반) |
-| su_investors | 0 | 외부 수집 필요 |
-| su_round_investors | 0 | 투자자 데이터 의존 |
+| su_scores | 806 | 5차원 + overall 백필 완료 |
+| su_investors | 188 | TheVC/Crunchbase 수집 완료 |
+| su_round_investors | 977 | 투자자-라운드 매핑 완료 |
 | su_collections | 0 | 워치리스트 미생성 |
 | su_signals | 0 | intel-store 연동 미구현 |
 
@@ -87,6 +87,15 @@ uv run python scripts/backfill_relations.py
 
 # 스코어 초기값 보강 (tech_strength)
 uv run python scripts/backfill_scores.py
+
+# 5차원 + overall 스코어 백필
+uv run python scripts/backfill_scores_full.py
+
+# 투자자 데이터 수집 (TheVC/Crunchbase)
+uv run python scripts/collect_investors.py
+
+# 투자자 JSON → DB 적재
+uv run python scripts/upsert_investors_from_json.py
 ```
 
 ---
@@ -101,13 +110,13 @@ uv run python scripts/backfill_scores.py
 | metadata.bigtech_collaboration | su_company_relations (partner) | `backfill_relations.py` |
 | metadata.tech_competitiveness | su_scores (tech_strength) | `backfill_scores.py` |
 
-### 외부 수집 필요 (미완)
+### 외부 수집 필요
 
-| 대상 | 방법 | 우선순위 |
-|------|------|---------|
-| su_investors + su_round_investors | TheVC/Crunchbase 배치 수집 (상위 200개 회사) | P1 |
-| su_scores (나머지 4차원) | startup-analyst 분석 리포트 → DB 저장 자동화 | P2 |
-| su_signals | intel-store 연동 (Phase 3 MCP 도구) | P3 |
+| 대상 | 방법 | 우선순위 | 상태 |
+|------|------|---------|------|
+| su_investors + su_round_investors | TheVC/Crunchbase 배치 수집 (상위 200개 회사) | P1 | **완료** (188 / 977) |
+| su_scores (5차원 + overall) | `backfill_scores_full.py` 백필 | P2 | **완료** |
+| su_signals | intel-store 연동 (Phase 3 MCP 도구) | P3 | 미착수 |
 
 ---
 
@@ -165,3 +174,14 @@ uv run streamlit run src/startup_db/dashboard/app.py
 [열람] Obsidian 그래프 뷰 / Dataview 필터
   → 팀원 열람 + 큐레이션
 ```
+
+---
+
+## 7. Phase 로드맵
+
+| Phase | 내용 | 상태 |
+|-------|------|------|
+| **Phase 0** | Obsidian 연동 — 807건 회사 노트 + Dataview + 그래프 뷰 | **완료** |
+| **Phase 1** | 데이터 보강 — 투자자 수집 (188건), 스코어 백필 (5차원+overall) | **완료** |
+| **Phase 2** | Streamlit 대시보드 — 통계·차트·관계 그래프 시각화 | 미착수 |
+| **Phase 3** | intel-store 연동 — su_signals MCP 도구 + 기술 동향 연결 | 미착수 |

@@ -61,8 +61,8 @@ vault_paths: ["Obsidian 볼트 내 경로 목록"]
 
 ### wtis (WTIS 분석 세션)
 - **단위**: 세션 폴더 전체 (`{date}_{slug}/`)
-- **복사 대상**: `final.md` + `final.*.pdf` (intermediate 파일 제외)
-- **대상 구조**: `30-Reports/{domain}/{date}_{slug}/final.md` + PDF
+- **복사 대상**: `{date}_wtis-{slug}.md` + `{date}_wtis-{slug}.*.pdf` (intermediate 파일 제외)
+- **대상 구조**: `30-Reports/{domain}/{date}_{slug}/{date}_wtis-{slug}.md` + PDF
 - **도메인 폴더** 자동 생성 (secure-ai, agentic-ai 등)
 
 ### portfolio (도메인 포트폴리오)
@@ -104,7 +104,7 @@ vault_paths: ["Obsidian 볼트 내 경로 목록"]
    - `updated` 날짜 추가 (오늘)
 
 5. **파일 복사:**
-   - wtis: 세션 폴더 내 `final.md` + `final.*.pdf`만 복사
+   - wtis: 세션 폴더 내 `{date}_wtis-{slug}.md` + `{date}_wtis-{slug}.*.pdf`만 복사
    - portfolio: `portfolio.md` + `portfolio.*.pdf` 복사
    - weekly/research: 단일 파일 + 동반 PDF 복사
    - **PPTX는 복사하지 않음** (Obsidian 미지원)

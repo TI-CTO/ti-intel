@@ -49,7 +49,7 @@ argument-hint: "<agentic-ai | voice-ai | secure-ai>"
 | Artifact | Path Pattern | Description |
 |----------|-------------|-------------|
 | 메인 리포트 | `outputs/reports/weekly/YYYY-MM-DD_weekly-{domain}.md` | Quick + Deep 종합 |
-| PDF | `outputs/reports/weekly/YYYY-MM-DD_weekly-{domain}.professional.pdf` | 메인 리포트 PDF |
+| PDF | `outputs/reports/weekly/YYYY-MM-DD_weekly-{domain}.pdf` | 메인 리포트 PDF |
 | Deep 리서치 | `outputs/reports/weekly/YYYY-MM-DD_research-{l3-slug}.md` | L3별 심층 분석 (🟡🔴만) |
 
 ### Return
@@ -265,7 +265,7 @@ trend-tracker: upsert_snapshot(
 ```
 outputs/reports/weekly/
   YYYY-MM-DD_weekly-{domain-slug}.md              ← 메인 리포트 (Quick + Deep 요약)
-  YYYY-MM-DD_weekly-{domain-slug}.professional.pdf ← PDF
+  YYYY-MM-DD_weekly-{domain-slug}.pdf ← PDF
   YYYY-MM-DD_research-{l3-slug}.md                ← Deep 심층 리서치 (L3별 개별 파일)
 ```
 
