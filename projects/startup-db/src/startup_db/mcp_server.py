@@ -17,6 +17,11 @@ from startup_db.models import (
     RoundType,
     slugify,
 )
+from startup_db.taxonomy import (
+    get_l3_slugs_for_l1,
+    get_l3_slugs_for_l2,
+    is_valid_l3,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -39,10 +44,13 @@ def search_companies(
     country: str | None = None,
     status: str | None = None,
     tags: list[str] | None = None,
+    l1: str | None = None,
+    l2: str | None = None,
+    l3_slug: str | None = None,
     limit: int = 50,
     offset: int = 0,
 ) -> list[dict]:
-    """Search startups by name, category, country, status, or tags.
+    """Search startups by name, category, country, status, tags, or tech taxonomy.
 
     Args:
         query: Free-text search across name, description, technology.
@@ -51,6 +59,9 @@ def search_companies(
         country: Filter by country (e.g. "한국", "미국").
         status: Filter by status: active, acquired, ipo, defunct, unknown.
         tags: Filter by overlapping tags (any match).
+        l1: Filter by L1 domain: agentic-ai, voice-ai, secure-ai.
+        l2: Filter by L2 area slug (e.g. "hybrid-ai-infra").
+        l3_slug: Filter by L3 technology slug (e.g. "adaptive-rag").
         limit: Max results (default 50).
         offset: Pagination offset.
 
@@ -58,6 +69,38 @@ def search_companies(
         List of company records.
     """
     repo = _get_repo()
+
+    # If taxonomy filter is provided, use topic-based search
+    topic_slugs: list[str] | None = None
+    if l3_slug:
+        topic_slugs = [l3_slug]
+    elif l2:
+        topic_slugs = get_l3_slugs_for_l2(l2)
+    elif l1:
+        topic_slugs = get_l3_slugs_for_l1(l1)
+
+    if topic_slugs:
+        # Get companies by topic, then apply additional filters
+        companies = repo.search_companies_by_topics(topic_slugs, limit=limit, offset=offset)
+        # Apply filters in-memory for topic-based search
+        if query:
+            q_lower = query.lower()
+            companies = [
+                c for c in companies
+                if q_lower in (c.get("name") or "").lower()
+                or q_lower in (c.get("description") or "").lower()
+                or q_lower in (c.get("technology") or "").lower()
+            ]
+        if main_category:
+            companies = [c for c in companies if c.get("main_category") == main_category]
+        if sub_category:
+            companies = [c for c in companies if c.get("sub_category") == sub_category]
+        if country:
+            companies = [c for c in companies if c.get("country") == country]
+        if status:
+            companies = [c for c in companies if c.get("status") == status]
+        return companies
+
     return repo.search_companies(
         query=query,
         main_category=main_category,
@@ -492,6 +535,75 @@ def search_people(
         limit=limit,
         offset=offset,
     )
+
+
+# ── Phase 3 Tools ────────────────────────────────────────────
+
+
+@mcp.tool()
+def assign_company_topics(
+    company_slug: str,
+    l3_slugs: list[str],
+    assigned_by: str = "manual",
+) -> dict:
+    """Assign L3 technology topics to a company.
+
+    Args:
+        company_slug: Target company slug.
+        l3_slugs: List of L3 technology slugs to assign
+            (e.g. ["adaptive-rag", "agent-orchestration"]).
+        assigned_by: Who performed the assignment (default "manual").
+
+    Returns:
+        Dict with assigned topics and L1/L2 context. Error if company not found or slugs invalid.
+    """
+    repo = _get_repo()
+    company = repo.get_company_by_slug(company_slug)
+    if not company:
+        return {"error": f"Company not found: {company_slug}"}
+
+    # Validate all slugs
+    invalid = [s for s in l3_slugs if not is_valid_l3(s)]
+    if invalid:
+        from startup_db.taxonomy import get_all_l3_slugs
+        return {
+            "error": f"Invalid L3 slugs: {invalid}",
+            "valid_slugs": get_all_l3_slugs(),
+        }
+
+    result = repo.assign_company_topics(
+        company_id=company["id"],
+        l3_slugs=l3_slugs,
+        assigned_by=assigned_by,
+    )
+    return {
+        "company": company_slug,
+        "assigned": len(result),
+        "topics": [r["l3_slug"] for r in result],
+    }
+
+
+@mcp.tool()
+def remove_company_topics(
+    company_slug: str,
+    l3_slugs: list[str],
+) -> dict:
+    """Remove L3 technology topic assignments from a company.
+
+    Args:
+        company_slug: Target company slug.
+        l3_slugs: List of L3 slugs to remove.
+
+    Returns:
+        Dict with removal count. Error if company not found.
+    """
+    repo = _get_repo()
+    company = repo.get_company_by_slug(company_slug)
+    if not company:
+        return {"error": f"Company not found: {company_slug}"}
+
+    removed = repo.remove_company_topics(company_id=company["id"], l3_slugs=l3_slugs)
+    return {"company": company_slug, "removed": removed}
 
 
 if __name__ == "__main__":

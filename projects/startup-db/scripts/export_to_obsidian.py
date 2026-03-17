@@ -31,6 +31,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 from supabase import Client, create_client  # noqa: E402
 
 from startup_db.config import settings  # noqa: E402
+from startup_db.taxonomy import L1_BY_SUBCATEGORY  # noqa: E402
 
 logging.basicConfig(
     level=logging.INFO,
@@ -265,6 +266,37 @@ def fetch_company_relations_bulk(client: Client) -> dict[str, list[dict]]:
     return grouped
 
 
+def _fetch_company_topics_bulk(client: Client) -> dict[str, list[dict]]:
+    """Fetch all company topic assignments grouped by company_id.
+
+    Args:
+        client: Supabase client.
+
+    Returns:
+        Mapping of company_id → list of topic rows.
+    """
+    all_rows: list[dict] = []
+    offset = 0
+
+    while True:
+        result = (
+            client.table("su_company_topics")
+            .select("company_id,l3_slug,assigned_by")
+            .range(offset, offset + PAGE_SIZE - 1)
+            .execute()
+        )
+        batch = result.data or []
+        all_rows.extend(batch)
+        if len(batch) < PAGE_SIZE:
+            break
+        offset += PAGE_SIZE
+
+    grouped: dict[str, list[dict]] = defaultdict(list)
+    for row in all_rows:
+        grouped[row["company_id"]].append(row)
+    return grouped
+
+
 # ── Formatting helpers ────────────────────────────────────────
 
 
@@ -413,6 +445,7 @@ def build_sub_category_index(companies: list[dict]) -> dict[tuple[str, str], lis
 def build_frontmatter(
     company: dict,
     funding_rounds: list[dict],
+    company_topics: list[dict] | None = None,
 ) -> str:
     """Build YAML frontmatter block for a company note.
 
@@ -431,6 +464,41 @@ def build_frontmatter(
     city = company.get("city", "")
     website = company.get("website", "")
     tags: list[str] = company.get("tags") or []
+
+    # Add L1 domain tag for Obsidian graph coloring
+    # Mapping from taxonomy.py returns bare L1 slug; Obsidian uses "L1/" prefix.
+    # Also include infra/industry mappings for Obsidian-only tags.
+    _OBSIDIAN_L1_EXTRAS: dict[str, str] = {
+        "Cloud": "L1/infra",
+        "NPU": "L1/infra",
+        "GPU": "L1/infra",
+        "Storage": "L1/infra",
+        "Data Lake": "L1/infra",
+        "Data 증강/ 라벨링": "L1/infra",
+        "Data 분석": "L1/infra",
+        "Data Ops": "L1/infra",
+        "DataOps": "L1/infra",
+        "의료": "L1/industry",
+        "헬스케어": "L1/industry",
+        "교육": "L1/industry",
+        "금융": "L1/industry",
+        "Mobility": "L1/industry",
+        "Robot": "L1/industry",
+        "패션": "L1/industry",
+        "환경": "L1/industry",
+        "광고": "L1/industry",
+        "법률": "L1/industry",
+        "도메인 특화": "L1/industry",
+        "연구": "L1/industry",
+        "기타": "L1/industry",
+    }
+    l1_slug = L1_BY_SUBCATEGORY.get(sub_category)
+    l1_tag = f"L1/{l1_slug}" if l1_slug else _OBSIDIAN_L1_EXTRAS.get(sub_category)
+    if l1_tag:
+        # Remove old cat/ tags if present
+        tags = [t for t in tags if not t.startswith("cat/")]
+        if l1_tag not in tags:
+            tags = [l1_tag, *tags]
 
     # Compute funding_total and latest_round from funding_rounds
     funding_total: float | None = None
@@ -488,6 +556,17 @@ def build_frontmatter(
         lines.append(f"latest_round: {format_round_type(latest_round).lower()}")
     if founded:
         lines.append(f"founded: {founded}")
+    # New enrichment fields
+    growth_stage = company.get("growth_stage")
+    if growth_stage:
+        lines.append(f"growth_stage: {growth_stage}")
+    total_raised_val = company.get("total_raised")
+    if total_raised_val:
+        lines.append(f"total_raised_raw: {total_raised_val}")
+    # L3 topics from su_company_topics
+    if company_topics:
+        topic_slugs = [t["l3_slug"] for t in company_topics]
+        lines.append(f"l3_topics: {yaml_tags(topic_slugs)}")
     lines.append(f"updated: {TODAY}")
     lines.append("---")
 
@@ -704,6 +783,7 @@ def build_company_note(
     company_relations_map: dict[str, list[dict]],
     slug_to_company: dict[str, dict],
     sub_category_index: dict[tuple[str, str], list[dict]],
+    company_topics: list[dict] | None = None,
 ) -> str:
     """Assemble the full Obsidian markdown note for a company.
 
@@ -726,7 +806,7 @@ def build_company_note(
     technology = company.get("technology") or ""
 
     # Frontmatter
-    frontmatter = build_frontmatter(company, funding_rounds)
+    frontmatter = build_frontmatter(company, funding_rounds, company_topics)
 
     # Body sections
     sections: list[str] = [frontmatter, "", f"# {name}", ""]
@@ -850,6 +930,10 @@ def export(dry_run: bool = False) -> None:
     logger.info("Fetching company relations...")
     company_relations_map = fetch_company_relations_bulk(client)
 
+    logger.info("Fetching company topics...")
+    company_topics_map = _fetch_company_topics_bulk(client)
+    logger.info("Fetched topics for %d companies", len(company_topics_map))
+
     # ── Build lookup indexes ──
     slug_to_company: dict[str, dict] = {c["slug"]: c for c in companies if c.get("slug")}
     sub_category_index = build_sub_category_index(companies)
@@ -898,6 +982,7 @@ def export(dry_run: bool = False) -> None:
                 company_relations_map=company_relations_map,
                 slug_to_company=slug_to_company,
                 sub_category_index=sub_category_index,
+                company_topics=company_topics_map.get(company_id),
             )
         except Exception:
             logger.exception("Failed to build note for %s (%s)", name, slug)

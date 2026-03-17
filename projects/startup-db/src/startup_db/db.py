@@ -181,6 +181,16 @@ class StartupRepository:
         )
         company["latest_score"] = score.data[0] if score.data else None
 
+        # Topics
+        topics = (
+            self._client.table("su_company_topics")
+            .select("l3_slug,assigned_by,assigned_at")
+            .eq("company_id", cid)
+            .order("l3_slug")
+            .execute()
+        )
+        company["topics"] = topics.data or []
+
         return company
 
     # ── Funding ──────────────────────────────────────────────
@@ -680,6 +690,124 @@ class StartupRepository:
 
         q = q.order("name").range(offset, offset + limit - 1)
         result = q.execute()
+        return result.data or []
+
+    # ── Company Topics ────────────────────────────────────────
+
+    def assign_company_topics(
+        self,
+        company_id: str,
+        l3_slugs: list[str],
+        assigned_by: str | None = None,
+    ) -> list[dict]:
+        """Assign L3 topic slugs to a company.
+
+        Args:
+            company_id: UUID of the company.
+            l3_slugs: List of L3 technology slugs to assign.
+            assigned_by: Who performed the assignment.
+
+        Returns:
+            List of upserted topic rows.
+        """
+        if not l3_slugs:
+            return []
+        rows = [
+            {
+                "company_id": company_id,
+                "l3_slug": slug,
+                "assigned_by": assigned_by,
+            }
+            for slug in l3_slugs
+        ]
+        result = (
+            self._client.table("su_company_topics")
+            .upsert(rows, on_conflict="company_id,l3_slug")
+            .execute()
+        )
+        return result.data or []
+
+    def remove_company_topics(
+        self,
+        company_id: str,
+        l3_slugs: list[str],
+    ) -> int:
+        """Remove L3 topic assignments from a company.
+
+        Args:
+            company_id: UUID of the company.
+            l3_slugs: List of L3 slugs to remove.
+
+        Returns:
+            Number of rows deleted.
+        """
+        if not l3_slugs:
+            return 0
+        result = (
+            self._client.table("su_company_topics")
+            .delete()
+            .eq("company_id", company_id)
+            .in_("l3_slug", l3_slugs)
+            .execute()
+        )
+        return len(result.data or [])
+
+    def get_company_topics(self, company_id: str) -> list[dict]:
+        """Get all topic assignments for a company.
+
+        Args:
+            company_id: UUID of the company.
+
+        Returns:
+            List of topic rows with l3_slug, assigned_by, assigned_at.
+        """
+        result = (
+            self._client.table("su_company_topics")
+            .select("*")
+            .eq("company_id", company_id)
+            .order("l3_slug")
+            .execute()
+        )
+        return result.data or []
+
+    def search_companies_by_topics(
+        self,
+        l3_slugs: list[str],
+        limit: int = 50,
+        offset: int = 0,
+    ) -> list[dict]:
+        """Search companies that have any of the given L3 topic assignments.
+
+        Args:
+            l3_slugs: L3 slugs to filter by.
+            limit: Maximum results.
+            offset: Pagination offset.
+
+        Returns:
+            List of company dicts.
+        """
+        if not l3_slugs:
+            return []
+
+        # Get company IDs from topics table
+        topics_result = (
+            self._client.table("su_company_topics")
+            .select("company_id")
+            .in_("l3_slug", l3_slugs)
+            .execute()
+        )
+        company_ids = list({r["company_id"] for r in (topics_result.data or [])})
+        if not company_ids:
+            return []
+
+        result = (
+            self._client.table("su_companies")
+            .select("*")
+            .in_("id", company_ids)
+            .order("name")
+            .range(offset, offset + limit - 1)
+            .execute()
+        )
         return result.data or []
 
     # ── Batch operations (for migration) ─────────────────────

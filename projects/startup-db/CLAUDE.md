@@ -6,8 +6,9 @@
 
 ## Architecture
 - **DB**: Supabase PostgreSQL (intel-store와 동일 인스턴스, `su_` 네임스페이스)
-- **스키마**: 11개 테이블 (companies, people, investors, funding_rounds, round_investors, acquisitions, company_people, company_relations, collections, collection_items, scores, signals)
-- **MCP 도구**: Phase 1 (검색/등록/펀딩/통계), Phase 2 (인물/관계/평가), Phase 3 (intel-store 연동)
+- **스키마**: 12개 테이블 (companies, people, investors, funding_rounds, round_investors, acquisitions, company_people, company_relations, collections, collection_items, scores, signals, company_topics)
+- **MCP 도구**: Phase 1 (검색/등록/펀딩/통계), Phase 2 (인물/관계/평가), Phase 3 (토픽/taxonomy)
+- **Taxonomy**: `src/startup_db/taxonomy.py` — 3 L1 × 10 L2 × 25 L3 기술 분류
 
 ## MCP 도구 (Phase 1 — 6개)
 | 도구 | 설명 |
@@ -30,6 +31,12 @@
 | `manage_collection` | 컬렉션 CRUD (워치리스트, 마켓맵) |
 | `search_people` | 인물 검색 (이름/조직/역할 필터) |
 
+## MCP 도구 (Phase 3 — 2개)
+| 도구 | 설명 |
+|------|------|
+| `assign_company_topics` | L3 기술 토픽 할당 (유효성 검증 포함) |
+| `remove_company_topics` | L3 기술 토픽 제거 |
+
 ## Obsidian 연동
 - `scripts/export_to_obsidian.py` — 807건 회사 → Obsidian 노트 (wikilink 포함)
 - 출력: `/Users/ctoti/Obsidian/Obsidian_Work/50-Startups/companies/`
@@ -37,9 +44,11 @@
 
 ## 데이터 보강 스크립트
 - `scripts/backfill_relations.py` — sub_category+country 기반 competitor 자동 생성
+- `scripts/backfill_enrichment.py` — 파생 필드 (one_liner, total_raised, growth_stage 등)
+- `scripts/backfill_topics.py` — sub_category→L1 매핑으로 초기 토픽 할당
 
 ## DB 테이블 (`su_` 접두사)
-- `su_companies` — 스타트업 마스터 (이름, 카테고리, 기술, 제품)
+- `su_companies` — 스타트업 마스터 (이름, 카테고리, 기술, one_liner, growth_stage, total_raised 등)
 - `su_people` — 인물 (창업자, 임원)
 - `su_investors` — 투자자 (VC, 엔젤, CVC)
 - `su_funding_rounds` — 펀딩 라운드 (라운드별 독립 레코드)
@@ -51,6 +60,7 @@
 - `su_collection_items` — 컬렉션 소속 회사
 - `su_scores` — 다차원 평가 (기술/시장/팀/적합도/견인력)
 - `su_signals` — intel-store 시그널 연결
+- `su_company_topics` — L3 기술 토픽 매핑 (M:N, taxonomy.py에서 L1/L2 파생)
 
 ## Environment
 `.env` 파일에 필요:
