@@ -25,7 +25,7 @@
 │ research-deep         │    │ intel-store (14 도구)       │
 │ validator             │    │ trend-tracker (5 도구)      │
 │ researcher            │    │ design-system (4 도구)      │
-│ reviewer              │    │ startup-db (6 도구)         │
+│ reviewer              │    │ startup-db (15 도구)        │
 │ implementer           │    └────────────────────────────┘
 └───────────────────────┘
 ```
@@ -126,9 +126,9 @@
 **내부 파이프라인**: 주제식별 → 심층조사 → 정량평가 → 검증 → 최종리포트 → PDF → 포트폴리오 갱신
 
 **산출물**:
-- 최종 리포트: `outputs/reports/{domain}/{날짜}_{slug}/final.md`
-- PDF: `outputs/reports/{domain}/{날짜}_{slug}/final.professional.pdf`
-- 포트폴리오: `outputs/reports/{domain}/portfolio.md`
+- 최종 리포트: `outputs/reports/{domain}/{날짜}_{slug}/{날짜}_wtis-{slug}.md`
+- PDF: `outputs/reports/{domain}/{날짜}_{slug}/{날짜}_wtis-{slug}.pdf`
+- 포트폴리오: `outputs/reports/{domain}/{domain}-portfolio.md`
 
 ---
 
@@ -322,7 +322,7 @@ collect_news(topic="competitor-strategy", query="경쟁사 AI 투자", source="a
 
 > 한국/글로벌 스타트업의 회사정보, 펀딩, 인물, 평가 데이터 저장·검색. `su_` 접두사 12개 테이블.
 
-**6개 도구 (Phase 1)**:
+**15개 도구 (Phase 1~3)**:
 
 | 구분 | 도구 | 설명 | 예시 |
 |------|------|------|------|
@@ -332,8 +332,17 @@ collect_news(topic="competitor-strategy", query="경쟁사 AI 투자", source="a
 | 저장 | `upsert_company` | 스타트업 추가/업데이트 (slug 기준) | `upsert_company(name="NewCo", country="한국")` |
 | | `add_funding_round` | 펀딩 라운드 + 투자자 연결 | `add_funding_round(company_slug="newco", round_type="seed")` |
 | | `upsert_investor` | 투자자 추가/업데이트 | `upsert_investor(name="Y Combinator", investor_type="accelerator")` |
+| Phase 2 | `score_company` | 5차원 스코어 기록 | `score_company(slug="newco", tech=8, market=7)` |
+| | `add_company_relation` | 회사 간 관계 (competitor/partner) | `add_company_relation(slug_a="a", slug_b="b", type="competitor")` |
+| | `search_investors` | 투자자 검색 | `search_investors(query="Sequoia")` |
+| | `get_investor_portfolio` | 투자자별 포트폴리오 | `get_investor_portfolio(slug="sequoia")` |
+| | `get_funding_stats` | 펀딩 집계 | `get_funding_stats()` |
+| | `manage_collection` | 컬렉션 CRUD | `manage_collection(action="create", name="watchlist")` |
+| | `search_people` | 인물 검색 | `search_people(query="CEO")` |
+| Phase 3 | `assign_company_topics` | L3 토픽 할당 | `assign_company_topics(slug="newco", topics=["adaptive-rag"])` |
+| | `remove_company_topics` | L3 토픽 제거 | `remove_company_topics(slug="newco", topics=["adaptive-rag"])` |
 
-**데이터 현황**: 807개 스타트업, 627건 펀딩, 602명 인물
+**데이터 현황**: 806개 스타트업, 627건 펀딩, 602명 인물, L3 토픽 매핑 567건
 **카테고리**: Service(275), S/W Platform(212), AI 산업 특화(116), Model/Engine(69), Infra(57), Ops(48), Data(30)
 
 **사용 흐름**:
@@ -399,7 +408,7 @@ get_intel_stats(topic="secure-ai")
 get_weekly_diff(topic="secure-ai")
 
 # 포트폴리오 (L2 기술별 점수/판정 한 페이지)
-→ outputs/reports/{domain}/portfolio.md
+→ outputs/reports/{domain}/{domain}-portfolio.md
 ```
 
 ### 스타트업 발굴 — "이 분야에서 누가 하고 있나?"
