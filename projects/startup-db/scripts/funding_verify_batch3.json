@@ -1,0 +1,172 @@
+[
+  {
+    "name": "Zhipu",
+    "slug": "zhipu",
+    "db_total": 400000000,
+    "verified_total": 1956000000,
+    "match": false,
+    "error_ratio": "4.9x (DB underestimate)",
+    "latest_round": {
+      "type": "ipo",
+      "amount": 558000000,
+      "date": "2026-01-08",
+      "lead_investor": "Hong Kong Stock Exchange"
+    },
+    "source": "https://www.crunchbase.com/organization/zhipu-ai",
+    "notes": "Zhipu AI and Zhipu are the same company (rebranded to Z.ai internationally). IPO raised $558M on 2026-01-08. Total pre-IPO funding was ~$1.4B. Series D (Dec 2024) was $420M. DB value significantly underestimates actual total.",
+    "duplicate_of": null
+  },
+  {
+    "name": "Weride",
+    "slug": "weride",
+    "db_total": 350000000,
+    "verified_total": 1442000000,
+    "match": false,
+    "error_ratio": "4.1x (DB underestimate)",
+    "latest_round": {
+      "type": "ipo",
+      "amount": 439900000,
+      "date": "2024-10-23",
+      "lead_investor": "Nasdaq"
+    },
+    "source": "https://www.crunchbase.com/organization/werideai",
+    "notes": "WeRide is an autonomous driving company (also known as 文远知行). IPO on Nasdaq in Oct 2024 raised $439.9M. Prior to IPO, Series D+ (Nov 2022) at $5.1B valuation. Total funding $1.09B-$1.442B depending on source.",
+    "duplicate_of": null
+  },
+  {
+    "name": "Denodo",
+    "slug": "denodo",
+    "db_total": 336000000,
+    "verified_total": 336000000,
+    "match": true,
+    "error_ratio": null,
+    "latest_round": {
+      "type": "series_b",
+      "amount": 336000000,
+      "date": "2023-09-13",
+      "lead_investor": "TPG"
+    },
+    "source": "https://www.crunchbase.com/organization/denodo-technologies",
+    "notes": "Denodo is a data virtualization platform. Raised $336M Series B from TPG and HGGC in Sep 2023. This appears to be the company's total known funding.",
+    "duplicate_of": null
+  },
+  {
+    "name": "AI21 Labs",
+    "slug": "ai21-labs",
+    "db_total": 336000000,
+    "verified_total": 636000000,
+    "match": false,
+    "error_ratio": "1.9x (DB underestimate)",
+    "latest_round": {
+      "type": "series_d",
+      "amount": 300000000,
+      "date": "2025-05-09",
+      "lead_investor": "Multiple (Nvidia, Google, Alphabet)"
+    },
+    "source": "https://www.crunchbase.com/organization/ai21",
+    "notes": "AI21 Labs is an LLM company. Series D round in May 2025 raised $300M. Total funding now $636M ($336M before Series D). DB only captured pre-Series D amount.",
+    "duplicate_of": null
+  },
+  {
+    "name": "Lambda Labs",
+    "slug": "lambda-labs",
+    "db_total": 320000000,
+    "verified_total": 800000000,
+    "match": false,
+    "error_ratio": "2.5x (DB underestimate)",
+    "latest_round": {
+      "type": "series_c",
+      "amount": 320000000,
+      "date": "2024-02-15",
+      "lead_investor": "US Innovative Technology Fund (USIT)"
+    },
+    "source": "https://lambda.ai/blog/lambda-raises-320m-to-build-a-gpu-cloud-for-ai",
+    "notes": "Lambda Labs is a GPU cloud provider for AI. Series C in Feb 2024 raised $320M (for $1.5B valuation). Series D in 2025 raised $480M (at $4B valuation). Total funding now ~$800M+.",
+    "duplicate_of": null
+  },
+  {
+    "name": "Moveworks",
+    "slug": "moveworks",
+    "db_total": 305000000,
+    "verified_total": 315000000,
+    "match": true,
+    "error_ratio": "0.97x (DB very close)",
+    "latest_round": {
+      "type": "acquisition",
+      "amount": 2850000000,
+      "date": "2025-12-15",
+      "lead_investor": "ServiceNow"
+    },
+    "source": "https://www.crunchbase.com/organization/moveworks",
+    "notes": "Moveworks raised $315M in equity funding over 3 rounds ($30M Series A 2019, $75M Series B 2019, $200M Series C 2021). Acquired by ServiceNow on 2025-12-15 for $2.85B (announced 2025-03-10). DB value matches equity funding total.",
+    "duplicate_of": null
+  },
+  {
+    "name": "Skilled AI",
+    "slug": "skilled-ai",
+    "db_total": 300000000,
+    "verified_total": null,
+    "match": false,
+    "error_ratio": "Unknown",
+    "latest_round": {
+      "type": "unknown",
+      "amount": null,
+      "date": null,
+      "lead_investor": null
+    },
+    "source": "https://www.crunchbase.com/organization/skills-ai",
+    "notes": "Could not verify 'Skilled AI' as a distinct company. Search results primarily show 'Skild AI' (robotics), 'Skills.ai', and 'Skillful AI Foundation' but none match the exact name/description. Likely a naming issue or misspelling. Skild AI (different company) has raised $1.83B-$2.21B total.",
+    "duplicate_of": null
+  },
+  {
+    "name": "Deepexi",
+    "slug": "deepexi",
+    "db_total": 300000000,
+    "verified_total": 270570000,
+    "match": false,
+    "error_ratio": "0.9x (DB slight overestimate)",
+    "latest_round": {
+      "type": "ipo",
+      "amount": 710000000,
+      "date": "2025-10-31",
+      "lead_investor": "Hong Kong Stock Exchange"
+    },
+    "source": "https://www.crunchbase.com/organization/deepexi",
+    "notes": "Deepexi is a Chinese software company. CB Insights reports $270.57M in pre-IPO funding over 9 rounds. Largest round was Series B for $100M (Aug 2021). IPO on HK Stock Exchange in Oct 2025 raised ~HK$710M (~$91M). Total including IPO significantly higher.",
+    "duplicate_of": null
+  },
+  {
+    "name": "CloudWalk Technology",
+    "slug": "cloudwalk-technology",
+    "db_total": 300000000,
+    "verified_total": null,
+    "match": false,
+    "error_ratio": "Unknown",
+    "latest_round": {
+      "type": "unknown",
+      "amount": null,
+      "date": null,
+      "lead_investor": null
+    },
+    "source": "https://www.crunchbase.com/organization/cloudwalk-technology",
+    "notes": "Two different companies named CloudWalk Technology exist: (1) Chinese facial recognition company - raised $379M Series B in 2017; (2) Brazilian payments company - raised $481M over 5 equity rounds. Cannot determine which one DB refers to. DB value of $300M matches neither company accurately.",
+    "duplicate_of": null
+  },
+  {
+    "name": "Writer",
+    "slug": "writer",
+    "db_total": 300000000,
+    "verified_total": 369000000,
+    "match": false,
+    "error_ratio": "0.77x (DB underestimate)",
+    "latest_round": {
+      "type": "series_c",
+      "amount": 200000000,
+      "date": "2024-11-06",
+      "lead_investor": "Multiple"
+    },
+    "source": "https://www.crunchbase.com/organization/writer",
+    "notes": "Writer is an enterprise AI/LLM company. Series C in Nov 2024 raised $200M at $1.9B valuation. Total funding is $369M over 12 rounds (per Crunchbase). DB underestimated by ~$69M.",
+    "duplicate_of": null
+  }
+]

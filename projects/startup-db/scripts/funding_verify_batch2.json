@@ -1,0 +1,162 @@
+[
+  {
+    "name": "Avaya",
+    "slug": "avaya",
+    "db_total": 490000000,
+    "verified_total": 628000000,
+    "match": false,
+    "error_ratio": "1.28x",
+    "latest_round": {
+      "type": "post_ipo",
+      "amount": 125000000,
+      "date": "2019-10-04",
+      "lead_investor": "Unknown"
+    },
+    "source": "https://tracxn.com/d/companies/avaya",
+    "notes": "Total includes debt financing and post-IPO rounds. DB value $490M appears to be from equity rounds only. Company emerged from bankruptcy in May 2023 - now public."
+  },
+  {
+    "name": "Isomorphic Laboratories",
+    "slug": "isomorphic-laboratories",
+    "db_total": 450000000,
+    "verified_total": 600000000,
+    "match": false,
+    "error_ratio": "1.33x",
+    "latest_round": {
+      "type": "series_d",
+      "amount": 600000000,
+      "date": "2025-03-31",
+      "lead_investor": "Thrive Capital"
+    },
+    "source": "https://www.isomorphiclabs.com/articles/isomorphic-labs-announces-600m-external-investment-round",
+    "notes": "First external funding round (March 2025). Prior funding was internal from parent Alphabet. Total = $600M (first and only external round to date)."
+  },
+  {
+    "name": "Apptronik",
+    "slug": "apptronik",
+    "db_total": 403000000,
+    "verified_total": 963000000,
+    "match": false,
+    "error_ratio": "2.39x",
+    "latest_round": {
+      "type": "series_a_extension",
+      "amount": 520000000,
+      "date": "2026-02-11",
+      "lead_investor": "B Capital, Google, Mercedes-Benz, PEAK6"
+    },
+    "source": "https://apptronik.com/news-collection/apptronik-closes-over-935-million-series-a",
+    "notes": "Series A: $415M (2025) + $520M extension (Feb 2026) = $935M total Series A. Total capital raised ~$1B including seed/pre-seed."
+  },
+  {
+    "name": "Crusoe",
+    "slug": "crusoe",
+    "db_total": 400000000,
+    "verified_total": 3900000000,
+    "match": false,
+    "error_ratio": "9.75x",
+    "latest_round": {
+      "type": "series_e",
+      "amount": 1375000000,
+      "date": "2025-10-24",
+      "lead_investor": "Mubadala Capital, Valor Equity Partners"
+    },
+    "source": "https://www.crusoe.ai/resources/newsroom/crusoe-announces-series-e-funding",
+    "notes": "Series E (Oct 2025) $1.375B at $10B+ valuation. Total funding ~$3.9B across 13 rounds including debt and equity. DB value significantly underestimated."
+  },
+  {
+    "name": "Zhipu AI",
+    "slug": "zhipu-ai",
+    "db_total": 400000000,
+    "verified_total": 1500000000,
+    "match": false,
+    "error_ratio": "3.75x",
+    "latest_round": {
+      "type": "series_d",
+      "amount": 420000000,
+      "date": "2024-12-31",
+      "lead_investor": "Multiple (Alibaba, Tencent, others)"
+    },
+    "source": "https://www.caproasia.com/2025/12/19/china-artificial-intelligence-startup-zhipu-ai-plans-hong-kong-in-2026-after-pre-filing-for-ipo-in-2025-april-raised-1-5-billion-in-funding-since-founding",
+    "notes": "Total funding $1.5B over 12 rounds. IPO on Hong Kong Stock Exchange Jan 2026 (became Z.ai). Series D $420M (Dec 2024) was largest round."
+  },
+  {
+    "name": "Cohere",
+    "slug": "cohere",
+    "db_total": 400000000,
+    "verified_total": 1540000000,
+    "match": false,
+    "error_ratio": "3.85x",
+    "latest_round": {
+      "type": "series_d",
+      "amount": 500000000,
+      "date": "2025-08-31",
+      "lead_investor": "Inovia Capital, Radical Ventures"
+    },
+    "source": "https://news.crunchbase.com/ai/enterprise-genai-startup-unicorn-cohere-raise/",
+    "notes": "Total funding $1.54B over 7 rounds. Series D (Aug 2025) $500M at $6.8B valuation. Major 2nd close added another $100M in Sept 2025."
+  },
+  {
+    "name": "Uniphore",
+    "slug": "uniphore",
+    "db_total": 400000000,
+    "verified_total": 987000000,
+    "match": false,
+    "error_ratio": "2.47x",
+    "latest_round": {
+      "type": "series_f",
+      "amount": 260000000,
+      "date": "2025-10-22",
+      "lead_investor": "NVIDIA, Snowflake, Databricks, AMD"
+    },
+    "source": "https://www.cmswire.com/customer-experience/tech-giants-back-uniphores-260m-series-f-for-enterprise-ai-platform/",
+    "notes": "Total $987M over 12 rounds. Series E $400M (Jan 2022), Series F $260M (Oct 2025) at $2.5B valuation. DB value underestimated."
+  },
+  {
+    "name": "Pony.ai",
+    "slug": "ponyai",
+    "db_total": 400000000,
+    "verified_total": 1190000000,
+    "match": false,
+    "error_ratio": "2.98x",
+    "latest_round": {
+      "type": "ipo",
+      "amount": 413000000,
+      "date": "2024-11-27",
+      "lead_investor": "Public Markets (Nasdaq IPO)"
+    },
+    "source": "https://www.nasdaq.com/market-activity/stocks/pony",
+    "notes": "Pre-IPO funding: $1.19B over 11 rounds. IPO (Nov 2024) on Nasdaq raised $413M. Latest post-IPO: $70.3M (Dec 2024). World's first Robotaxi IPO."
+  },
+  {
+    "name": "KoBold Metals",
+    "slug": "kobold-metals",
+    "db_total": 400000000,
+    "verified_total": 1210000000,
+    "match": false,
+    "error_ratio": "3.03x",
+    "latest_round": {
+      "type": "series_c_extension",
+      "amount": 280000000,
+      "date": "2025-10-30",
+      "lead_investor": "T. Rowe Price, Durable Capital Partners"
+    },
+    "source": "https://tsginvest.com/kobold-metals/",
+    "notes": "Total $1.22B over 7 rounds. Series D $537M (Sep 2024), Series C-III extension $280M (Oct 2025). Backed by Bill Gates, Jeff Bezos."
+  },
+  {
+    "name": "Grammarly",
+    "slug": "grammarly",
+    "db_total": 400000000,
+    "verified_total": 1545000000,
+    "match": false,
+    "error_ratio": "3.86x",
+    "latest_round": {
+      "type": "debt_facility",
+      "amount": 1000000000,
+      "date": "2025-05-29",
+      "lead_investor": "General Catalyst"
+    },
+    "source": "https://techcrunch.com/2025/05/29/grammarly-secures-1b-in-non-dilutive-funding-from-general-catalyst/",
+    "notes": "Equity funding: $545M (5 rounds). Debt facility: $1B (May 2025, non-dilutive). Total capital: $1.545B. Note: $1B is debt, not equity."
+  }
+]

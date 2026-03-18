@@ -1,0 +1,162 @@
+[
+  {
+    "name": "Tenstorrent",
+    "slug": "tenstorrent",
+    "db_total": 700000000,
+    "verified_total": 1180000000,
+    "match": false,
+    "error_ratio": "1.69배 (과소)",
+    "latest_round": {
+      "type": "series_d",
+      "amount": 693000000,
+      "date": "2024-12-02",
+      "lead_investor": "Fidelity Investments"
+    },
+    "source": "https://www.crunchbase.com/organization/tenstorrent",
+    "notes": "DB에 $700M로 기록되어 있으나 실제 총 펀딩은 $1.18B (10라운드). Series D 이후 추가 모금이 진행 중 (Nov 2025, Fidelity 주도, $3.2B 밸류에이션)."
+  },
+  {
+    "name": "Cerebras",
+    "slug": "cerebras",
+    "db_total": 700000000,
+    "verified_total": 2550000000,
+    "match": false,
+    "error_ratio": "3.64배 (과소)",
+    "latest_round": {
+      "type": "series_h",
+      "amount": 1000000000,
+      "date": "2026-02-03",
+      "lead_investor": "Tiger Global"
+    },
+    "source": "https://www.bloomberg.com/news/articles/2026-02-04/cerebras-raises-1-billion-in-funding-at-23-billion-valuation",
+    "notes": "2026년 2월 Series H에서 $1B 추가 모금. 총 펀딩 $2.55B (또는 $2.92B로 일부 출처 보고). $23B 밸류에이션."
+  },
+  {
+    "name": "Baichuan AI",
+    "slug": "baichuan-ai",
+    "db_total": 691000000,
+    "verified_total": 1038000000,
+    "match": false,
+    "error_ratio": "1.50배 (과소)",
+    "latest_round": {
+      "type": "series_a_2",
+      "amount": 687600000,
+      "date": "2024-07-25",
+      "lead_investor": "Alibaba Cloud, Tencent, Xiaomi"
+    },
+    "source": "https://finance.yahoo.com/news/chinese-ai-start-baichuan-raises-093000785.html",
+    "notes": "총 펀딩 $1.038B (5라운드). 중국 AI 스타트업, Alibaba/Tencent/Xiaomi/Shenzhen Capital 투자."
+  },
+  {
+    "name": "Poolside",
+    "slug": "poolside",
+    "db_total": 626000000,
+    "verified_total": 626000000,
+    "match": true,
+    "error_ratio": null,
+    "latest_round": {
+      "type": "series_b",
+      "amount": 500000000,
+      "date": "2024-10-02",
+      "lead_investor": "Bain Capital, Nvidia, eBay"
+    },
+    "source": "https://techcrunch.com/2024/10/02/ai-coding-startup-poolside-raises-500m-from-ebay-nvidia-and-others/",
+    "notes": "DB 값 정확함. 현재 Nvidia로부터 $1B 추가 투자 진행 중 (Oct 2025, $2B 라운드, $12B 밸류)."
+  },
+  {
+    "name": "Chainguard",
+    "slug": "chainguard",
+    "db_total": 612000000,
+    "verified_total": 892000000,
+    "match": false,
+    "error_ratio": "1.46배 (과소)",
+    "latest_round": {
+      "type": "growth_debt",
+      "amount": 280000000,
+      "date": "2025-10-23",
+      "lead_investor": "General Catalyst (debt round)"
+    },
+    "source": "https://www.prnewswire.com/news-releases/chainguard-announces-280-million-growth-financing-from-general-catalyst-to-usher-in-next-era-of-trusted-open-source-software-302592279.html",
+    "notes": "총 펀딩 $892M (Series D $356M in Apr 2025 + Growth debt $280M in Oct 2025). 오픈소스 소프트웨어 보안."
+  },
+  {
+    "name": "Vercel",
+    "slug": "vercel",
+    "db_total": 563000000,
+    "verified_total": 863000000,
+    "match": false,
+    "error_ratio": "1.53배 (과소)",
+    "latest_round": {
+      "type": "series_f",
+      "amount": 300000000,
+      "date": "2025-09-30",
+      "lead_investor": "Series F investors"
+    },
+    "source": "https://vercel.com/blog/series-f",
+    "notes": "총 펀딩 $863M (6라운드). 최신 Series F $300M (Sep 2025)."
+  },
+  {
+    "name": "Abnormal Security",
+    "slug": "abnormal-security",
+    "db_total": 557000000,
+    "verified_total": 557000000,
+    "match": true,
+    "error_ratio": null,
+    "latest_round": {
+      "type": "series_d",
+      "amount": 250000000,
+      "date": "2024-08-06",
+      "lead_investor": "Wellington Management"
+    },
+    "source": "https://www.cnbc.com/2024/08/06/new-funding-values-email-security-firm-abnormal-at-more-than-5-billion.html",
+    "notes": "DB 값 정확함. Series D $250M으로 $5.1B 밸류에이션. 이메일 보안 AI."
+  },
+  {
+    "name": "ThoughtSpot",
+    "slug": "thoughtspot",
+    "db_total": 550000000,
+    "verified_total": 809000000,
+    "match": false,
+    "error_ratio": "1.47배 (과소)",
+    "latest_round": {
+      "type": "series_f",
+      "amount": 100000000,
+      "date": "2021-11-12",
+      "lead_investor": "March Capital"
+    },
+    "source": "https://pitchbook.com/profiles/company/60688-72",
+    "notes": "총 펀딩 $809M (PitchBook 2026 기준, 일부 출처는 $674M). 최신 Series F $100M (Nov 2021)."
+  },
+  {
+    "name": "Shield AI",
+    "slug": "shield-ai",
+    "db_total": 500000000,
+    "verified_total": 1660000000,
+    "match": false,
+    "error_ratio": "3.32배 (과소)",
+    "latest_round": {
+      "type": "series_f1",
+      "amount": 240000000,
+      "date": "2025-03-06",
+      "lead_investor": "Series F-1 strategic investors"
+    },
+    "source": "https://shield.ai/shield-ai-raises-240m-at-5-3b-valuation-to-scale-hivemind-enterprise-an-ai-powered-autonomy-developer-platform/",
+    "notes": "총 펀딩 $1.66B (또는 $1.4B equity + $200M venture debt). 최신 Series F-1 $240M (Mar 2025), 확장 $300M로 $5.6B 밸류. AI 자율화 플랫폼."
+  },
+  {
+    "name": "AInnovation",
+    "slug": "ainnovation",
+    "db_total": 500000000,
+    "verified_total": null,
+    "match": false,
+    "error_ratio": "검증 불가",
+    "latest_round": {
+      "type": "ipo",
+      "amount": 150890000,
+      "date": "2022-01-27",
+      "lead_investor": "Public market IPO"
+    },
+    "source": "https://www.cbinsights.com/company/ainnovation/financials",
+    "notes": "공개 회사 (IPO 2022-01-27). 프라이빗 펀딩은 $115.93M (CB Insights) ~ $131.9M (Craft.co) ~ $120M (Datanyze). DB의 $500M은 잘못된 데이터로 추정됨. 현재 시가총액 약 $597M."
+  }
+]
