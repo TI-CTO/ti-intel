@@ -13,7 +13,7 @@ evaluated: 4
 | L2 기술 | 최근 평가일 | 점수 | 판정 | 전략 | 세션 링크 |
 |---------|-----------|------|------|------|----------|
 | Self Evolving Architecture | 2026-02-24 | —/200 | Conditional Go | Build + Borrow | [[2026-02-24_self-evolving-agent/2026-02-24_wtis-self-evolving-agent]] |
-| Model & Delta Foundry | — | — | 미평가 | — | — |
+| Model & Delta Foundry | — | — | Watch (미평가) | — | 급박한 변화 없음. 차기 평가 시 실행 |
 | Trusted Multi-Agent Orchestration | 2026-03-09 | 155/200 | Conditional Go | Buy + Borrow | [[2026-03-09_multi-agent/2026-03-09_wtis-multi-agent]] |
 | Hybrid AI Infra | 2026-03-16 | 131/200 | Conditional Go | Borrow + Build (L3별 차등) | [[2026-03-16_hybrid-ai-infra/2026-03-16_wtis-hybrid-ai-infra]] |
 | 의도 파악 기술 | 2026-03-16 | 131/200 | Conditional Go | Borrow + Build | [[2026-03-16_adaptive-rag/2026-03-16_wtis-adaptive-rag]] |
