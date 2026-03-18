@@ -40,12 +40,19 @@
 | 2026-03-16_adaptive-rag/skill1 | 2026-03-16 | PARTIAL | 수치 미확인 2건(G-04 Adaptive Routing 30~40%, G-16 Gartner $80B), 고아 소스 2건(G-22/P-04), 미인용 수치 1건(57%+ 채택), AT&T 40% 인용 맥락 불일치 |
 | 2026-03-16_hybrid-ai-infra/skill1 | 2026-03-16 | PARTIAL | Edge AI CAGR 불일치(33.3% vs 21.04%), TAM 시작점 불일치($47.6B vs $25.65B), AI-RAN 시작점 불일치($3.81B vs $2.96B), 고아 소스 5건(E-10, G-07, P-02/03/04) |
 | 2026-03-17_speech-generation/skill1 | 2026-03-17 | PARTIAL | 고아 인용 11건(G-03-C,G-11-C,G-13-C,G-14-C,G-14-S,G-15-C,G-32,G-34,G-35,G-37,E-05), DT 50언어 로드맵→현재형 표현 오류, G-12-S 경쟁사 블로그 Cartesia 수치 인용 |
+| 2026-03-18_he-keyword-search/skill1 | 2026-03-18 | PARTIAL | Critical 1건(G-02 GM Insights $234.7M 2025→원본 $178.4M/2023 불일치), 고아 소스 2건(E-03, P-05), SKT/KT 투자액 단일 소스 반복 |
+| 2026-03-18_spam-phishing-detection/skill1 | 2026-03-18 | PARTIAL | Critical 2건(+91% YoY 수치 불일치·Truecaller EBITDA -49% 출처 미확인), 고아 소스 1건(P-03), 판정 기준 모순(115점이 재검토 범위인데 Conditional Go 표기) |
 
 ### 반복 패턴 (agentic-ai 도메인)
 - G-21 반복 위험: Mintz 법률 블로그가 특허·시장성공률·Gartner 예측 등 이질적 주장에 동시 인용되는 패턴 발생 → 차기 검증 시 G-21 인용 맥락 우선 점검 (adaptive-rag에서는 NVIDIA case study로 정상 사용됨)
 - 중앙값 계산 오류: (a+b)/2 단순 연산 오류가 본문에 잔류하는 패턴 반복 → 수치 검증 시 연산 재검증 필수
 - 블로그 2차 인용 수치 미확인 패턴: Techment/Invoca 같은 B등급 블로그가 특정 %나 $X억 수치의 유일 소스인데 URL 검증 시 해당 수치가 블로그에도 없는 경우 발생 (G-04: 30~40%, G-16: $80B). 차기 검증 시 블로그 URL 수치 우선 WebFetch 확인 필요
 - AT&T NeMo 40% 인용 맥락 주의: NVIDIA 공식 케이스 스터디(G-21)에서 40% 향상은 RAG 단독 효과가 아닌 fine-tuning 포함 전체 NeMo 파이프라인 효과. RAG 단독 기여로 서술 시 과대 표현
+
+### 반복 패턴 (spam-phishing-detection / secure-ai 최신 이슈)
+- YoY 성장률 산출 기준 불명확: "피해 +91% YoY" 수치가 공식 기준(2024 연간 854.5억 → 2025.1~10 1,056.6억)으로 재계산 시 +23.6%로 불일치. 파이프라인이 기준 연도를 혼용하거나 기간 비교(1~10월 vs 연간)를 혼동하는 패턴 → YoY 수치 검증 시 반드시 분모(기준 연도 확정값)를 웹 검색으로 독립 확인
+- 기업 재무 지표 출처 불일치: Truecaller EBITDA -49%가 인용 URL(TechCrunch founders step down) 기사 내에 없고, 실제 공시와도 괴리. 경쟁사 재무 지표는 기사 URL이 아닌 IR 보고서 직접 인용이 필요
+- 판정 점수 vs 판정 레이블 모순: 115점이 재검토(80~119) 범위 최상단에 해당하나 frontmatter에 Conditional Go로 표기. 경계선(120점) 부근 점수일 때 판정 기준 명시 필요
 
 ### 반복 패턴 (secure-ai/ondevice-ai 도메인)
 - P-계열 논문 전량 미인용 패턴: intel-store에서 수집한 논문이 References 등재 후 본문에서 한 번도 인용되지 않는 경우 반복 발생 (hybrid-ai-infra에서도 P-02/03/04 미인용 확인) → P-계열 고아 소스 여부 우선 점검 권장
