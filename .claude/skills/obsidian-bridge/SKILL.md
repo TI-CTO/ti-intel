@@ -50,7 +50,7 @@ vault_paths: ["Obsidian 볼트 내 경로 목록"]
 | reference  | `docs/guide-*.md`                                       | `10-Reference/`                                  |
 | goal       | (Obsidian-only)                                         | `20-Goals/`                                      |
 | wtis       | `outputs/reports/{domain}/{date}_{slug}/`               | `30-Reports/{domain}/{date}_{slug}/`             |
-| portfolio  | `outputs/reports/{domain}/portfolio.*`                   | `30-Reports/{domain}/`                           |
+| portfolio  | `outputs/reports/{domain}/{domain}-portfolio.*`          | `30-Reports/{domain}/`                           |
 | weekly     | `outputs/reports/weekly/{date}_weekly-{domain}.*`       | `30-Reports/weekly/`                             |
 | research   | `outputs/reports/weekly/{date}_research-*.md`            | `30-Reports/weekly/`                             |
 | devlog     | manual                                                  | `40-DevLog/`                                     |
@@ -66,8 +66,8 @@ vault_paths: ["Obsidian 볼트 내 경로 목록"]
 - **도메인 폴더** 자동 생성 (secure-ai, agentic-ai 등)
 
 ### portfolio (도메인 포트폴리오)
-- **파일**: `portfolio.md` + `portfolio.*.pdf`
-- **대상**: `30-Reports/{domain}/portfolio.md` + PDF
+- **파일**: `{domain}-portfolio.md` + `{domain}-portfolio.pdf`
+- **대상**: `30-Reports/{domain}/{domain}-portfolio.md` + PDF
 - wtis 스킬이 portfolio 갱신 시 자동 동기화 대상
 
 ### weekly (주간 모니터링 메인 리포트)
@@ -91,7 +91,7 @@ vault_paths: ["Obsidian 볼트 내 경로 목록"]
 
 2. **타입 자동 감지** (두 번째 인자 생략 시):
    - 경로에 `outputs/reports/{domain}/{date}_{slug}/` 패턴 → `wtis`
-   - 파일명 `portfolio.*` → `portfolio`
+   - 파일명 `*-portfolio.*` → `portfolio`
    - 파일명 `*_weekly-*` → `weekly`
    - 파일명 `*_research-*` → `research`
    - 그 외 → 수동 지정 필요
@@ -105,7 +105,7 @@ vault_paths: ["Obsidian 볼트 내 경로 목록"]
 
 5. **파일 복사:**
    - wtis: 세션 폴더 내 `{date}_wtis-{slug}.md` + `{date}_wtis-{slug}.*.pdf`만 복사
-   - portfolio: `portfolio.md` + `portfolio.*.pdf` 복사
+   - portfolio: `{domain}-portfolio.md` + `{domain}-portfolio.pdf` 복사
    - weekly/research: 단일 파일 + 동반 PDF 복사
    - **PPTX는 복사하지 않음** (Obsidian 미지원)
 

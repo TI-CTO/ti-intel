@@ -42,7 +42,7 @@ v4.1: L2 단위 분석 + 포트폴리오 구조 전환.
 |------|------|------|
 | 분석 단위 | L1 도메인 전체 | **L2 기술 단위** |
 | 폴더 구조 | `{date}_{slug}/` | `{domain}/{date}_{slug}/` |
-| 포트폴리오 | 없음 | **L1 도메인별 portfolio.md 자동 갱신** |
+| 포트폴리오 | 없음 | **L1 도메인별 {domain}-portfolio.md 자동 갱신** |
 | SKILL-0 | 도메인만 식별 | **L1 도메인 + L2 기술 식별** |
 | Post-Report | PDF만 생성 | **포트폴리오 갱신 → PDF 생성** |
 | Final Report | domain 필드 없음 | `domain`, `l2_topic` frontmatter 추가 |
@@ -92,8 +92,8 @@ v4.1: L2 단위 분석 + 포트폴리오 구조 전환.
 | Discover | `outputs/reports/{domain}/{date}_{slug}/{date}_wtis-discover.md` | 기회 탐색 (deep만) |
 | **Final** | `outputs/reports/{domain}/{date}_{slug}/{date}_wtis-{slug}.md` | **최종 보고서** |
 | Final PDF | `.../{date}_{slug}/{date}_wtis-{slug}.pdf` | PDF 변환 |
-| Portfolio | `outputs/reports/{domain}/portfolio.md` | 포트폴리오 (자동 갱신) |
-| Portfolio PDF | `outputs/reports/{domain}/portfolio.pdf` | 포트폴리오 PDF |
+| Portfolio | `outputs/reports/{domain}/{domain}-{domain}-portfolio.md` | 포트폴리오 (자동 갱신) |
+| Portfolio PDF | `outputs/reports/{domain}/{domain}-{domain}-portfolio.pdf` | 포트폴리오 PDF |
 
 ### Return
 ```yaml
@@ -141,8 +141,8 @@ strategy: "Buy | Borrow | Build | Watch"
 ```
 outputs/reports/
   {domain}/                         ← L1 도메인 (agentic-ai / voice-ai / secure-ai)
-    portfolio.md                    ← 포트폴리오 (L2 분석 후 자동 갱신)
-    portfolio.pdf
+    {domain}-portfolio.md                    ← 포트폴리오 (L2 분석 후 자동 갱신)
+    {domain}-portfolio.pdf
     {date}_{slug}/                  ← L2 분석 세션
       {date}_wtis-{slug}.md        # 최종 보고서
       {date}_wtis-{slug}.pdf  # PDF 변환
@@ -159,7 +159,7 @@ outputs/reports/
 outputs/reports/{domain}/*/{date}_wtis-{slug}.md    # WTIS 최종 리포트
 outputs/reports/{domain}/*/{date}_wtis-research.md  # research-deep 결과
 outputs/reports/{domain}/*/{date}_wtis-discover.md  # discover 결과
-outputs/reports/{domain}/portfolio.md       # 포트폴리오 종합
+outputs/reports/{domain}/{domain}-portfolio.md       # 포트폴리오 종합
 ```
 (skill0, skill1, validator 파일은 제외 — 중간 산출물)
 
@@ -251,14 +251,14 @@ outputs/reports/{domain}/portfolio.md       # 포트폴리오 종합
     │   └─ 경로: outputs/reports/{domain}/{date}_{slug}/{date}_wtis-{slug}.md
     │
     ├─ [5.5] 포트폴리오 갱신 (자동)
-    │   └─ outputs/reports/{domain}/portfolio.md 읽기 (없으면 신규 생성)
+    │   └─ outputs/reports/{domain}/{domain}-portfolio.md 읽기 (없으면 신규 생성)
     │   └─ 현재 L2의 점수/판정/전략을 해당 행에 업데이트
     │   └─ 종합 권고 섹션 재생성
     │   └─ 평가 이력 행 추가
     │
     └─ [6] PDF 생성
         └─ design-system MCP → render_pdf({date}_wtis-{slug}.md) → {date}_wtis-{slug}.pdf
-        └─ design-system MCP → render_pdf(portfolio.md) → portfolio.pdf
+        └─ design-system MCP → render_pdf({domain}-portfolio.md) → {domain}-portfolio.pdf
 ```
 
 ### Quick Mode — 폐지 (v4.1)
@@ -292,7 +292,7 @@ outputs/reports/{domain}/portfolio.md       # 포트폴리오 종합
     │
     ├─ [5.5] 포트폴리오 갱신 (자동)
     │
-    └─ [자동] design-system MCP → render_pdf({date}_wtis-{slug}.md + portfolio.md)
+    └─ [자동] design-system MCP → render_pdf({date}_wtis-{slug}.md + {domain}-portfolio.md)
 ```
 
 ### Deep Mode
@@ -327,7 +327,7 @@ outputs/reports/{domain}/portfolio.md       # 포트폴리오 종합
     │
     ├─ [5.5] 포트폴리오 갱신 (자동)
     │
-    └─ [6] design-system MCP → render_pdf({date}_wtis-{slug}.md + portfolio.md)
+    └─ [6] design-system MCP → render_pdf({date}_wtis-{slug}.md + {domain}-portfolio.md)
 ```
 
 ---
@@ -524,7 +524,7 @@ prior_report_date: {이전 분석 날짜 — 없으면 생략}
 
 ### Step A: 포트폴리오 갱신 (필수)
 
-1. `outputs/reports/{domain}/portfolio.md` 읽기 (없으면 아래 템플릿으로 신규 생성)
+1. `outputs/reports/{domain}/{domain}-portfolio.md` 읽기 (없으면 아래 템플릿으로 신규 생성)
 2. L2 기술 테이블에서 현재 `l2_topic` 행 찾기 (없으면 행 추가)
 3. 해당 행의 최근 평가일, 점수, 판정, 전략, 세션 링크 업데이트
 4. 종합 권고 섹션 재생성 (Go/Conditional/No-Go/미평가 분류)
@@ -579,7 +579,7 @@ design-system MCP → render_pdf(
 )
 ```
 
-- 성공 시: `{domain}/{date}_{slug}/{date}_wtis-{slug}.pdf` + `{domain}/portfolio.pdf` 생성
+- 성공 시: `{domain}/{date}_{slug}/{date}_wtis-{slug}.pdf` + `{domain}/{domain}-portfolio.pdf` 생성
 - 실패 시: 오류 메시지 출력 후 마크다운 파일 경로를 대신 안내 (파이프라인 중단 없음)
 
 ### Step C: Next Steps 안내
