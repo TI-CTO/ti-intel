@@ -150,7 +150,7 @@ title: Tech Intelligence Platform 3주 시범운영 누적 통계
 | 서버 | 도구 수 | 상태 |
 |------|---------|------|
 | intel-store | 14 | ✅ 정상 |
-| design-system | 3 | ✅ 정상 |
+| design-system | 4 | ✅ 정상 |
 | trend-tracker | 5 | ✅ 정상 |
 | startup-db | 15 | ✅ 정상 |
 | youtube-transcript | 1 | ✅ 정상 |
