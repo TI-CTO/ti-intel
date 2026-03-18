@@ -1,7 +1,7 @@
 ---
 domain: secure-ai
 domain_name: Secure AI
-updated: 2026-03-10
+updated: 2026-03-18
 wtis_version: v4.1
 total_l2: 3
 evaluated: 3
@@ -12,8 +12,8 @@ evaluated: 3
 | L2 기술 | 최근 평가일 | 점수 | 판정 | 전략 | 세션 링크 |
 |---------|-----------|------|------|------|----------|
 | 온디바이스 AI | **2026-03-10** | **107/200** | **재검토** | **Borrow(SDK) + Build(한국어) + B2B 선회** | [[2026-03-10_ondevice-ai/2026-03-10_wtis-ondevice-ai]] |
-| 스팸/피싱/탐지 | 2026-03-03 | 120/200 | Conditional | Borrow + Build | [[2026-03-03_secure-ai-v2/2026-03-03_wtis-secure-ai-v2]] |
-| 양자동형암호 | 2026-03-03 | 120/200 | Conditional | Borrow(PQC) + Watch(HE) | [[2026-03-03_secure-ai-v2/2026-03-03_wtis-secure-ai-v2]] |
+| 스팸/피싱/탐지 | **2026-03-18** | **115/200** | **재검토** | **Borrow+Build (경찰청연계+고령자PSTN)** | [[2026-03-18_spam-phishing-detection/2026-03-18_wtis-spam-phishing-detection]] |
+| 양자동형암호 | **2026-03-18** | **125/200** | **Conditional** | **Borrow(CryptoLab)+Build(AICC)+Watch(HW)** | [[2026-03-18_he-keyword-search/2026-03-18_wtis-he-keyword-search]] |
 
 > **참고**: 온디바이스 AI는 v4.1에서 L2 단위 독립 분석 완료 (v4.0 통합 분석 120점 → v4.1 독립 분석 107점). 스팸/피싱/탐지, 양자동형암호는 v4.0 통합 분석 점수 유지 중 (개별 재평가 시 점수 변동 가능).
 
@@ -26,16 +26,19 @@ evaluated: 3
 | 온디바이스 AI | 실시간 화자분할 (2인, 온디바이스) | 7 | Borrow 기회 | Picovoice Falcon SDK 상용, 배터리·한국어 DER 미검증 |
 | 스팸/피싱/탐지 | Samsung S26 자체 탐지 | 8~9 | Critical Risk | 경찰청 3만건 학습, 무료, 전 갤럭시 |
 | 양자동형암호 | PQC VoLTE E2E | 5~6 | 유일 차별화축 | ML-KEM 표준 확정, MWC 2026 시연 |
-| 양자동형암호 | 동형암호 (HE 실시간) | 2~3 | 불가 → Watch | TFHE 32ms/8xH100, ITU-T 150ms 초과 |
+| 양자동형암호 | 동형암호 키워드 검색 (비실시간 AICC) | 3~4 | Conditional Go | HET-PIR 3.9ms, Aikata 97% 경량화, LGU+ PoC |
+| 양자동형암호 | 동형암호 (HE 실시간 통화) | 2~3 | 불가 → Watch | TFHE 32ms/8xH100, ITU-T 150ms 초과 |
 
 ## 종합 권고
 
 - **우선 추진**: 없음
 - **조건부**: 스팸/피싱/탐지, 양자동형암호
-  - 조건 1: HE 제거 및 제안서 재설계 (필수)
+  - 조건 1 (갱신): ~~HE 제거~~ → HE는 비실시간 AICC 키워드 검색으로 유스케이스 전환 (125/200, 2026-03-18)
   - 조건 2: 2026H2 서비스 출시 마일스톤 확정 (필수)
   - 조건 3: PQC E2E 파트너 확보 (필수)
   - 조건 4: Samsung S26 대응 포지셔닝 명확화 (필수)
+  - 조건 5 (신규): On-Device FHE PoC 벤치마크 <1초 실증 (Go 전환 필수)
+  - 조건 6 (신규): CryptoLab 파트너십 공식 계약 (필수)
 - **재검토**: 온디바이스 AI (107/200)
   - B2C 유료 서비스 타당성 재설계 필수 (Samsung/Apple 무료 탑재)
   - B2B 프라이버시 포지셔닝 전환 검토 (기업 콜센터·금융사)
@@ -60,3 +63,5 @@ evaluated: 3
 | 2026-02-26 | (도메인 전체) | 128/200 | Conditional | v1, B2C 통화 보안 |
 | 2026-03-03 | (도메인 전체) | 120/200 | Conditional | v2, Samsung S26 리스크 반영 (-8점) |
 | **2026-03-10** | **온디바이스 AI** | **107/200** | **재검토** | **v4.1 L2 독립 분석, B2C→B2B 전략 전환 권고** |
+| **2026-03-18** | **양자동형암호 (HE 키워드검색)** | **125/200** | **Conditional Go** | **TRL 2~3→3~4 상향. Borrow(CryptoLab)+Build(AICC). 비실시간 AICC 유스케이스 전환** |
+| **2026-03-18** | **스팸/피싱/탐지** | **115/200** | **재검토** | **3중 압박(Samsung+Meta+MS) 심화. 경찰청 연계+고령자 PSTN 특화가 유일 차별화** |
