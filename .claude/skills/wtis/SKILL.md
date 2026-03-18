@@ -92,8 +92,8 @@ v4.1: L2 단위 분석 + 포트폴리오 구조 전환.
 | Discover | `outputs/reports/{domain}/{date}_{slug}/{date}_wtis-discover.md` | 기회 탐색 (deep만) |
 | **Final** | `outputs/reports/{domain}/{date}_{slug}/{date}_wtis-{slug}.md` | **최종 보고서** |
 | Final PDF | `.../{date}_{slug}/{date}_wtis-{slug}.pdf` | PDF 변환 |
-| Portfolio | `outputs/reports/{domain}/{domain}-{domain}-portfolio.md` | 포트폴리오 (자동 갱신) |
-| Portfolio PDF | `outputs/reports/{domain}/{domain}-{domain}-portfolio.pdf` | 포트폴리오 PDF |
+| Portfolio | `outputs/reports/{domain}/{domain}-portfolio.md` | 포트폴리오 (자동 갱신) |
+| Portfolio PDF | `outputs/reports/{domain}/{domain}-portfolio.pdf` | 포트폴리오 PDF |
 
 ### Return
 ```yaml

@@ -40,18 +40,15 @@
 
 ### 기술 분류 체계
 
-| L1 도메인 | L2 기술 | L3 세부기술 |
-|-----------|---------|------------|
-| **Agentic AI** (12) | Self Evolving Architecture | Agentic Context Engineering |
-| | Model & Delta Foundry | FeedbackOps, EvaluationOps, 학습-배포 파이프라인, GPU Orchestration |
-| | Trusted Multi-Agent | Agent Orchestration, Agent Oriented Orchestration |
-| | Hybrid AI Infra | On-Device sLM, 실시간 화자분할, Edge AI, 5G SA/6G |
-| | 의도 파악 기술 | Adaptive RAG |
-| **Voice AI** (8) | Speech Perception | Emotional Analysis, Context Recognition, Interrupt & Turn-Taking |
-| | Personal Intelligence | 페르소나 플러그인, 관계 그래프, 컨텍스트 액션 추천 |
-| | Speech Generation | Voice Cloning, Voice Synthesis |
-| **Secure AI** (5) | 스팸/피싱탐지 | 스팸/피싱 감지(통화전), OCR 이미지 스팸 |
-| | 양자/동형 암호 | PQC 통화녹음 암호화, 동형암호 키워드 검색, Secure Vector Search |
+3개 L1 도메인 × 10개 L2 기술영역 × 25개 L3 세부기술로 구성.
+
+| L1 도메인 | L2 수 | L3 수 |
+|-----------|-------|-------|
+| Agentic AI | 5 | 12 |
+| Voice AI | 3 | 8 |
+| Secure AI | 2 | 5 |
+
+> 전체 목록: `docs/tech-taxonomy-overview.md`
 
 ---
 
@@ -95,7 +92,7 @@ Tier 2: 심층 리서치 (~10분, 🟡🔴만)
 ```
 outputs/reports/weekly/
   YYYY-MM-DD_weekly-{domain}.md                ← 메인 리포트 (전체 L3 요약)
-  YYYY-MM-DD_weekly-{domain}.professional.pdf  ← PDF 버전
+  YYYY-MM-DD_weekly-{domain}.pdf               ← PDF 버전
   YYYY-MM-DD_research-{l3-slug}.md             ← Tier 2 심층 (해당 L3만)
 ```
 
@@ -151,7 +148,7 @@ outputs/reports/weekly/
 L1 도메인별로 L2 평가 결과를 종합한 현황판:
 
 ```
-outputs/reports/{domain}/portfolio.md
+outputs/reports/{domain}/{domain}-portfolio.md
 
 | L2 기술 | 최근 평가일 | 점수 | 판정 | 전략 |
 |---------|-----------|------|------|------|
@@ -216,26 +213,7 @@ cd projects/startup-db && ~/.local/bin/uv sync && cd ../..
 
 ---
 
-## 7. 자주 쓰는 패턴 정리
-
-```
-구조화 조사      /research-session {주제}          또는 "{주제}에 대해 조사해줘"
-신기술 발굴      /discover {도메인}               또는 "{도메인} 기회 탐색해줘"
-기술 검증        /wtis standard {기술명}          또는 "{기술명} Go/No-Go 검증해줘"
-제안서 검증      /wtis proposal {파일경로}         또는 "이 제안서 검증해줘"
-정기 모니터링    /weekly-monitor {domain}          또는 "{도메인} 주간 동향 분석해줘"
-토픽 스캔        /monitor {topic}                 또는 "등록된 토픽 변화 확인해줘"
-결과 시각화      /slides {마크다운 파일}            또는 "이 리포트 PPTX로 만들어줘"
-PDF 변환        /report-pdf {마크다운 파일}        또는 "이 리포트 PDF로 변환해줘"
-Obsidian 동기화  /obsidian-bridge {파일}           또는 "이 파일 옵시디언에 동기화해줘"
-작업 기록        /work-log                        또는 "오늘 작업 기록해줘"
-스타트업 발굴    /startup-scout {도메인}            또는 "voice AI 관련 스타트업 찾아줘"
-스타트업 분석    /startup-analyst {기업명}          또는 "{기업명} 심층 분석해줘"
-```
-
----
-
-## 8. 주간 운영 사이클
+## 7. 주간 운영 사이클
 
 ### 정기 루틴 (매주 반복)
 
@@ -314,7 +292,7 @@ W4:    월간 종합 (TODO — 설계 예정)
 
 ---
 
-## 9. 스킬 체이닝
+## 8. 스킬 체이닝
 
 스킬 간 연결 관계와 데이터 흐름은 별도 가이드 참조:
 → `docs/guide-skill-chaining.md` — 전체 체이닝 맵, I/O Contract 요약, 워크플로우 시나리오
@@ -324,7 +302,7 @@ W4:    월간 종합 (TODO — 설계 예정)
 
 ---
 
-## 10. 파일 구조 참조
+## 9. 파일 구조 참조
 
 ```
 ti-intel/

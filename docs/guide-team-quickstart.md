@@ -39,56 +39,84 @@ claude
 
 ## 3. 도메인 구조
 
-```
-L1 도메인 (3개)        L2 기술영역 (10개)          L3 세부기술 (25개)
-━━━━━━━━━━━━          ━━━━━━━━━━━━━━━          ━━━━━━━━━━━━━━━
-Agentic AI (월)  ──── Self Evolving Architecture ── Agentic Context Engineering
-                 ├── Model & Delta Foundry ──────── FeedbackOps, EvaluationOps, MLOps, GPU Orch.
-                 ├── Trusted Multi-Agent ─────────── Agent Orchestration, Agent-Oriented Orch.
-                 ├── Hybrid AI Infra ─────────────── OnDevice sLM, Speaker Diarization, Edge AI, 5G/6G
-                 └── 의도 파악 기술 ──────────────── Adaptive RAG
+3개 L1 도메인 × 10개 L2 기술영역 × 25개 L3 세부기술.
+주간 모니터링은 L1 단위(월: Agentic AI / 화: Voice AI / 수: Secure AI)로 실행한다.
 
-Voice AI (화)    ──── Speech Perception ──────────── Emotional Analysis, Context Recog., Turn-Taking
-                 ├── Personal Intelligence ───────── Persona, Relationship Graph, Context Action
-                 └── Speech Generation ───────────── Voice Cloning, Voice Synthesis
-
-Secure AI (수)   ──── 스팸/피싱탐지 ──────────────── 스팸/피싱 감지, OCR 이미지 스팸
-                 └── 양자/동형 암호 ──────────────── PQC 통화 암호화, HE 키워드 검색, Secure Vector
-```
+> 전체 목록: `docs/tech-taxonomy-overview.md` (기술분류체계)
 
 ---
 
-## 4. 주요 시나리오별 사용법
+## 4. 역할별 워크플로우
 
-### 시나리오 A: "이번 주 기술 동향 알려줘"
+### 전략기획 — "투자 판정 + 포트폴리오 관리"
+
+핵심 흐름: **기술 평가 → 판정 → 포트폴리오 → 의사결정 근거**
+
+```
+① /wtis standard 동형암호 키워드 검색      ← 200점 정량 평가 + Go/No-Go 판정
+② 포트폴리오 확인                           ← outputs/reports/{domain}/{domain}-portfolio.md
+③ /weekly-monitor secure-ai               ← 매주 기술 변화 추적 → 판정 재검토 트리거
+```
+
+**자주 쓰는 질문 예시**:
+- "Secure AI 포트폴리오 현황 보여줘" → portfolio.md 요약
+- "PQC 기술 Go/No-Go 판정해줘" → `/wtis` 실행
+- "지난주 대비 변화된 기술 있어?" → `/weekly-monitor` 또는 `get_weekly_diff`
+- "SKT KT 양자암호 최근 동향" → intel-store 경쟁사 토픽 검색 + 웹 서치
+
+### 사업기획 — "시장 현황 파악 + 스타트업 발굴"
+
+핵심 흐름: **시장 조사 → 뉴스 수집 → 스타트업 탐색 → 기업 분석**
+
+```
+① search_intel로 시장 현황 검색             ← "search_intel(query='AI AICC', mode='hybrid')"
+② collect_news로 최신 뉴스 수집             ← "AICC 관련 최신 뉴스 수집해줘"
+③ /startup-scout voice AI 한국             ← 해당 분야 스타트업 후보 발굴
+④ /startup-analyst Hume AI                ← 관심 기업 심층 분석 + DB 저장
+```
+
+**자주 쓰는 질문 예시**:
+- "에이전트 AI 시장 최신 뉴스 알려줘" → `search_intel` + `collect_news`
+- "이 분야 한국 스타트업 후보 찾아줘" → `/startup-scout`
+- "Hume AI 펀딩 현황과 기술력 분석해줘" → `/startup-analyst`
+- "투자자별 포트폴리오 보여줘" → `get_investor_portfolio`
+
+### 개발 — "기술 리서치 + 논문/특허 탐색"
+
+핵심 흐름: **논문 수집 → 유사 탐색 → 심층 리서치 → 기술 보고서**
+
+```
+① collect_papers로 논문 수집               ← "PQC lattice 관련 최신 논문 수집해줘"
+② find_similar로 관련 논문 확장             ← "이 논문과 비슷한 거 더 찾아줘"
+③ /research-session CKKS 부트스트래핑       ← 특정 주제 심층 리서치
+④ collect_arxiv로 프리프린트 추가 수집       ← "arXiv에서 CKKS 관련 최신 논문"
+```
+
+**자주 쓰는 질문 예시**:
+- "동형암호 CKKS 최신 논문 수집해줘" → `collect_papers` + `collect_arxiv`
+- "이 논문과 관련된 다른 연구 찾아줘" → `find_similar`
+- "Edge AI 보안 기술 동향 조사해줘" → `/research-session`
+- "PQC VoLTE 관련 특허 있어?" → `collect_patents`
+
+---
+
+## 5. 시나리오 예시
+
+### "이번 주 기술 동향 알려줘"
 
 ```
 /weekly-monitor secure-ai
 ```
 → 5개 L3 빠른 스캔 → 변화 감지된 L3 심층 분석 → 주간 리포트 + PDF
 
-### 시나리오 B: "이 기술에 투자할까?"
-
-```
-/wtis standard 동형암호 키워드 검색
-```
-→ 심층 리서치 → 200점 정량 평가 → Go/Conditional/No-Go 판정 → PDF + 포트폴리오
-
-### 시나리오 C: "경쟁사가 뭐 하고 있어?"
+### "경쟁사가 뭐 하고 있어?"
 
 ```
 "SKT KT 양자암호 최근 동향 알려줘"
 ```
 → intel-store에서 `skt-strategy`, `kt-strategy` 토픽 검색 + 웹 서치
 
-### 시나리오 D: "이 분야 스타트업 후보 찾아줘"
-
-```
-/startup-scout voice AI 한국
-```
-→ 웹 리서치 → 후보 쇼트리스트 → DB 저장 제안
-
-### 시나리오 E: "특정 기업 심층 분석"
+### "특정 기업 심층 분석"
 
 ```
 /startup-analyst Hume AI
@@ -97,7 +125,7 @@ Secure AI (수)   ──── 스팸/피싱탐지 ─────────�
 
 ---
 
-## 5. 산출물 위치
+## 6. 산출물 위치
 
 ```
 outputs/reports/
@@ -116,37 +144,31 @@ outputs/reports/
 
 ---
 
-## 6. 포트폴리오 현황 (2026-03-18)
+## 7. 포트폴리오
 
-### 전체 L2 판정 요약
+L1 도메인별 L2 평가 결과 종합 현황판. WTIS 평가 완료 시 자동 갱신된다.
 
-| 판정 | L2 수 | 기술 목록 |
-|------|-------|----------|
-| Conditional Go | 5 | Multi-Agent(155), Hybrid AI(131), Adaptive RAG(131), Speech Generation(128), HE 키워드검색(125) |
-| 재검토 | 3 | Speech Perception(118), 스팸/피싱(115), OnDevice AI(107) |
-| Watch | 2 | Model & Delta Foundry, Personal Intelligence |
+| 판정 | 점수 | 의미 |
+|------|------|------|
+| **Go** | 160+ | 즉시 추진 |
+| **Conditional Go** | 120~159 | 조건 충족 시 추진 |
+| **재검토** | 80~119 | 근본적 재설계 필요 |
+| **No-Go** | ~79 | 추진 부적합 |
 
-### 읽는 법
-- **Go (160+)**: 즉시 추진
-- **Conditional Go (120~159)**: 조건 충족 시 추진 (조건 목록 확인)
-- **재검토 (80~119)**: 근본적 재설계 필요
-- **No-Go (~79)**: 추진 부적합
+> 최신 현황: `outputs/reports/{domain}/{domain}-portfolio.md`
 
 ---
 
-## 7. 주간 운영 스케줄
+## 8. 주간 운영
 
-| 요일 | 도메인 | 자동화 | 명령어 |
-|------|--------|--------|--------|
-| 월 | Agentic AI | 스크립트 준비 | `/weekly-monitor agentic-ai` |
-| 화 | Voice AI | 스크립트 준비 | `/weekly-monitor voice-ai` |
-| 수 | Secure AI | 스크립트 준비 | `/weekly-monitor secure-ai` |
-| 목 | (자유) | — | WTIS, 리서치, 스타트업 분석 등 |
-| 금 | (자유) | — | 리뷰, 포트폴리오 정리, 이관 |
+월(Agentic AI) → 화(Voice AI) → 수(Secure AI) 순으로 `/weekly-monitor` 실행.
+목·금은 WTIS 검증, 리서치, 스타트업 분석 등 자유 일정.
+
+> 상세 타임라인: `docs/guide-platform-overview.md` (주간 운영 사이클)
 
 ---
 
-## 8. 자주 묻는 질문
+## 9. 자주 묻는 질문
 
 **Q: 데이터가 없는 새 주제를 검색하면?**
 A: 먼저 수집이 필요합니다. "PQC 논문 수집해줘" → `collect_all` 실행 → 이후 검색 가능.
@@ -165,7 +187,9 @@ A: `/obsidian-bridge {파일경로} {유형}`으로 동기화합니다. 유형: 
 
 ---
 
-## 9. 장애 대응
+## 10. 장애 대응
+
+### 빠른 진단표
 
 | 증상 | 원인 | 대응 |
 |------|------|------|
@@ -174,10 +198,60 @@ A: `/obsidian-bridge {파일경로} {유형}`으로 동기화합니다. 유형: 
 | "PDF 생성 실패" | Playwright 미설치 | `uv run --extra browser playwright install chromium` |
 | "Obsidian 파일 안 보여" | 동기화 미실행 | `/obsidian-bridge`로 수동 동기화 |
 | "WTIS 타임아웃" | opus 에이전트 과부하 | 재실행 (2차 시도에서 성공하는 패턴) |
+| "search_intel 0건" | 해당 토픽 데이터 미수집 | `collect_all(topic="...", query="...")` 먼저 실행 |
+| "에이전트 무응답/hang" | 병렬 에이전트 5개+ 리소스 경합 | 최대 3~4개 동시 실행, 5개+면 2배치 분할 |
+
+### API 쿼터 관리
+
+| API | 월 한도 | 확인 방법 | 초과 시 영향 |
+|-----|---------|----------|-------------|
+| **SerpAPI** | 250회/월 | [serpapi.com](https://serpapi.com) 대시보드 | 특허 수집(`collect_patents`) 중단. 뉴스/논문은 무영향 |
+| **Tavily** | 1,000회/월 | [tavily.com](https://tavily.com) 대시보드 | 뉴스 수집이 GDELT + Naver로 자동 폴백 |
+| **Anthropic** | 사용량 기반 | [console.anthropic.com](https://console.anthropic.com) | 전체 Claude Code 중단. 즉시 관리자에게 보고 |
+
+**쿼터 절약 팁**:
+- `collect_news`만 필요하면 `collect_all` 대신 단독 호출 (SerpAPI 소모 방지)
+- `collect_patents`는 분기 1~2회 일괄 수집으로 충분
+- `search_intel(mode="keyword")`는 API 비용 없음 (DB 내부 검색)
+
+### 수집 에러 대응
+
+**논문 수집 실패** (`collect_papers` / `collect_arxiv`):
+1. Semantic Scholar API 일시 장애 → arXiv로 자동 폴백 (별도 조치 불필요)
+2. arXiv도 실패 → 수 분 후 재시도. arXiv는 3초 간격 rate limit 있음
+3. 결과 0건이지만 에러 아닌 경우 → 검색어를 영어/일반 키워드로 변경
+
+**뉴스 수집 실패** (`collect_news`):
+1. `source="all"` 중 일부만 실패 → 성공한 소스 결과는 정상 저장됨
+2. Naver API 키 만료 → `.env`의 `NAVER_CLIENT_ID`, `NAVER_CLIENT_SECRET` 갱신
+3. 한국어 뉴스만 필요 → `source="naver"` 단독 호출
+
+**특허 수집 실패** (`collect_patents`):
+1. SerpAPI 쿼터 확인 (월 250회)
+2. 쿼터 잔여 시 → 검색어 단순화 (한국어 → 영어)
+
+### MCP 서버 점검
+
+MCP 서버가 정상인지 확인하려면:
+```
+"intel-store 상태 확인해줘"    → get_intel_stats() 호출
+"startup-db 상태 확인해줘"     → get_company_stats() 호출
+"trend-tracker 토픽 목록"      → manage_watch_topics(action="list") 호출
+```
+
+전체 MCP 서버 목록 (6개):
+| 서버 | 상태 확인 도구 |
+|------|---------------|
+| intel-store | `get_intel_stats()` |
+| startup-db | `get_company_stats()` |
+| trend-tracker | `manage_watch_topics(action="list")` |
+| design-system | `list_themes()` |
+| youtube-transcript | `get_transcript(url="...")` |
+| context7 | 외부 문서 조회 시 자동 사용 |
 
 ---
 
-## 10. 참고 문서
+## 11. 참고 문서
 
 | 문서 | 위치 | 내용 |
 |------|------|------|

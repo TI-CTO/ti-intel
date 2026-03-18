@@ -151,7 +151,7 @@ if by_l2:
         custom_data=["count", "raised_label", "l2_slug"],
     )
     fig.update_traces(
-        texttemplate="<b>%{label}</b><br>%{customdata[1]}<br>%{customdata[0]} rounds",
+        texttemplate="<b>%{label}</b><br>%{customdata[1]}",
         textposition="middle center",
         textfont_size=12,
     )
@@ -177,8 +177,8 @@ if by_l2:
 
             comp_df = pd.DataFrame(companies_sorted)
             comp_df["raised"] = comp_df["raised"].apply(_fmt)
-            display_df = comp_df[["name", "country", "raised", "rounds"]].rename(
-                columns={"name": "Company", "country": "Country", "raised": "Total Raised", "rounds": "Rounds"}
+            display_df = comp_df[["name", "country", "raised"]].rename(
+                columns={"name": "Company", "country": "Country", "raised": "Total Raised"}
             )
             st.markdown(
                 render_styled_dataframe(display_df, dark=dark),

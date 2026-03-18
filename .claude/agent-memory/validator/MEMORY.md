@@ -42,6 +42,7 @@
 | 2026-03-17_speech-generation/skill1 | 2026-03-17 | PARTIAL | 고아 인용 11건(G-03-C,G-11-C,G-13-C,G-14-C,G-14-S,G-15-C,G-32,G-34,G-35,G-37,E-05), DT 50언어 로드맵→현재형 표현 오류, G-12-S 경쟁사 블로그 Cartesia 수치 인용 |
 | 2026-03-18_he-keyword-search/skill1 | 2026-03-18 | PARTIAL | Critical 1건(G-02 GM Insights $234.7M 2025→원본 $178.4M/2023 불일치), 고아 소스 2건(E-03, P-05), SKT/KT 투자액 단일 소스 반복 |
 | 2026-03-18_spam-phishing-detection/skill1 | 2026-03-18 | PARTIAL | Critical 2건(+91% YoY 수치 불일치·Truecaller EBITDA -49% 출처 미확인), 고아 소스 1건(P-03), 판정 기준 모순(115점이 재검토 범위인데 Conditional Go 표기) |
+| 2026-03-18_speech-perception/skill1 | 2026-03-18 | PARTIAL | Critical 1건(G-25 카카오 판결 주장↔범용 가이드라인 불일치), 채점 합산 오류(세부합 118 vs 표기 131), Hume $72.8M "Series B" 오표기, 고아 소스 12건(38.7%) |
 
 ### 반복 패턴 (agentic-ai 도메인)
 - G-21 반복 위험: Mintz 법률 블로그가 특허·시장성공률·Gartner 예측 등 이질적 주장에 동시 인용되는 패턴 발생 → 차기 검증 시 G-21 인용 맥락 우선 점검 (adaptive-rag에서는 NVIDIA case study로 정상 사용됨)
@@ -64,3 +65,6 @@
 - "핵심 출처만 요약" 면책 문구 패턴: References 섹션에 "선행 research.md에 전수 수록" 면책을 달고 테이블을 축약하는 패턴 등장. 본 파일 내 미등재 코드가 다수(11건)이므로, 검증 시 면책 문구에 관계없이 본문 인용 코드 전수 교차 확인 필수
 - 로드맵 수치 현재형 서술: Deutsche Telekom 50개 언어는 "향후 12개월 계획"이나 본문에서 현재 구현처럼 표현. 통신사 MWC 발표는 로드맵과 현재 기능을 구분해서 검증 필요
 - 경쟁사 자체 블로그를 벤치마크 소스로 사용: G-12-S(Inworld 블로그)가 Cartesia 수치의 근거로 사용. 경쟁사 비교 블로그는 [C] 이하로 처리하고 독립 소스 보강 권장
+- 채점 합산 오류 패턴 (speech-perception): 세부 점수(8+7+5+7 등) 합산 시 118인데 총점을 131로 표기. WTIS 채점표는 검증 시 세부값 직접 합산 후 총점과 대조 필수
+- 투자 라운드 vs 누적 총투자 혼용: Hume AI "$72.8M (Series B)" 표기는 Series B가 $50M이고 $72.8M은 누적 총투자. 차기 검증 시 "(Series X)"와 "총투자" 표현 구분 확인 필요
+- 법무/판결 인용 맥락 불일치: "판결(2025.06)" 주장을 일반 가이드라인 문서(Kim&Chang)로 인용하는 사례 발생. 리스크 섹션 내 구체 판례·법령 인용 시 WebFetch로 원본 내용 확인 필수

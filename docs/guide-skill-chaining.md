@@ -74,7 +74,7 @@
 | 모든 분석 스킬 | **slides** | 마크다운 경로 → PPTX |
 | 모든 분석 스킬 | **obsidian-bridge** | 파일 경로 + 타입 → 볼트 복사 |
 | **wtis** | **obsidian-bridge** (wtis) | 세션 폴더 → final.md + PDF |
-| **wtis** | **obsidian-bridge** (portfolio) | portfolio.md + PDF |
+| **wtis** | **obsidian-bridge** (portfolio) | {domain}-portfolio.md + PDF |
 | **weekly-monitor** | **obsidian-bridge** (weekly) | 메인 리포트 + PDF |
 | **weekly-monitor** | **obsidian-bridge** (research) | Deep 리서치 파일 |
 | **startup-analyst** | **obsidian-bridge** (research) | 분석 리포트 → 30-Reports/startups/ |

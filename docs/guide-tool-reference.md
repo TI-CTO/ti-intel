@@ -26,8 +26,9 @@
 │ validator             │    │ trend-tracker (5 도구)      │
 │ researcher            │    │ design-system (4 도구)      │
 │ reviewer              │    │ startup-db (15 도구)        │
-│ implementer           │    └────────────────────────────┘
-└───────────────────────┘
+│ implementer           │    │ youtube-transcript (1 도구) │
+│                       │    │ context7 (외부 문서 조회)    │
+└───────────────────────┘    └────────────────────────────┘
 ```
 
 ---
@@ -239,7 +240,7 @@
 
 | 구분 | 도구 | 설명 | 예시 |
 |------|------|------|------|
-| 검색 | `search_intel` | 통합 검색 (keyword/semantic/hybrid) | `search_intel(query="PQC", mode="hybrid")` |
+| 검색 | `search_intel` | 통합 검색 (keyword/semantic/hybrid, 기본 keyword) | `search_intel(query="PQC", mode="hybrid")` |
 | | `find_similar` | 유사 아이템 탐색 (ID 또는 텍스트) | `find_similar(item_id=128)` / `find_similar(text="실시간 AI 사기 탐지")` |
 | | `get_weekly_diff` | 이번 주 vs 지난 주 신규·변경 아이템 비교 | `get_weekly_diff(topic="pqc-voice-encryption", week_date="2026-03-04")` |
 | | `get_item_detail` | 단건 상세 조회 (ID 또는 external_id) | `get_item_detail(item_id=42)` / `get_item_detail(external_id="gp:US123")` |
@@ -326,13 +327,13 @@ collect_news(topic="competitor-strategy", query="경쟁사 AI 투자", source="a
 
 | 구분 | 도구 | 설명 | 예시 |
 |------|------|------|------|
-| 검색 | `search_companies` | 이름/카테고리/국가/태그 필터 검색 | `search_companies(query="AI", country="한국")` |
+| 검색 | `search_companies` | 이름/카테고리/국가/태그/L1/L2/L3 필터 검색 | `search_companies(query="AI", country="한국")` |
 | | `get_company` | slug로 상세 조회 (라운드, 인물, 스코어 포함) | `get_company(slug="sim2real")` |
 | | `get_company_stats` | 카테고리별/국가별/상태별 통계 | `get_company_stats()` |
 | 저장 | `upsert_company` | 스타트업 추가/업데이트 (slug 기준) | `upsert_company(name="NewCo", country="한국")` |
 | | `add_funding_round` | 펀딩 라운드 + 투자자 연결 | `add_funding_round(company_slug="newco", round_type="seed")` |
 | | `upsert_investor` | 투자자 추가/업데이트 | `upsert_investor(name="Y Combinator", investor_type="accelerator")` |
-| Phase 2 | `score_company` | 5차원 스코어 기록 | `score_company(slug="newco", tech=8, market=7)` |
+| Phase 2 | `score_company` | 5차원 스코어 기록 (1-10점 × 5 + 종합 0-100) | `score_company(slug="newco", tech_strength=8, market_potential=7)` |
 | | `add_company_relation` | 회사 간 관계 (competitor/partner) | `add_company_relation(slug_a="a", slug_b="b", type="competitor")` |
 | | `search_investors` | 투자자 검색 | `search_investors(query="Sequoia")` |
 | | `get_investor_portfolio` | 투자자별 포트폴리오 | `get_investor_portfolio(slug="sequoia")` |
@@ -342,8 +343,15 @@ collect_news(topic="competitor-strategy", query="경쟁사 AI 투자", source="a
 | Phase 3 | `assign_company_topics` | L3 토픽 할당 | `assign_company_topics(slug="newco", topics=["adaptive-rag"])` |
 | | `remove_company_topics` | L3 토픽 제거 | `remove_company_topics(slug="newco", topics=["adaptive-rag"])` |
 
-**데이터 현황**: 806개 스타트업, 627건 펀딩, 602명 인물, L3 토픽 매핑 567건
+**데이터 현황**: 807개 스타트업, 689건 펀딩, 602명 인물, L3 토픽 매핑 567건
 **카테고리**: Service(275), S/W Platform(212), AI 산업 특화(116), Model/Engine(69), Infra(57), Ops(48), Data(30)
+
+**L1/L2/L3 필터 검색**:
+```
+search_companies(l1="agentic-ai")                    ← L1 도메인 전체
+search_companies(l2="hybrid-ai-infra")                ← L2 영역
+search_companies(l3_slug="adaptive-rag", country="한국")  ← L3 기술 + 국가
+```
 
 **사용 흐름**:
 ```
@@ -353,85 +361,25 @@ collect_news(topic="competitor-strategy", query="경쟁사 AI 투자", source="a
 [조회] search_companies / get_company → 대시보드 또는 즉석 검색
 ```
 
----
+### youtube-transcript — 유튜브 자막 추출
 
-## 5. 역할별 활용 시나리오
+> 유튜브 영상 URL에서 자막(transcript)을 추출하여 텍스트로 반환.
 
-### 전략 기획 — "이 기술에 투자해야 하나?"
-
-```
-# 주간 변화 감지 → "이번 주에 PQC 쪽에 뭐가 바뀌었어?"
-get_weekly_diff(topic="pqc-voice-encryption")
-
-# 다각도 근거 수집 → "동형암호 사업화 데이터 모아줘"
-collect_all(topic="he-keyword-search", query="homomorphic encryption commercialization")
-
-# 경쟁사 추적
-search_intel(query="competitor quantum crypto", mode="hybrid")
-
-# 투자 판정 → "/wtis" 실행
-```
-
-### 사업 기획 — "시장 데이터와 레퍼런스가 필요해"
+| 도구 | 설명 |
+|------|------|
+| `get_transcript` | 유튜브 URL → 자막 텍스트 (lang 파라미터로 언어 선택, 기본 en) |
 
 ```
-# 시장 뉴스 수집 → "보이스피싱 피해 통계 뉴스 모아줘"
-collect_news(topic="spam-phishing", query="보이스피싱 피해 통계", source="naver")
-
-# 유사 사례 탐색 → "AI 사기 탐지 서비스와 비슷한 거 찾아줘"
-find_similar(text="실시간 통화 중 AI 사기 탐지 서비스")
-
-# 트렌드 통계
-get_intel_stats(topic="ondevice-slm", period=90)
+get_transcript(url="https://youtube.com/watch?v=...", lang="ko")
 ```
 
-### 개발/리서치 — "최신 논문과 구현 레퍼런스"
+### context7 — 외부 라이브러리 문서 조회
 
-```
-# 논문 집중 수집 → "CKKS 부트스트래핑 논문 10편 수집해줘"
-collect_arxiv(topic="he-keyword-search", query="all:CKKS bootstrapping optimization", limit=10)
-
-# 관련 연구 탐색
-find_similar(item_id=128)
-
-# 논문+특허만 검색
-search_intel(query="ML-KEM NIST standard", mode="hybrid", types=["paper", "patent"])
-```
-
-### 경영진 — "빠른 현황 파악"
-
-```
-# 도메인 전체 현황
-get_intel_stats(topic="secure-ai")
-
-# 주간 변화
-get_weekly_diff(topic="secure-ai")
-
-# 포트폴리오 (L2 기술별 점수/판정 한 페이지)
-→ outputs/reports/{domain}/{domain}-portfolio.md
-```
-
-### 스타트업 발굴 — "이 분야에서 누가 하고 있나?"
-
-```
-# 도메인별 스타트업 탐색
-→ /startup-scout voice AI
-→ 또는: "voice AI 관련 스타트업 찾아줘"
-
-# 특정 기업 심층 조사
-→ /startup-analyst SIM2REAL
-→ 또는: "SIM2REAL 심층 분석해줘"
-
-# DB에서 검색
-search_companies(query="AI 번역", country="한국")
-
-# 통계 확인
-get_company_stats()
-```
+> 외부 오픈소스 라이브러리/프레임워크의 최신 공식 문서를 실시간 조회. 코딩 작업 시 API 레퍼런스 확인에 활용.
 
 ---
 
-## 6. 전체 리서치 사이클
+## 5. 전체 리서치 사이클
 
 ### 단일 분석 사이클 (도구 체인)
 
@@ -481,7 +429,7 @@ Naver News ───────┘              ▼                   └─ se
 
 ---
 
-## 7. 제약 사항
+## 6. 제약 사항
 
 | 제약 | 영향 | 대응 |
 |------|------|------|
