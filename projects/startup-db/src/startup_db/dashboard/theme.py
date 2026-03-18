@@ -101,6 +101,7 @@ def get_plotly_layout(dark: bool = False) -> dict:
         "xaxis_gridcolor": grid_color,
         "yaxis_tickfont_color": c["text"],
         "yaxis_gridcolor": grid_color,
+        "transition": {"duration": 500, "easing": "cubic-in-out"},
     }
 
 
@@ -217,8 +218,8 @@ def render_company_cards(
         "border-radius:14px;padding:18px 20px;height:160px;"
         "display:flex;flex-direction:column;justify-content:space-between;"
         "text-decoration:none;cursor:pointer;"
-        f"transition:transform 0.15s,box-shadow 0.15s;}}"
-        f".cc-card:hover{{transform:translateY(-2px);box-shadow:0 8px 24px {c['shadow']};"
+        f"transition:transform 0.25s ease,box-shadow 0.25s ease,border-color 0.25s ease;}}"
+        f".cc-card:hover{{transform:translateY(-4px);box-shadow:0 12px 32px {c['shadow']},0 0 0 1px {PRIMARY}40;"
         f"border-color:{PRIMARY};}}"
         f".cc-name{{font-size:0.95rem;font-weight:600;color:{text};white-space:nowrap;"
         "overflow:hidden;text-overflow:ellipsis;}}"
@@ -603,6 +604,102 @@ def inject_css(dark: bool = False) -> str:
     /* ── Hide default Streamlit branding ──────────────── */
     #MainMenu {{visibility: hidden;}}
     footer {{visibility: hidden;}}
+
+    /* ══ ANIMATIONS ═══════════════════════════════════ */
+
+    /* ── Keyframes ────────────────────────────────── */
+    @keyframes fadeSlideUp {{
+        from {{ opacity: 0; transform: translateY(16px); }}
+        to {{ opacity: 1; transform: translateY(0); }}
+    }}
+    @keyframes fadeIn {{
+        from {{ opacity: 0; }}
+        to {{ opacity: 1; }}
+    }}
+    @keyframes growWidth {{
+        from {{ transform: scaleX(0); }}
+        to {{ transform: scaleX(1); }}
+    }}
+
+    /* ── Page load — content fade-in + slide-up ───── */
+    .main .block-container {{
+        animation: fadeSlideUp 0.45s ease-out;
+    }}
+
+    /* ── KPI metric stagger reveal ────────────────── */
+    [data-testid="stMetric"] {{
+        animation: fadeSlideUp 0.5s ease-out both;
+        transition: transform 0.25s ease, box-shadow 0.25s ease,
+                    border-color 0.25s ease;
+        cursor: default;
+    }}
+    [data-testid="column"]:nth-child(1) [data-testid="stMetric"] {{ animation-delay: 0.0s; }}
+    [data-testid="column"]:nth-child(2) [data-testid="stMetric"] {{ animation-delay: 0.08s; }}
+    [data-testid="column"]:nth-child(3) [data-testid="stMetric"] {{ animation-delay: 0.16s; }}
+    [data-testid="column"]:nth-child(4) [data-testid="stMetric"] {{ animation-delay: 0.24s; }}
+    [data-testid="column"]:nth-child(5) [data-testid="stMetric"] {{ animation-delay: 0.32s; }}
+    [data-testid="column"]:nth-child(6) [data-testid="stMetric"] {{ animation-delay: 0.40s; }}
+
+    /* ── KPI hover lift + glow ────────────────────── */
+    [data-testid="stMetric"]:hover {{
+        transform: translateY(-4px) !important;
+        box-shadow: 0 12px 40px rgba(197,0,99,0.15) !important;
+    }}
+
+    /* ── Tab content fade on switch ────────────────── */
+    .stTabs [data-baseweb="tab-panel"] {{
+        animation: fadeSlideUp 0.3s ease-out;
+    }}
+
+    /* ── Plotly chart fade-in ──────────────────────── */
+    [data-testid="stPlotlyChart"] {{
+        animation: fadeIn 0.5s ease-out;
+    }}
+
+    /* ── Score progress bar grow ───────────────────── */
+    .score-bar-fill {{
+        transform-origin: left;
+        animation: growWidth 0.8s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+    }}
+    .score-bar-fill:nth-of-type(1) {{ animation-delay: 0.0s; }}
+    .score-bar-fill:nth-of-type(2) {{ animation-delay: 0.08s; }}
+    .score-bar-fill:nth-of-type(3) {{ animation-delay: 0.16s; }}
+    .score-bar-fill:nth-of-type(4) {{ animation-delay: 0.24s; }}
+    .score-bar-fill:nth-of-type(5) {{ animation-delay: 0.32s; }}
+
+    /* ── Company card stagger ─────────────────────── */
+    .cc-card {{
+        animation: fadeSlideUp 0.35s ease-out both;
+    }}
+    .cc-card:nth-child(1)  {{ animation-delay: 0.00s; }}
+    .cc-card:nth-child(2)  {{ animation-delay: 0.03s; }}
+    .cc-card:nth-child(3)  {{ animation-delay: 0.06s; }}
+    .cc-card:nth-child(4)  {{ animation-delay: 0.09s; }}
+    .cc-card:nth-child(5)  {{ animation-delay: 0.12s; }}
+    .cc-card:nth-child(6)  {{ animation-delay: 0.15s; }}
+    .cc-card:nth-child(7)  {{ animation-delay: 0.18s; }}
+    .cc-card:nth-child(8)  {{ animation-delay: 0.21s; }}
+    .cc-card:nth-child(9)  {{ animation-delay: 0.24s; }}
+    .cc-card:nth-child(10) {{ animation-delay: 0.27s; }}
+    .cc-card:nth-child(11) {{ animation-delay: 0.30s; }}
+    .cc-card:nth-child(12) {{ animation-delay: 0.33s; }}
+    .cc-card:nth-child(n+13) {{ animation-delay: 0.36s; }}
+
+    /* ── Table row stagger ────────────────────────── */
+    .styled-table tbody tr {{
+        animation: fadeIn 0.3s ease-out both;
+    }}
+    .styled-table tbody tr:nth-child(1)  {{ animation-delay: 0.02s; }}
+    .styled-table tbody tr:nth-child(2)  {{ animation-delay: 0.04s; }}
+    .styled-table tbody tr:nth-child(3)  {{ animation-delay: 0.06s; }}
+    .styled-table tbody tr:nth-child(4)  {{ animation-delay: 0.08s; }}
+    .styled-table tbody tr:nth-child(5)  {{ animation-delay: 0.10s; }}
+    .styled-table tbody tr:nth-child(6)  {{ animation-delay: 0.12s; }}
+    .styled-table tbody tr:nth-child(7)  {{ animation-delay: 0.14s; }}
+    .styled-table tbody tr:nth-child(8)  {{ animation-delay: 0.16s; }}
+    .styled-table tbody tr:nth-child(9)  {{ animation-delay: 0.18s; }}
+    .styled-table tbody tr:nth-child(10) {{ animation-delay: 0.20s; }}
+    .styled-table tbody tr:nth-child(n+11) {{ animation-delay: 0.22s; }}
 </style>
 """
     # ── Dark-mode-only overrides ─────────────────────────────
@@ -665,3 +762,134 @@ def inject_css(dark: bool = False) -> str:
 """
 
     return css
+
+
+def render_plotly_animated(
+    fig: "go.Figure",
+    height: int = 400,
+    dark: bool = False,
+    direction: str = "auto",
+) -> None:
+    """Render a Plotly figure with CSS clip-path reveal animation.
+
+    Replaces st.plotly_chart() for charts that need a 'drawing' effect.
+    Uses CSS clip-path to reveal the fully-rendered chart.
+
+    Args:
+        fig: Plotly figure object.
+        height: Chart height in pixels.
+        dark: Dark mode flag (unused, kept for API compat).
+        direction: 'up', 'right', or 'auto' (detects from orientation).
+    """
+    import streamlit.components.v1 as components
+
+    # Auto-detect direction from chart data
+    if direction == "auto":
+        direction = "up"
+        for trace in fig.data:
+            if getattr(trace, "orientation", None) == "h":
+                direction = "right"
+                break
+
+    chart_html = fig.to_html(
+        full_html=False,
+        include_plotlyjs="cdn",
+        config={"responsive": True, "displayModeBar": False},
+    )
+
+    anim_name = "revealRight" if direction == "right" else "revealUp"
+    clip_from = "0 100% 0 0" if direction == "right" else "100% 0 0 0"
+
+    html = f"""<!DOCTYPE html>
+<html>
+<head>
+<style>
+body {{ margin:0; padding:0; background:transparent; overflow:hidden; }}
+@keyframes {anim_name} {{
+    from {{ clip-path: inset({clip_from}); }}
+    to   {{ clip-path: inset(0 0 0 0); }}
+}}
+.anim-wrap .plot-container {{
+    opacity: 0;
+}}
+.anim-wrap.reveal .plot-container {{
+    opacity: 1;
+    animation: {anim_name} 1.2s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}}
+</style>
+</head>
+<body>
+<div class="anim-wrap">
+{chart_html}
+</div>
+<script>
+setTimeout(function() {{
+    document.querySelector('.anim-wrap').classList.add('reveal');
+}}, 200);
+</script>
+</body>
+</html>"""
+
+    components.html(html, height=height + 5)
+
+
+def render_countup_js() -> None:
+    """Inject JS that animates metric values with a count-up effect.
+
+    Uses streamlit.components.v1.html to access parent DOM from an iframe.
+    Call this after all st.metric() calls on a page.
+    """
+    import streamlit.components.v1 as components
+
+    components.html(
+        """
+        <script>
+        (function() {
+            const doc = window.parent.document;
+            function animateCountUp() {
+                const metrics = doc.querySelectorAll(
+                    '[data-testid="stMetricValue"] > div'
+                );
+                metrics.forEach(function(el) {
+                    if (el.dataset.counted) return;
+                    el.dataset.counted = '1';
+                    const text = el.textContent.trim();
+                    // Match patterns: "$2.3B", "807", "45.2", "$150M", "4.8 / 100"
+                    const m = text.match(/^([^\\d]*?)(\\d[\\d,]*\\.?\\d*)(.*)$/);
+                    if (!m) return;
+                    const prefix = m[1];
+                    const numStr = m[2].replace(/,/g, '');
+                    const suffix = m[3];
+                    const target = parseFloat(numStr);
+                    if (isNaN(target) || target === 0) return;
+                    const hasDec = numStr.includes('.');
+                    const decimals = hasDec ? (numStr.split('.')[1] || '').length : 0;
+                    const hasComma = m[2].includes(',');
+                    const duration = 800;
+                    const start = performance.now();
+                    function tick(now) {
+                        const t = Math.min((now - start) / duration, 1);
+                        const eased = 1 - Math.pow(1 - t, 3);  // ease-out cubic
+                        const cur = target * eased;
+                        var formatted;
+                        if (hasDec) {
+                            formatted = cur.toFixed(decimals);
+                        } else {
+                            var rounded = Math.round(cur);
+                            formatted = hasComma
+                                ? rounded.toLocaleString()
+                                : rounded.toString();
+                        }
+                        el.textContent = prefix + formatted + suffix;
+                        if (t < 1) requestAnimationFrame(tick);
+                    }
+                    requestAnimationFrame(tick);
+                });
+            }
+            // Wait for Streamlit to render metrics
+            setTimeout(animateCountUp, 150);
+        })();
+        </script>
+        """,
+        height=0,
+    )

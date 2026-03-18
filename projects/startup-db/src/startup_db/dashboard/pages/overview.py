@@ -24,6 +24,8 @@ from startup_db.dashboard.theme import (
     PRIMARY,
     _glass_css,
     get_plotly_layout,
+    render_countup_js,
+    render_plotly_animated,
 )
 from startup_db.taxonomy import L1_COLORS, L1_LABELS, get_l1_for_l3
 
@@ -104,6 +106,7 @@ col4.metric("Investors", str(len(
     (repo._client.table("su_investors")
      .select("id", count="exact").execute()).data or []
 )))
+render_countup_js()
 
 st.divider()
 
@@ -147,7 +150,7 @@ with tab_trend:
             yaxis_title="Total Raised (USD)",
             xaxis_title="",
         )
-        st.plotly_chart(fig, use_container_width=True)
+        render_plotly_animated(fig, height=380, dark=dark)
 
     # Top funded companies by period
     from datetime import date, timedelta
@@ -368,7 +371,7 @@ with tab_domain:
                 showlegend=False,
                 yaxis={"categoryorder": "total ascending"},
             )
-            st.plotly_chart(fig, use_container_width=True)
+            render_plotly_animated(fig, height=400, dark=dark)
 
     with right:
         st.subheader("By Country")
@@ -415,7 +418,7 @@ with tab_fund:
                 showlegend=False,
                 yaxis={"categoryorder": "total ascending"},
             )
-            st.plotly_chart(fig, use_container_width=True)
+            render_plotly_animated(fig, height=350, dark=dark)
 
     with right2:
         st.subheader("By Status")

@@ -9,7 +9,7 @@ import streamlit as st
 
 from startup_db.dashboard.components import is_dark_mode
 from startup_db.dashboard.data import cached_all_companies_slim, cached_all_scores
-from startup_db.dashboard.theme import CHART_COLORS, get_plotly_layout, render_styled_dataframe
+from startup_db.dashboard.theme import CHART_COLORS, get_plotly_layout, render_countup_js, render_plotly_animated, render_styled_dataframe
 
 dark = is_dark_mode()
 PL = get_plotly_layout(dark)
@@ -43,6 +43,7 @@ col1.metric("Scored Companies", len(df))
 col2.metric("Avg Overall", f"{df['overall_score'].mean():.1f}")
 col3.metric("Top Score", f"{df['overall_score'].max():.1f}")
 col4.metric("Avg Tech", f"{df['tech_strength'].mean():.1f}")
+render_countup_js()
 
 st.divider()
 
@@ -142,7 +143,7 @@ with tab_dist:
                 color_discrete_sequence=CHART_COLORS,
             )
             fig.update_layout(**PL, height=300)
-            st.plotly_chart(fig, use_container_width=True)
+            render_plotly_animated(fig, height=300, dark=dark)
 
 with tab_rank:
     st.subheader("Top 20 Companies by Overall Score")
@@ -170,7 +171,7 @@ with tab_scatter:
         color_discrete_sequence=CHART_COLORS,
     )
     fig.update_layout(**PL, height=500)
-    st.plotly_chart(fig, use_container_width=True)
+    render_plotly_animated(fig, height=500, dark=dark)
 
 with tab_compare:
     st.subheader("Compare Companies (Radar)")
@@ -199,6 +200,6 @@ with tab_compare:
             polar=dict(radialaxis=dict(range=[0, 10])),
             height=450,
         )
-        st.plotly_chart(fig, use_container_width=True)
+        render_plotly_animated(fig, height=450, dark=dark)
     else:
         st.info("Select up to 5 companies above to compare their scores on a radar chart.")

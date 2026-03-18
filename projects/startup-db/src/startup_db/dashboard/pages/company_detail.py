@@ -24,6 +24,8 @@ from startup_db.dashboard.theme import (
     STATUS_BADGE_COLORS_DARK,
     _glass_css,
     get_plotly_layout,
+    render_countup_js,
+    render_plotly_animated,
 )
 from startup_db.taxonomy import L1_COLORS, L1_LABELS, get_l1_for_l3, get_l2_for_l3
 
@@ -183,6 +185,7 @@ kpi2.metric("Rounds", str(round_count))
 kpi3.metric("Team", str(people_count))
 score_label = f"{overall_score:.0f} / 100" if overall_score else "—"
 kpi4.metric("Score", score_label)
+render_countup_js()
 
 
 # ══════════════════════════════════════════════════════════════
@@ -301,7 +304,7 @@ if tab_labels:
                         xaxis_title="",
                         showlegend=False,
                     )
-                    st.plotly_chart(fig, use_container_width=True)
+                    render_plotly_animated(fig, height=280, dark=dark)
 
     # ── People tab ───────────────────────────────────────
     if "people" in tab_map:
@@ -342,7 +345,7 @@ if tab_labels:
                     height=300,
                     showlegend=False,
                 )
-                st.plotly_chart(fig, use_container_width=True)
+                render_plotly_animated(fig, height=300, dark=dark)
 
             with col_detail:
                 for label, dim, val in zip(labels, dims, values):
@@ -355,7 +358,7 @@ if tab_labels:
                         f'<span style="font-size:0.82rem; font-weight:600; color:{C["text"]};">{val:.1f}</span>'
                         f"</div>"
                         f'<div style="height:8px; background:{C["input_bg"]}; border-radius:4px; overflow:hidden;">'
-                        f'<div style="height:100%; width:{pct}%; background:{bar_color}; border-radius:4px;"></div>'
+                        f'<div class="score-bar-fill" style="height:100%; width:{pct}%; background:{bar_color}; border-radius:4px;"></div>'
                         f"</div></div>",
                         unsafe_allow_html=True,
                     )
