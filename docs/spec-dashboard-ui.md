@@ -59,8 +59,8 @@
 - **검증**: CSS에 `section[data-testid="stSidebar"] .stSelectbox svg { fill: white }` 존재
 
 ### THEME-04: 선택된 탭 텍스트
-- **규칙**: 선택된 탭은 시그니처 그라데이션 배경 + **흰색 텍스트**
-- **검증**: `[aria-selected="true"] *`에 `color: white !important` + `-webkit-text-fill-color: white !important`
+- **규칙**: 선택된 탭은 underline 스타일 (`border-bottom: 2px solid PRIMARY`) + **테마 텍스트 색상** + `font-weight: 600`
+- **검증**: `[aria-selected="true"] *`에 `color: {c["text"]} !important` + `-webkit-text-fill-color: {c["text"]} !important`
 
 ### THEME-05: 다크 모드 헤더 영역
 - **규칙**: Deploy 버튼이 있는 Streamlit 헤더도 다크 글래스 배경
@@ -96,8 +96,8 @@
 ---
 
 ### TABLE-01: 스타일드 HTML 테이블
-- **규칙**: Companies, Investors 페이지의 테이블은 `render_styled_dataframe()` 사용
-- **검증**: 해당 페이지에서 `st.dataframe` 대신 `render_styled_dataframe` 호출
+- **규칙**: Companies, Investors 페이지의 테이블은 `render_styled_dataframe()` 사용. 리스트뷰 등 특화 기능(L1 뱃지, 행 링크)이 필요한 경우 별도 구현 허용하되, 테마 색상(`row_bg`, `row_alt_bg` 등)은 동일 값 사용
+- **검증**: 해당 페이지에서 `st.dataframe` 대신 `render_styled_dataframe` 또는 동일 테마 값 적용 커스텀 테이블 사용
 - **이유**: `st.dataframe`(glide-data-grid)은 캔버스 기반으로 다크 모드 CSS 적용 불가
 
 ### TABLE-02: 테이블 교차행 색상

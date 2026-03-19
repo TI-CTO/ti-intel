@@ -404,6 +404,7 @@ def inject_css(dark: bool = False) -> str:
         border-top: 3px solid transparent;
         border-image: {PRIMARY_GRADIENT} 1;
         border-image-slice: 1;
+        position: relative;
     }}
     [data-testid="stMetricLabel"] {{
         color: {c["text_secondary"]} !important;
