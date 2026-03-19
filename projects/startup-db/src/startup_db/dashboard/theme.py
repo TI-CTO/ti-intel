@@ -626,19 +626,31 @@ def inject_css(dark: bool = False) -> str:
         animation: fadeSlideUp 0.45s ease-out;
     }}
 
-    /* ── KPI metric stagger reveal ────────────────── */
+    /* ── KPI metric — no stagger, instant box render ── */
     [data-testid="stMetric"] {{
-        animation: fadeSlideUp 0.5s ease-out both;
         transition: transform 0.25s ease, box-shadow 0.25s ease,
                     border-color 0.25s ease;
         cursor: default;
     }}
-    [data-testid="column"]:nth-child(1) [data-testid="stMetric"] {{ animation-delay: 0.0s; }}
-    [data-testid="column"]:nth-child(2) [data-testid="stMetric"] {{ animation-delay: 0.08s; }}
-    [data-testid="column"]:nth-child(3) [data-testid="stMetric"] {{ animation-delay: 0.16s; }}
-    [data-testid="column"]:nth-child(4) [data-testid="stMetric"] {{ animation-delay: 0.24s; }}
-    [data-testid="column"]:nth-child(5) [data-testid="stMetric"] {{ animation-delay: 0.32s; }}
-    [data-testid="column"]:nth-child(6) [data-testid="stMetric"] {{ animation-delay: 0.40s; }}
+
+    /* ── KPI uniform height — accommodates delta row ── */
+    [data-testid="stMetric"] {{
+        min-height: 120px;
+        max-height: 120px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }}
+
+    /* ── YoY delta — right-aligned, vertically centered with value ── */
+    [data-testid="stMetricDelta"] {{
+        position: absolute;
+        right: 24px;
+        top: 50%;
+        transform: translateY(-10%);
+        font-size: 1.05rem !important;
+        font-weight: 600 !important;
+    }}
 
     /* ── KPI hover lift + glow ────────────────────── */
     [data-testid="stMetric"]:hover {{

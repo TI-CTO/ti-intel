@@ -223,6 +223,14 @@ def cached_funding_by_domain() -> dict:
 
 
 @st.cache_data(ttl=3600)
+def cached_investor_count() -> int:
+    """Total investor count (cached 1h)."""
+    client = get_repo()._client
+    result = client.table("su_investors").select("id", count="exact").execute()
+    return len(result.data or [])
+
+
+@st.cache_data(ttl=3600)
 def cached_company_topics_bulk() -> dict[str, list[str]]:
     """Fetch all company topic assignments as {company_id: [l3_slugs]}.
 

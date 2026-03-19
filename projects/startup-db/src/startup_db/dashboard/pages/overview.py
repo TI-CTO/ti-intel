@@ -15,6 +15,7 @@ from startup_db.dashboard.data import (
     cached_company_stats,
     cached_company_topics_bulk,
     cached_funding_stats,
+    cached_investor_count,
     get_repo,
 )
 from startup_db.dashboard.theme import (
@@ -80,32 +81,32 @@ def _fmt_money(amount: float) -> str:
 
 
 # ── KPI metrics ──────────────────────────────────────────────
-col1, col2, col3, col4 = st.columns(4)
-col1.metric("Companies", f"{stats['total']:,}")
-col2.metric("Total Raised", _fmt_money(total_raised))
+investor_count = cached_investor_count()
 
-# YoY trend
+# Compute YoY for funding
+funding_label = "Funding"
+funding_value = _fmt_money(total_raised)
+yoy_delta = None
 if len(sorted_years) >= 2:
     latest_yr = sorted_years[-1]
     prev_yr = sorted_years[-2]
     latest_raised = year_data[latest_yr]["total_raised"]
     prev_raised = year_data[prev_yr]["total_raised"]
+    funding_label = f"Funding {latest_yr}"
+    funding_value = _fmt_money(latest_raised)
     if prev_raised > 0:
         yoy_pct = ((latest_raised - prev_raised) / prev_raised) * 100
-        col3.metric(
-            f"Funding {latest_yr}",
-            _fmt_money(latest_raised),
-            f"{yoy_pct:+.0f}% YoY",
-        )
-    else:
-        col3.metric(f"Funding {latest_yr}", _fmt_money(latest_raised))
-else:
-    col3.metric("Countries", len(stats.get("by_country", {})))
+        yoy_delta = f"{yoy_pct:+.0f}% YoY"
 
-col4.metric("Investors", str(len(
-    (repo._client.table("su_investors")
-     .select("id", count="exact").execute()).data or []
-)))
+col1, col2, col3, col4 = st.columns(4)
+col1.metric("Companies", f"{stats['total']:,}")
+col2.metric("Total Raised", _fmt_money(total_raised))
+if yoy_delta:
+    col3.metric(funding_label, funding_value, yoy_delta)
+else:
+    col3.metric(funding_label, funding_value)
+col4.metric("Investors", f"{investor_count:,}")
+
 render_countup_js()
 
 st.divider()
