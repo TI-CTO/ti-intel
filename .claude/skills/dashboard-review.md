@@ -26,9 +26,10 @@ invocation: "/dashboard-review"
 
 검증 방법:
 - **THEME-***: `theme.py`에서 팔레트 값, CSS 규칙 존재 여부 확인
+- **CSS-***: `theme.py` + 페이지 CSS에서 다크모드 텍스트 커버리지, 셀렉터 우선순위, `-webkit-text-fill-color` 동기화 확인
 - **NAV-***: `components.py`에서 네비게이션 구현 확인
 - **TABLE-***: 페이지 파일에서 `render_styled_dataframe` 사용 여부 확인
-- **NETWORK-***: `4_Network.py`에서 그래프 설정 확인
+- **NETWORK-***: `network.py`에서 그래프 설정 확인
 - **CHART-***: 차트 관련 페이지에서 스타일 파라미터 확인
 
 ### Step 3: 결과 보고

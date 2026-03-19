@@ -111,12 +111,12 @@
 - **검증**: `network.py`에 `st.subheader` 호출 존재
 
 ### NETWORK-02: 엣지 라벨 숨김
-- **규칙**: 엣지 라벨은 항상 빈 문자열, hover tooltip으로 대체
-- **검증**: Edge 생성 시 `label=""`, `title=` 파라미터에 관계 정보
+- **규칙**: 엣지 라벨은 표시하지 않음, hover tooltip으로 대체
+- **검증**: vis.js Edge 딕셔너리에 `label` 키 미설정 (vis.js 기본값 = 라벨 없음) 또는 `label: ""`, `title=` 에 관계 정보
 
 ### NETWORK-03: 노드 크기 차등화
-- **규칙**: 연결 수(degree) 기반 노드 크기 10~40px
-- **검증**: `node_size = max(10, min(40, 10 + deg * 3))`
+- **규칙**: 연결 수(degree) 기반 노드 크기 12~45px
+- **검증**: `node_size = max(12, min(45, 12 + deg * 4))`
 
 ### NETWORK-04: 관계 유형 필터
 - **규칙**: 사이드바에 멀티셀렉트로 관계 유형 필터
@@ -128,9 +128,44 @@
 
 ---
 
+### CSS-01: 다크모드 텍스트 커버리지
+- **규칙**: Streamlit 메인 영역의 **모든** 텍스트 요소(h1-h4, p, span, label, summary, details, expander)에 다크모드 텍스트 색상 적용
+- **검증**: `theme.py`에 아래 셀렉터가 `{c["text"]} !important`로 존재:
+  - `.main h1~h4`, `.main p`, `.main span`, `.main label`
+  - `.main [data-testid="stExpander"] summary`, `.main [data-testid="stExpander"] summary *`
+  - `.main [data-testid="stExpander"] [data-testid="stExpanderDetails"]`, `... *`
+- **위험**: 새 Streamlit 컴포넌트 추가 시 텍스트 셀렉터 누락 가능
+
+### CSS-02: 인라인 HTML 다크모드 호환
+- **규칙**: `st.markdown(unsafe_allow_html=True)`로 삽입하는 HTML에 `theme.py`의 `!important` 규칙이 적용됨. 인라인 `style="color:..."` 만으로는 `!important`를 이길 수 없음
+- **검증 방법**:
+  1. 페이지에서 `unsafe_allow_html=True` 사용 부분을 모두 찾는다
+  2. 해당 HTML 내 텍스트가 theme.py의 전역 규칙으로 커버되는지 확인
+  3. 커버 안 되면 `<style>` 블록으로 scoped class를 주입하되, `color` + `-webkit-text-fill-color` 모두 `!important`로 설정
+- **위험**: Streamlit이 인라인 style의 `!important`를 제거할 수 있음 → 반드시 `<style>` 블록 사용
+
+### CSS-03: -webkit-text-fill-color 동기화
+- **규칙**: `color: X !important` 설정 시 반드시 `-webkit-text-fill-color: X !important`도 함께 설정
+- **검증**: theme.py 및 페이지 CSS에서 `color:.*!important` 패턴이 있으면 같은 블록에 `-webkit-text-fill-color`도 존재하는지 확인
+- **이유**: Chrome/Safari에서 `-webkit-text-fill-color`가 `color`를 덮어씀. gradient text (`-webkit-background-clip: text`)가 적용된 요소의 하위 DOM에 전파될 수 있음
+
+### CSS-04: CSS 셀렉터 우선순위 충돌 방지
+- **규칙**: 페이지에서 커스텀 CSS를 추가할 때, theme.py의 전역 셀렉터보다 **높은 명시도(specificity)**를 사용해야 함
+- **검증**: 페이지 scoped CSS의 셀렉터 명시도 ≥ theme.py 대응 셀렉터 명시도
+- **theme.py 기준 셀렉터**: `.main .stMarkdown span` (명시도: 0,3,0), `[data-testid="stAppViewBlockContainer"] span` (명시도: 0,1,1)
+- **안전한 패턴**: `.custom-class span` (0,2,0) 이상 사용
+
+---
+
 ### CHART-01: 히스토그램 막대 구분
 - **규칙**: 막대에 흰색 테두리 + gap
 - **검증**: `marker_line_width=1.5`, `bargap=0.08`
+
+### CHART-02: render_plotly_animated는 overflow:hidden
+- **규칙**: `render_plotly_animated`는 `overflow:hidden` + 고정 height iframe으로 렌더링한다. 차트 영역 밖(negative y 범례, 긴 x축 라벨 등)은 **잘린다**
+- **대응**: 범례/라벨이 잘릴 위험이 있으면 `st.plotly_chart(fig, use_container_width=True)` 사용 (Streamlit 자동 리사이징)
+- **`render_plotly_animated` 사용 조건**: 범례가 차트 영역 내부에 완전히 포함되고, x/y축 라벨이 margin 안에 수용될 때만
+- **검증**: `render_plotly_animated` 호출 시 legend y값이 0 미만이면 FAIL
 
 ---
 

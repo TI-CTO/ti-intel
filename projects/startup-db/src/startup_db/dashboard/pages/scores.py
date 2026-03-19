@@ -10,6 +10,7 @@ import streamlit as st
 from startup_db.dashboard.components import is_dark_mode
 from startup_db.dashboard.data import cached_all_companies_slim, cached_all_scores
 from startup_db.dashboard.theme import CHART_COLORS, get_plotly_layout, render_countup_js, render_plotly_animated, render_styled_dataframe
+from startup_db.taxonomy import L1_BY_SUBCATEGORY, L1_LABELS
 
 dark = is_dark_mode()
 PL = get_plotly_layout(dark)
@@ -29,6 +30,8 @@ for s in scores:
     s["company_name"] = comp.get("name", "Unknown")
     s["main_category"] = comp.get("main_category", "unknown")
     s["sub_category"] = comp.get("sub_category", "unknown")
+    l1_slug = L1_BY_SUBCATEGORY.get(comp.get("sub_category", ""), "other")
+    s["domain"] = L1_LABELS.get(l1_slug, l1_slug)
     s["country"] = comp.get("country", "unknown")
 
 df = pd.DataFrame(scores)
@@ -124,26 +127,38 @@ with tab_dist:
                     )
 
     with right:
-        st.subheader("Average Scores by Category")
-        cat_avg = df.groupby("main_category")[dims].mean().reset_index()
-        if not cat_avg.empty:
-            cat_avg_melted = cat_avg.melt(
-                id_vars="main_category",
+        st.subheader("Average Scores by Domain")
+        dom_avg = df.groupby("domain")[dims].mean().reset_index()
+        if not dom_avg.empty:
+            dom_avg_melted = dom_avg.melt(
+                id_vars="domain",
                 value_vars=dims,
                 var_name="dimension",
                 value_name="score",
             )
             fig = px.bar(
-                cat_avg_melted,
-                x="main_category",
+                dom_avg_melted,
+                x="domain",
                 y="score",
                 color="dimension",
                 barmode="group",
-                labels={"score": "Avg Score", "main_category": "Category"},
+                labels={"score": "Avg Score", "domain": "Domain"},
                 color_discrete_sequence=CHART_COLORS,
             )
-            fig.update_layout(**PL, height=300)
-            render_plotly_animated(fig, height=300, dark=dark)
+            fig.update_layout(**PL, height=380)
+            fig.update_layout(
+                margin=dict(l=50, r=20, t=50, b=60),
+                xaxis_tickangle=-30,
+                legend=dict(
+                    title_text="",
+                    orientation="h",
+                    yanchor="bottom",
+                    y=1.02,
+                    xanchor="center",
+                    x=0.5,
+                ),
+            )
+            st.plotly_chart(fig, use_container_width=True)
 
 with tab_rank:
     st.subheader("Top 20 Companies by Overall Score")
@@ -157,21 +172,49 @@ with tab_rank:
 
 with tab_scatter:
     st.subheader("Tech Strength vs Market Potential")
+    domain_colors = {
+        "Agentic AI": "#C50063",
+        "Voice AI": "#06B6D4",
+        "Secure AI": "#34D399",
+        "other": "#9E9E9E",
+    }
+    # Add jitter to prevent integer stacking
+    import numpy as np
+
+    scatter_df = df.copy()
+    rng = np.random.default_rng(42)
+    scatter_df["tech_jitter"] = scatter_df["tech_strength"] + rng.uniform(-0.3, 0.3, len(scatter_df))
+    scatter_df["market_jitter"] = scatter_df["market_potential"] + rng.uniform(-0.3, 0.3, len(scatter_df))
+
     fig = px.scatter(
-        df,
-        x="tech_strength",
-        y="market_potential",
-        color="main_category",
-        size="overall_score",
+        scatter_df,
+        x="tech_jitter",
+        y="market_jitter",
+        color="domain",
         hover_name="company_name",
+        hover_data={"tech_jitter": False, "market_jitter": False, "tech_strength": True, "market_potential": True, "overall_score": True},
         labels={
-            "tech_strength": "Tech Strength",
-            "market_potential": "Market Potential",
+            "tech_jitter": "Tech Strength",
+            "market_jitter": "Market Potential",
+            "domain": "Domain",
         },
-        color_discrete_sequence=CHART_COLORS,
+        color_discrete_map=domain_colors,
+        opacity=0.6,
     )
-    fig.update_layout(**PL, height=500)
-    render_plotly_animated(fig, height=500, dark=dark)
+    fig.update_traces(marker=dict(size=8))
+    fig.update_layout(**PL, height=600)
+    fig.update_layout(
+        margin=dict(l=40, r=10, t=10, b=40),
+        legend=dict(
+            title_text="",
+            orientation="h",
+            yanchor="bottom",
+            y=1.0,
+            xanchor="center",
+            x=0.5,
+        ),
+    )
+    st.plotly_chart(fig, use_container_width=True)
 
 with tab_compare:
     st.subheader("Compare Companies (Radar)")

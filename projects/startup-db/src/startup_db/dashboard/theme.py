@@ -328,6 +328,26 @@ def inject_css(dark: bool = False) -> str:
     .stApp [data-testid="stCaptionContainer"] * {{
         color: {c["text_secondary"]} !important;
     }}
+    /* Expander — header & content text */
+    .main [data-testid="stExpander"] summary,
+    .main [data-testid="stExpander"] summary *,
+    .stApp [data-testid="stExpander"] summary,
+    .stApp [data-testid="stExpander"] summary *,
+    .main [data-testid="stExpander"] [role="button"],
+    .main [data-testid="stExpander"] [role="button"] *,
+    .stApp [data-testid="stExpander"] [role="button"],
+    .stApp [data-testid="stExpander"] [role="button"] *,
+    .main [data-testid="stExpander"] > div > div:first-child,
+    .main [data-testid="stExpander"] > div > div:first-child *,
+    .stApp [data-testid="stExpander"] > div > div:first-child,
+    .stApp [data-testid="stExpander"] > div > div:first-child *,
+    .main [data-testid="stExpander"] [data-testid="stExpanderDetails"],
+    .main [data-testid="stExpander"] [data-testid="stExpanderDetails"] *,
+    .stApp [data-testid="stExpander"] [data-testid="stExpanderDetails"],
+    .stApp [data-testid="stExpander"] [data-testid="stExpanderDetails"] * {{
+        color: {c["text"]} !important;
+        -webkit-text-fill-color: {c["text"]} !important;
+    }}
 
     /* ── Sidebar — frosted glass ─────────────────────── */
     section[data-testid="stSidebar"] {{
