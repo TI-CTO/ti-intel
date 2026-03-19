@@ -13,6 +13,7 @@ from startup_db.config import settings
 from startup_db.models import (
     Company,
     CompanyStatus,
+    DealStage,
     FundingRound,
     Investor,
     RoundType,
@@ -68,6 +69,7 @@ class StartupRepository:
         country: str | None = None,
         status: str | None = None,
         tags: list[str] | None = None,
+        deal_stage: str | None = None,
         limit: int = 50,
         offset: int = 0,
     ) -> list[dict]:
@@ -88,6 +90,8 @@ class StartupRepository:
             q = q.eq("status", status)
         if tags:
             q = q.overlaps("tags", tags)
+        if deal_stage:
+            q = q.eq("deal_stage", deal_stage)
 
         q = q.order("name").range(offset, offset + limit - 1)
         result = q.execute()
@@ -875,6 +879,9 @@ def _company_to_row(c: Company) -> dict:
         val = getattr(c, field, None)
         if val is not None:
             row[field] = str(val) if isinstance(val, date) else val
+    if c.deal_stage is not None:
+        ds = c.deal_stage
+        row["deal_stage"] = ds.value if isinstance(ds, DealStage) else ds
     return row
 
 

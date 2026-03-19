@@ -7,6 +7,49 @@
 
 ## 1. 환경 설정
 
+### 새 PC 환경 세팅 (clone부터 실행까지)
+
+```bash
+# 1. 레포 클론
+git clone git@github.com:TI-CTO/ti-intel.git
+cd ti-intel
+
+# 2. uv 설치
+curl -LsSf https://astral.sh/uv/install.sh | sh
+# ruff (린터)
+~/.local/bin/uv tool install ruff
+
+# 3. 로컬 설정 파일 복사 후 경로 수정
+cp .claude/settings.local.json.example .claude/settings.local.json
+# → OBSIDIAN_VAULT_PATH, additionalDirectories 경로를 본인 환경에 맞게 수정
+
+# 4. MCP 서버 설정 복사 후 API 키 입력
+cp .mcp.json.example .mcp.json
+# → .env 파일에 필요한 API 키 설정 (SUPABASE_URL, SUPABASE_ANON_KEY 등)
+
+# 5. 각 프로젝트 의존성 설치
+for proj in projects/*/; do
+  (cd "$proj" && ~/.local/bin/uv sync)
+done
+
+# 6. Playwright Chromium 설치 (PDF 렌더링용)
+cd projects/design-system && ~/.local/bin/uv run --extra browser playwright install chromium && cd ../..
+
+# 7. Claude Code 실행
+claude
+```
+
+### 필요 환경변수 (.env)
+
+| 변수 | 용도 | 필수 |
+|------|------|------|
+| `SUPABASE_URL` | Supabase 프로젝트 URL | Y |
+| `SUPABASE_ANON_KEY` | Supabase 익명 키 | Y |
+| `SERPAPI_KEY` | 특허 수집 (SerpAPI) | N (특허 미사용 시) |
+| `TAVILY_API_KEY` | 뉴스 수집 (Tavily) | N (GDELT/Naver 폴백) |
+| `NAVER_CLIENT_ID` | 네이버 뉴스 검색 | N |
+| `NAVER_CLIENT_SECRET` | 네이버 뉴스 검색 | N |
+
 ### 필수 조건
 - macOS (터미널)
 - Claude Code CLI (`~/.local/bin/claude`)
@@ -14,7 +57,7 @@
 
 ### 시작
 ```bash
-cd /Users/ctoti/Project/ClaudeCode
+cd /path/to/ti-intel
 claude
 ```
 

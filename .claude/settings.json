@@ -1,17 +1,16 @@
 {
-  "autoMemoryEnabled": true,
+  "env": {
+    "UV_PYTHON": "3.11"
+  },
   "permissions": {
-    "defaultMode": "bypassPermissions",
     "deny": [
       "Bash(rm -rf *)",
       "Bash(sudo *)"
     ],
-    "additionalDirectories": [
-      "/Users/ctoti/Obsidian"
-    ]
+    "defaultMode": "bypassPermissions"
   },
-  "env": {
-    "UV_PYTHON": "3.11",
-    "OBSIDIAN_VAULT_PATH": "/Users/ctoti/Obsidian/Obsidian_Work"
+  "autoMemoryEnabled": true,
+  "enabledPlugins": {
+    "skill-creator@claude-plugins-official": true
   }
 }

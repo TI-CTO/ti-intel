@@ -1,0 +1,10 @@
+{
+  "env": {
+    "OBSIDIAN_VAULT_PATH": "/YOUR/PATH/TO/Obsidian_Work"
+  },
+  "permissions": {
+    "additionalDirectories": [
+      "/YOUR/PATH/TO/Obsidian"
+    ]
+  }
+}

@@ -11,6 +11,7 @@ from startup_db.db import StartupRepository
 from startup_db.models import (
     Company,
     CompanyStatus,
+    DealStage,
     FundingRound,
     Investor,
     InvestorType,
@@ -47,6 +48,7 @@ def search_companies(
     l1: str | None = None,
     l2: str | None = None,
     l3_slug: str | None = None,
+    deal_stage: str | None = None,
     limit: int = 50,
     offset: int = 0,
 ) -> list[dict]:
@@ -62,6 +64,9 @@ def search_companies(
         l1: Filter by L1 domain: agentic-ai, voice-ai, secure-ai.
         l2: Filter by L2 area slug (e.g. "hybrid-ai-infra").
         l3_slug: Filter by L3 technology slug (e.g. "adaptive-rag").
+        deal_stage: Filter by deal pipeline stage:
+            discovered, screening, due_diligence,
+            proposed, invested, partnership, passed.
         limit: Max results (default 50).
         offset: Pagination offset.
 
@@ -99,6 +104,11 @@ def search_companies(
             companies = [c for c in companies if c.get("country") == country]
         if status:
             companies = [c for c in companies if c.get("status") == status]
+        if deal_stage:
+            companies = [
+                c for c in companies
+                if c.get("deal_stage") == deal_stage
+            ]
         return companies
 
     return repo.search_companies(
@@ -108,6 +118,7 @@ def search_companies(
         country=country,
         status=status,
         tags=tags,
+        deal_stage=deal_stage,
         limit=limit,
         offset=offset,
     )
@@ -144,6 +155,7 @@ def upsert_company(
     technology: str | None = None,
     main_product: str | None = None,
     discovery_source: str | None = None,
+    deal_stage: str | None = None,
     metadata: dict | None = None,
 ) -> dict:
     """Add or update a startup company. Uses slug for upsert matching.
@@ -162,6 +174,8 @@ def upsert_company(
         technology: Core technology description.
         main_product: Main product/service.
         discovery_source: How the company was first found.
+        deal_stage: Pipeline stage: discovered, screening,
+            due_diligence, proposed, invested, partnership, passed.
         metadata: Additional JSON metadata.
 
     Returns:
@@ -181,6 +195,7 @@ def upsert_company(
         technology=technology,
         main_product=main_product,
         discovery_source=discovery_source,
+        deal_stage=DealStage(deal_stage) if deal_stage else None,
         metadata=metadata or {},
     )
     repo = _get_repo()

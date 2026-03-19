@@ -2,19 +2,33 @@
   "mcpServers": {
     "intel-store": {
       "command": "uv",
-      "args": ["--directory", "projects/intel-store", "run", "python", "-m", "intel_store.mcp_server"]
+      "args": ["--directory", "projects/intel-store", "run", "python", "-m", "intel_store.mcp_server"],
+      "_comment": "논문/뉴스/특허 수집·검색 (Supabase). Requires: SUPABASE_URL, SUPABASE_ANON_KEY, SERPAPI_KEY, TAVILY_API_KEY, NAVER_CLIENT_ID, NAVER_CLIENT_SECRET in .env"
     },
     "design-system": {
       "command": "uv",
-      "args": ["--directory", "projects/design-system", "run", "python", "-m", "design_system.mcp_server"]
+      "args": ["--directory", "projects/design-system", "run", "python", "-m", "design_system.mcp_server"],
+      "_comment": "PDF/PPTX 렌더링 (Playwright Chromium). Requires: uv run --extra browser playwright install chromium"
     },
     "trend-tracker": {
       "command": "uv",
-      "args": ["--directory", "projects/trend-tracker", "run", "python", "-m", "trend_tracker.mcp_server"]
+      "args": ["--directory", "projects/trend-tracker", "run", "python", "-m", "trend_tracker.mcp_server"],
+      "_comment": "트렌드 스냅샷 비교 (Supabase). Requires: SUPABASE_URL, SUPABASE_ANON_KEY in .env"
+    },
+    "startup-db": {
+      "command": "uv",
+      "args": ["--directory", "projects/startup-db", "run", "python", "-m", "startup_db.mcp_server"],
+      "_comment": "스타트업 DB 검색·관리 (Supabase). Requires: SUPABASE_URL, SUPABASE_ANON_KEY in .env"
     },
     "context7": {
       "type": "http",
-      "url": "https://mcp.context7.com/mcp"
+      "url": "https://mcp.context7.com/mcp",
+      "_comment": "외부 라이브러리 문서 조회 (무료, 키 불필요)"
+    },
+    "youtube-transcript": {
+      "command": "uvx",
+      "args": ["mcp-youtube-transcript"],
+      "_comment": "YouTube 영상 자막 추출 (무료, 키 불필요)"
     }
   }
 }

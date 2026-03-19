@@ -22,11 +22,26 @@
 │              자유 주제 심층 리서치                    │
 └──────────────────────────────────────────────────┘
                            │
+                           │
                ┌───────────┼───────────┐
                ▼           ▼           ▼
          ┌──────────┐ ┌────────┐ ┌──────────────┐
          │report-pdf│ │ slides │ │obsidian-bridge│
          │  PDF     │ │ PPTX   │ │  Obsidian    │
+         └──────────┘ └────────┘ └──────────────┘
+
+
+── 전략 분석 레인 ────────────────────────────────
+
+┌──────────┐     ┌─────────────────┐     ┌──────────┐
+│   wtis   │────▶│strategy-options │────▶│ biz-case │
+│ 기술 검증  │     │Build/Buy/Partner│     │ ROI 분석  │
+└──────────┘     └─────────────────┘     └──────────┘
+                         │                    │
+               ┌─────────┼─────────┐          ▼
+               ▼         ▼         ▼    ┌──────────┐
+         ┌──────────┐ ┌────────┐ ┌──────────────┐
+         │report-pdf│ │ slides │ │obsidian-bridge│
          └──────────┘ └────────┘ └──────────────┘
 
 
@@ -65,6 +80,8 @@
 | **startup-analyst** | 분석 완료 | startup-db MCP | Section 8 JSON → upsert_company / add_funding_round |
 | **startup-analyst** | WTIS 검증 필요 | wtis standard | 기업의 핵심 기술 → Go/No-Go 검증 |
 | **discover** | 플레이어 탐색 | startup-scout | 도메인 키워드 → 스타트업 후보 발굴 |
+| **wtis** | Go/Conditional Go | strategy-options | WTIS 리포트 → Build/Buy/Partner 비교 |
+| **strategy-options** | 권고 옵션 확정 | biz-case | 전략 옵션 → ROI·시나리오 분석 |
 
 ### 출력 변환 스킬 (하류)
 
@@ -105,6 +122,8 @@ file_path: "주요 산출물 절대 경로"
 | research-session | `confidence` |
 | startup-scout | `candidates` (후보 리스트), `domain` |
 | startup-analyst | `confidence`, `sources_count`, `company_slug` |
+| strategy-options | `recommended_option` (build/buy/partner/hybrid) |
+| biz-case | `base_scenario_roi`, `payback_period` |
 
 ## 워크플로우 시나리오
 
@@ -135,7 +154,18 @@ file_path: "주요 산출물 절대 경로"
   → /obsidian-bridge {리포트} research
 ```
 
-### 시나리오 4: 스타트업 발굴 → 분석 → DB 저장
+### 시나리오 4: 기술 검증 → 전략 옵션 → 비즈니스 케이스
+```
+/wtis standard speech-generation
+  → Conditional Go (128/200)
+  → /strategy-options {wtis 리포트}
+  → Partner 권고 (68/100)
+  → /biz-case {strategy-options 리포트}
+  → 기본 시나리오 ROI 45%, 회수 3년
+  → /slides {biz-case 리포트}        CTO 보고용 PPTX
+```
+
+### 시나리오 5: 스타트업 발굴 → 분석 → DB 저장
 ```
 /startup-scout voice AI security        ← 또는 "voice AI security 스타트업 찾아줘"
   → 후보 5건 발굴

@@ -20,6 +20,18 @@ class CompanyStatus(str, Enum):
     UNKNOWN = "unknown"
 
 
+class DealStage(str, Enum):
+    """Internal deal pipeline stage."""
+
+    DISCOVERED = "discovered"
+    SCREENING = "screening"
+    DUE_DILIGENCE = "due_diligence"
+    PROPOSED = "proposed"
+    INVESTED = "invested"
+    PARTNERSHIP = "partnership"
+    PASSED = "passed"
+
+
 class RoundType(str, Enum):
     """Funding round type."""
 
@@ -105,6 +117,7 @@ class Company(BaseModel):
     technology: str | None = None
     main_product: str | None = None
     discovery_source: str | None = None
+    deal_stage: DealStage | None = None
     metadata: dict = Field(default_factory=dict)
     created_at: datetime | None = None
     updated_at: datetime | None = None

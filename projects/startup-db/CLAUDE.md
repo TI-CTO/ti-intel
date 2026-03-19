@@ -13,7 +13,7 @@
 ## MCP 도구 (Phase 1 — 6개)
 | 도구 | 설명 |
 |------|------|
-| `search_companies` | 이름/카테고리/스테이지/지역/태그 필터 검색 |
+| `search_companies` | 이름/카테고리/스테이지/지역/태그/딜 스테이지 필터 검색 |
 | `get_company` | slug로 상세 조회 (라운드, 인물, 스코어 포함) |
 | `upsert_company` | 스타트업 추가/업데이트 |
 | `get_company_stats` | 카테고리별/스테이지별/지역별 통계 |
@@ -48,7 +48,7 @@
 - `scripts/backfill_topics.py` — sub_category→L1 매핑으로 초기 토픽 할당
 
 ## DB 테이블 (`su_` 접두사)
-- `su_companies` — 스타트업 마스터 (이름, 카테고리, 기술, one_liner, growth_stage, total_raised 등)
+- `su_companies` — 스타트업 마스터 (이름, 카테고리, 기술, one_liner, growth_stage, total_raised, deal_stage 등)
 - `su_people` — 인물 (창업자, 임원)
 - `su_investors` — 투자자 (VC, 엔젤, CVC)
 - `su_funding_rounds` — 펀딩 라운드 (라운드별 독립 레코드)
