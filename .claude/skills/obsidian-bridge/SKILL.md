@@ -92,7 +92,7 @@ vault_paths: ["Obsidian 볼트 내 경로 목록"]
 | `guide-platform-overview.md` | `시작하기/` | `05-시스템-개요.md` |
 | `guide-strategy-analysis.md` | `워크플로우/` | `01-WTIS-2Tier-가이드.md` |
 | `guide-skill-chaining.md` | `워크플로우/` | `10-스킬-체이닝-맵.md` |
-| `spec-startup-dashboard.md` | `워크플로우/` | `15-대시보드-개요.md` |
+| `guide-startup-dashboard.md` | `워크플로우/` | `15-대시보드-개요.md` |
 | `tech-taxonomy-overview.md` | `레퍼런스/` | `01-기술-분류체계.md` |
 | `guide-tool-reference.md` | `레퍼런스/` | `10-도구-레퍼런스.md` |
 | `spec-dashboard-ui.md` | `레퍼런스/` | `15-대시보드-UI스펙.md` |
