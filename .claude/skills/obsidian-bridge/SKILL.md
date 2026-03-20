@@ -88,15 +88,15 @@ vault_paths: ["Obsidian 볼트 내 경로 목록"]
 
 | docs/ 파일명 | Obsidian 서브폴더 | Obsidian 파일명 |
 |---|---|---|
-| `guide-platform-overview.md` | `플랫폼/` | `05-시스템-개요.md` |
-| `guide-tool-reference.md` | `플랫폼/` | `25-도구-레퍼런스.md` |
-| `guide-skill-chaining.md` | `플랫폼/` | `10-스킬-체이닝-맵.md` |
-| `tech-taxonomy-overview.md` | `플랫폼/` | `20-기술-분류체계.md` |
-| `guide-team-quickstart.md` | `플랫폼/` | `01-팀-퀵스타트.md` |
-| `guide-final-review-demo.md` | `플랫폼/` | `30-최종리뷰-데모.md` |
-| `spec-dashboard-ui.md` | `스타트업DB/` | `10-대시보드-UI스펙.md` |
-| `spec-startup-dashboard.md` | `스타트업DB/` | `01-대시보드-개요.md` |
-| `guide-strategy-analysis.md` | `전략분석/` | `01-전략-분석-가이드.md` |
+| `guide-team-quickstart.md` | `시작하기/` | `01-팀-퀵스타트.md` |
+| `guide-platform-overview.md` | `시작하기/` | `05-시스템-개요.md` |
+| `guide-strategy-analysis.md` | `워크플로우/` | `01-WTIS-2Tier-가이드.md` |
+| `guide-skill-chaining.md` | `워크플로우/` | `10-스킬-체이닝-맵.md` |
+| `spec-startup-dashboard.md` | `워크플로우/` | `15-대시보드-개요.md` |
+| `tech-taxonomy-overview.md` | `레퍼런스/` | `01-기술-분류체계.md` |
+| `guide-tool-reference.md` | `레퍼런스/` | `10-도구-레퍼런스.md` |
+| `spec-dashboard-ui.md` | `레퍼런스/` | `15-대시보드-UI스펙.md` |
+| `guide-final-review-demo.md` | `레퍼런스/` | `20-최종리뷰-데모.md` |
 
 ## Process
 

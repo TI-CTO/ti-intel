@@ -84,8 +84,7 @@
 | **startup-analyst** | 분석 완료 | startup-db MCP | Section 8 JSON → upsert_company / add_funding_round |
 | **startup-analyst** | WTIS 검증 필요 | wtis standard | 기업의 핵심 기술 → Go/No-Go 검증 |
 | **discover** | 플레이어 탐색 | startup-scout | 도메인 키워드 → 스타트업 후보 발굴 |
-| **wtis** | Go/Conditional Go | strategy-options | WTIS 리포트 → Build/Buy/Partner 비교 |
-| **strategy-options** | 권고 옵션 확정 | biz-case | 전략 옵션 → ROI·시나리오 분석 |
+| **wtis** (standard) | Go/Conditional Go | wtis full | Standard 리포트 → 종합 투자 제안서 |
 
 ### 출력 변환 스킬 (하류)
 

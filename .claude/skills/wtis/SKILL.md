@@ -132,6 +132,7 @@ strategy: "Buy | Borrow | Build | Watch"
 - `discover` 스킬 → `.claude/skills/discover/SKILL.md`
 - `research-deep` 에이전트 → `.claude/agents/research-deep.md`
 - `validator` 에이전트 → `.claude/agents/validator.md`
+- `fact-checker` 에이전트 → `.claude/agents/fact-checker.md`
 
 ## Reference Documents
 - 기존 리서치: `/Users/ctoti/Project/ClaudeCode/outputs/reports/{domain}/`
@@ -374,12 +375,18 @@ Standard Go/Conditional Go 기술에 대해 전략 옵션 + 후보 기업 + ROI�
     │   └─ §1 기술 평가 요약 + §2 전략 옵션 + §3 후보 기업 + §4 투자 케이스 + §5 실행 로드맵
     │   └─ 경로: outputs/reports/{domain}/{date}_{slug}/{date}_wtis-full-{slug}.md
     │
-    ├─ [7] validator 교차검증 (Black-box)
+    ├─ [7] fact-checker 팩트 체크 (Devil's Advocate)
+    │   └─ 종합 투자 제안서에서 핵심 주장 3~5개 자동 추출
+    │   └─ "최초", "유일", "압도적", 수치 비교 등 강한 주장 대상
+    │   └─ WebSearch로 반례 탐색 → 사실/과장/미확인 판정
+    │   └─ 결과를 리포트 §6 교차검증 결과에 팩트 체크 테이블로 반영
     │
-    ├─ [8] 포트폴리오 갱신 (자동)
+    ├─ [8] validator 교차검증 (Black-box, 내부 일관성)
+    │
+    ├─ [9] 포트폴리오 갱신 (자동)
     │   └─ strategy_option, roi 필드 추가 반영
     │
-    └─ [9] PDF 생성
+    └─ [10] PDF 생성
         └─ render_pdf({date}_wtis-full-{slug}.md)
         └─ render_pdf({domain}-portfolio.md)
 ```

@@ -42,13 +42,13 @@ Obsidian 볼트 경로: `$OBSIDIAN_VAULT_PATH` (settings.local.json에서 설정
 - 작업 로그 → `40-DevLog/`
 동기화: `/obsidian-bridge` 스킬 사용
 
-### 지식베이스 파일 번호 규칙
-`10-지식베이스/` 서브폴더 파일명에 2자리 번호 접두사(`{NN}-`)로 읽는 순서를 정렬에 반영:
-- **01–09**: 온보딩 필수 (Quick Start, 개요)
-- **10–19**: 아키텍처·상세 가이드
-- **20–29**: 레퍼런스 (도구, 분류체계)
+### 지식베이스 폴더 구조
+`10-지식베이스/` 용도별 3폴더 체계:
+- `시작하기/` — 온보딩 (퀵스타트, 시스템 개요)
+- `워크플로우/` — 실무 참조 (WTIS 2-Tier, 스킬 체이닝, 대시보드)
+- `레퍼런스/` — 필요 시 조회 (분류체계, 도구, UI 스펙)
 - `docs/` 원본은 번호 없이 `guide-`/`spec-` 접두사 유지, `/obsidian-bridge`가 변환
-- 규칙 문서: `10-지식베이스/00-전체-개요.md` 하단, 매핑: `.claude/skills/obsidian-bridge/SKILL.md`
+- 매핑 테이블: `.claude/skills/obsidian-bridge/SKILL.md`
 
 ## Naming Conventions
 | 유형 | 형식 | 예시 |
@@ -85,6 +85,7 @@ Obsidian 볼트 경로: `$OBSIDIAN_VAULT_PATH` (settings.local.json에서 설정
 작업 복잡도에 따라 사용자 확인 없이 에이전트를 자동 전환한다:
 - 단순 파일/코드 탐색 → `researcher` (haiku)
 - 웹 소스 종합, 비교 분석, 다중 출처 교차 검증 → `research-deep` (sonnet)으로 바로 투입
+- 핵심 주장 팩트 체크 (최초/유일 등 강한 주장) → `fact-checker` (sonnet)로 반례 탐색
 
 ### 서브에이전트 병렬 실행 제한
 - 5개+ research-deep 병렬 실행 시 MCP/WebSearch 리소스 경합으로 hang 발생

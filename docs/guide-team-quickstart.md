@@ -93,23 +93,21 @@ claude
 
 ### 전략기획 — "투자 판정 + 포트폴리오 관리"
 
-핵심 흐름: **기술 평가 → 판정 → 전략 옵션 → 비즈니스 케이스 → CTO 보고**
+핵심 흐름: **기술 평가(Standard) → 판정 → 종합 투자 제안서(Full) → CTO 보고**
 
 ```
 ① /wtis standard 동형암호 키워드 검색      ← 200점 정량 평가 + Go/No-Go 판정
-② /strategy-options he-keyword-search     ← Build/Buy/Partner 정량 비교 (100점)
-③ /biz-case he-keyword-search             ← TAM/SAM/SOM + 3시나리오 ROI
-④ 포트폴리오 확인                           ← outputs/reports/{domain}/{domain}-portfolio.md
-⑤ /weekly-monitor secure-ai               ← 매주 기술 변화 추적 → 판정 재검토 트리거
+② /wtis full he-keyword-search            ← 종합 투자 제안서 (전략+기업+재무 통합)
+③ 포트폴리오 확인                           ← outputs/reports/{domain}/{domain}-portfolio.md
+④ /weekly-monitor secure-ai               ← 매주 기술 변화 추적 → 판정 재검토 트리거
 ```
 
-> 상세: `docs/guide-strategy-analysis.md` (전략 분석 워크플로우 가이드)
+> 상세: `docs/guide-strategy-analysis.md` (WTIS 2-Tier 가이드)
 
 **자주 쓰는 질문 예시**:
 - "Secure AI 포트폴리오 현황 보여줘" → portfolio.md 요약
-- "PQC 기술 Go/No-Go 판정해줘" → `/wtis` 실행
-- "이 기술 Build할지 Partner할지 비교해줘" → `/strategy-options` 실행
-- "투자 ROI 분석해줘" → `/biz-case` 실행
+- "PQC 기술 Go/No-Go 판정해줘" → `/wtis standard` 실행
+- "이 기술 투자 제안서 만들어줘" → `/wtis full` 실행 (전략+기업+재무 통합)
 - "지난주 대비 변화된 기술 있어?" → `/weekly-monitor` 또는 `get_weekly_diff`
 - "SKT KT 양자암호 최근 동향" → intel-store 경쟁사 토픽 검색 + 웹 서치
 

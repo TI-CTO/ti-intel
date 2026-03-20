@@ -120,7 +120,8 @@ outputs/reports/weekly/
   → SKILL-0: 파싱 → Analysis Brief (L1 도메인 + L2 기술 자동 식별)
   → research-deep: 논문·특허·뉴스 심층 수집
   → SKILL-1: 200점 채점 + Go/No-Go 판정 + 3B 전략
-  → validator: 독립 교차검증 (Black-box)
+  → validator: 독립 교차검증 (Black-box, 내부 일관성)
+  ※ Full 모드: fact-checker(외부 사실 검증)가 validator 전에 추가 실행
   → 최종 보고서 → 포트폴리오 자동 갱신 → PDF
 ```
 

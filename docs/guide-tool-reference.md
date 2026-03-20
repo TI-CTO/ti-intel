@@ -223,7 +223,8 @@
 | 에이전트 | 역할 | 호출하는 스킬 | 읽기/쓰기 |
 |----------|------|-------------|-----------|
 | **research-deep** | 다중 소스 심층 리서치 | wtis, weekly-monitor | 쓰기 가능 |
-| **validator** | Black-box 독립 검증 | wtis | 읽기 전용 |
+| **validator** | Black-box 독립 검증 (내부 일관성) | wtis | 읽기 전용 |
+| **fact-checker** | Devil's Advocate 외부 사실 검증 | wtis full, biz-case | 읽기 전용 |
 | **researcher** | 빠른 탐색/비교 | (범용) | 읽기 전용 |
 | **reviewer** | 코드 리뷰 | (범용) | 읽기 전용 |
 | **implementer** | 코드 구현/수정 | (범용) | 쓰기 가능 |

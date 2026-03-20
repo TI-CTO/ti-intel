@@ -34,7 +34,7 @@
 | **선행 조건** | 없음 | Standard Go/Conditional Go |
 | **호출** | `/wtis standard {기술명}` | `/wtis full {기술명}` |
 | **산출물** | 기술 평가 리포트 (1파일) | 종합 투자 제안서 (1파일) |
-| **에이전트** | research-deep 1 + validator | research-deep 4~5 + validator |
+| **에이전트** | research-deep 1 + validator | research-deep 4~5 + fact-checker + validator |
 
 ---
 
@@ -132,7 +132,10 @@ Standard 리포트 읽기
 스코어링 + 종합 리포트 작성
     │
     ▼
-validator 교차검증
+fact-checker (핵심 주장 팩트 체크 — Devil's Advocate)
+    │
+    ▼
+validator 교차검증 (내부 일관성)
     │
     ▼
 종합 투자 제안서 저장 + 포트폴리오 갱신
