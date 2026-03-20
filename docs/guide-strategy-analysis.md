@@ -1,7 +1,7 @@
 # WTIS 2-Tier 가이드
 
 > 기술 의사결정을 위한 2단계 분석 체계.
-> Standard로 스크리닝하고, Full로 투자 제안서를 만든다.
+> Standard로 스크리닝하고, Full로 기술 전략 제안서를 만든다.
 
 ---
 
@@ -29,18 +29,18 @@
 | | Standard | Full |
 |---|---|---|
 | **핵심 질문** | "이 기술을 추진해야 하는가?" | "이 기술에 어떻게, 얼마를 투자하고, 누구랑 할 것인가?" |
-| **용도** | 포트폴리오 스크리닝, Go/No-Go 판정 | CTO 투자 제안서, 경영진 보고 |
+| **용도** | 포트폴리오 스크리닝, Go/No-Go 판정 | CTO 기술 전략 제안서, 경영진 보고 |
 | **소요 시간** | ~15분 | ~30분 |
 | **선행 조건** | 없음 | Standard Go/Conditional Go |
 | **호출** | `/wtis standard {기술명}` | `/wtis full {기술명}` |
-| **산출물** | 기술 평가 리포트 (1파일) | 종합 투자 제안서 (1파일) |
+| **산출물** | 기술 평가 리포트 (1파일) | 종합 기술 전략 제안서 (1파일) |
 | **에이전트** | research-deep 1 + validator | research-deep 4~5 + fact-checker + validator |
 
 ---
 
 ## Standard 모드 (기존)
 
-기술의 투자 가치를 판정한다. 모든 L2 기술에 대해 수시로 실행.
+기술 도입 가치가 있는가를 판정한다. 모든 L2 기술에 대해 수시로 실행.
 
 ```
 /wtis standard speech-generation
@@ -73,17 +73,17 @@
 
 ## Full 모드 (신규)
 
-Go/Conditional Go 기술에 대해 **하나의 종합 투자 제안서**를 생성한다.
+Go/Conditional Go 기술에 대해 **하나의 종합 기술 전략 제안서**를 생성한다.
 Standard가 "추진 가치가 있다"고 판단한 기술만 대상이다.
 
 ```
 /wtis full speech-generation
 ```
 
-### 종합 투자 제안서 구조
+### 종합 기술 전략 제안서 구조
 
 ```markdown
-# 기술 투자 제안서: {기술명}
+# 기술 도입 전략 제안서: {기술명}
 
 §1. 기술 평가 요약
     - Standard 5차원 점수 + 핵심 강점/약점
@@ -138,7 +138,7 @@ fact-checker (핵심 주장 팩트 체크 — Devil's Advocate)
 validator 교차검증 (내부 일관성)
     │
     ▼
-종합 투자 제안서 저장 + 포트폴리오 갱신
+종합 기술 전략 제안서 저장 + 포트폴리오 갱신
 ```
 
 > Full 모드는 내부적으로 strategy-options + biz-case의 로직을 통합 실행한다.
@@ -168,7 +168,7 @@ validator 교차검증 (내부 일관성)
                              ▼              ▼
                     ┌─────────────────┐
                     │   /wtis full    │  ~30분
-                    │  종합 투자 제안서 │
+                    │  종합 기술 전략 제안서 │
                     └────────┬────────┘
                              │
                     ┌────────┼────────┐
@@ -199,10 +199,10 @@ validator 교차검증 (내부 일관성)
 ## 산출물 구조
 
 ```
-outputs/reports/{domain}/{date}_{slug}/
+outputs/reports/{domain}/{l2_slug}/
   ├── {date}_wtis-{slug}.md             ← Standard 평가
   ├── {date}_wtis-{slug}.pdf
-  ├── {date}_wtis-full-{slug}.md        ← Full 종합 투자 제안서
+  ├── {date}_wtis-full-{slug}.md        ← Full 종합 기술 전략 제안서
   ├── {date}_wtis-full-{slug}.pdf
   ├── {date}_strategy-options-{slug}.md ← (독립 실행 시에만)
   └── {date}_biz-case-{slug}.md         ← (독립 실행 시에만)
@@ -231,14 +231,14 @@ Full 모드가 내부적으로 통합하는 로직은 개별 스킬로도 실행
 | Tier | 보고 자료 | 형식 |
 |------|----------|------|
 | **Standard** | 기술 평가 리포트 | PDF (1건) |
-| **Full** | 종합 투자 제안서 (기술+전략+기업+재무) | PDF (1건) |
+| **Full** | 종합 기술 전략 제안서 (기술+전략+기업+재무) | PDF (1건) |
 | (선택) | 발표 자료 | PPTX |
 | (참고) | 포트폴리오 현황 | MD/PDF |
 
 ```
 # 실행 예시: 전체 흐름
 /wtis standard speech-generation       ← Conditional Go (128/200)
-/wtis full speech-generation           ← 종합 투자 제안서 생성
+/wtis full speech-generation           ← 종합 기술 전략 제안서 생성
 /report-pdf {full 리포트 경로}          ← PDF 변환
 /slides {full 리포트 경로}              ← CTO 발표용 PPTX
 /obsidian-bridge {세션폴더} wtis        ← Obsidian 동기화

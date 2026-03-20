@@ -21,7 +21,7 @@ v4.1: L2 단위 분석 + 포트폴리오 구조 전환.
 | **standard** | 과제 타당성 검증 | `/wtis standard AI-RAN Go/No-Go 검증` | ~15분 |
 | **deep** | 신규 기회 발굴 | `/wtis deep edge AI 기회 탐색` | ~15분 |
 | **proposal** | 제안서 전체 분석 | `/wtis proposal proposal.md` | ~20분 |
-| **full** | 종합 투자 제안서 | `/wtis full speech-generation` | ~30분 |
+| **full** | 종합 기술 전략 제안서 | `/wtis full speech-generation` | ~30분 |
 
 > **동향/트렌드 파악**은 `/weekly-monitor {domain}`을 사용하세요 (quick 모드 대체).
 
@@ -42,7 +42,7 @@ v4.1: L2 단위 분석 + 포트폴리오 구조 전환.
 | 항목 | v4.0 | v4.1 |
 |------|------|------|
 | 분석 단위 | L1 도메인 전체 | **L2 기술 단위** |
-| 폴더 구조 | `{date}_{slug}/` | `{domain}/{date}_{slug}/` |
+| 폴더 구조 | `{l2_slug}/` | `{domain}/{l2_slug}/` |
 | 포트폴리오 | 없음 | **L1 도메인별 {domain}-portfolio.md 자동 갱신** |
 | SKILL-0 | 도메인만 식별 | **L1 도메인 + L2 기술 식별** |
 | Post-Report | PDF만 생성 | **포트폴리오 갱신 → PDF 생성** |
@@ -66,18 +66,18 @@ v4.1: L2 단위 분석 + 포트폴리오 구조 전환.
 | **proposal** | Standard | 과제 제안서 입력 (텍스트 or 파일 경로) | 제안서 파싱 → 심층 리서치 → 선정검증 → 교차검증 |
 | **standard** | Standard | 과제 검증 요청, 정기 보고 | research-deep + SKILL-1 or 2 + validator |
 | **deep** | Standard | 신규 과제 발굴, 전략적 의사결정 | discover + research-deep + SKILL-1 + validator |
-| **full** | **Full** | Go/Conditional Go 기술의 종합 투자 제안서 | Standard + 전략 옵션 + 후보 기업 + ROI 통합 |
+| **full** | **Full** | Go/Conditional Go 기술의 종합 기술 전략 제안서 | Standard + 전략 옵션 + 후보 기업 + ROI 통합 |
 
 > **quick 모드 폐지 (v4.1)**: 기존 quick의 역할(동향/현황 파악)은 `/weekly-monitor`의 Tier 2 심층 리서치가 대체한다. "동향", "트렌드" 질문은 → `/weekly-monitor {domain}` 안내.
 
-> **2-Tier 구조**: Standard(스크리닝) → Full(종합 투자 제안서). 상세: `docs/guide-strategy-analysis.md`
+> **2-Tier 구조**: Standard(스크리닝) → Full(종합 기술 전략 제안서). 상세: `docs/guide-strategy-analysis.md`
 
 사용자가 모드를 지정하지 않으면 입력 내용으로 자동 판정한다:
 - "제안서", "proposal", 파일 경로 포함 → **proposal**
 - "동향", "트렌드", "뉴스", 단순 질문 → `/weekly-monitor`로 안내
 - "검증", "타당성", "Go/No-Go" → **standard**
 - "발굴", "탐색", "전략", "비교" → **deep**
-- "투자 제안", "종합", "full" → **full**
+- "전략 제안", "종합", "full" → **full**
 
 ## I/O Contract
 
@@ -90,14 +90,14 @@ v4.1: L2 단위 분석 + 포트폴리오 구조 전환.
 ### Output Files
 | Artifact | Path Pattern | Description |
 |----------|-------------|-------------|
-| SKILL-0 | `outputs/reports/{domain}/{date}_{slug}/{date}_wtis-skill0.md` | 제안서 분석 (proposal만) |
-| Research | `outputs/reports/{domain}/{date}_{slug}/{date}_wtis-research.md` | 심층 리서치 |
-| SKILL-1 | `outputs/reports/{domain}/{date}_{slug}/{date}_wtis-skill1.md` | 선정검증 |
-| Validator | `outputs/reports/{domain}/{date}_{slug}/{date}_wtis-validator.md` | 교차검증 |
-| Discover | `outputs/reports/{domain}/{date}_{slug}/{date}_wtis-discover.md` | 기회 탐색 (deep만) |
-| **Final** | `outputs/reports/{domain}/{date}_{slug}/{date}_wtis-{slug}.md` | **최종 보고서** (Standard) |
-| **Full** | `outputs/reports/{domain}/{date}_{slug}/{date}_wtis-full-{slug}.md` | **종합 투자 제안서** (Full) |
-| Final PDF | `.../{date}_{slug}/{date}_wtis-{slug}.pdf` | PDF 변환 |
+| SKILL-0 | `outputs/reports/{domain}/{l2_slug}/{date}_wtis-skill0.md` | 제안서 분석 (proposal만) |
+| Research | `outputs/reports/{domain}/{l2_slug}/{date}_wtis-research.md` | 심층 리서치 |
+| SKILL-1 | `outputs/reports/{domain}/{l2_slug}/{date}_wtis-skill1.md` | 선정검증 |
+| Validator | `outputs/reports/{domain}/{l2_slug}/{date}_wtis-validator.md` | 교차검증 |
+| Discover | `outputs/reports/{domain}/{l2_slug}/{date}_wtis-discover.md` | 기회 탐색 (deep만) |
+| **Final** | `outputs/reports/{domain}/{l2_slug}/{date}_wtis-{slug}.md` | **최종 보고서** (Standard) |
+| **Full** | `outputs/reports/{domain}/{l2_slug}/{date}_wtis-full-{slug}.md` | **종합 기술 전략 제안서** (Full) |
+| Final PDF | `.../{l2_slug}/{date}_wtis-{slug}.pdf` | PDF 변환 |
 | Portfolio | `outputs/reports/{domain}/{domain}-portfolio.md` | 포트폴리오 (자동 갱신) |
 | Portfolio PDF | `outputs/reports/{domain}/{domain}-portfolio.pdf` | 포트폴리오 PDF |
 
@@ -150,7 +150,7 @@ outputs/reports/
   {domain}/                         ← L1 도메인 (agentic-ai / voice-ai / secure-ai)
     {domain}-portfolio.md                    ← 포트폴리오 (L2 분석 후 자동 갱신)
     {domain}-portfolio.pdf
-    {date}_{slug}/                  ← L2 분석 세션
+    {l2_slug}/                      ← L2 기술 폴더 (날짜 없이 slug만)
       {date}_wtis-{slug}.md        # 최종 보고서
       {date}_wtis-{slug}.pdf  # PDF 변환
       {date}_wtis-skill0.md        # SKILL-0 결과 (중간 산출물)
@@ -223,23 +223,23 @@ outputs/reports/{domain}/{domain}-portfolio.md       # 포트폴리오 종합
     │
     ├─ [0.5] 세션 폴더 생성
     │   └─ {domain}은 SKILL-0이 식별하거나, 사용자가 명시
-    │   └─ mkdir -p outputs/reports/{domain}/{date}_{slug}/
+    │   └─ mkdir -p outputs/reports/{domain}/{l2_slug}/
     │
     ├─ [1] SKILL-0 실행 (subagent_type: researcher, model: sonnet)
     │   └─ 프롬프트: skill-0-proposal.md 로드
     │   └─ 제안서 파싱 → Analysis Brief 생성 (domain, l2_topic 필드 포함)
-    │   └─ 결과 파일: outputs/reports/{domain}/{date}_{slug}/{date}_wtis-skill0.md
+    │   └─ 결과 파일: outputs/reports/{domain}/{l2_slug}/{date}_wtis-skill0.md
     │
     ├─ [2] research-deep 에이전트 호출 (Layer 2 위임)
     │   └─ 입력: SKILL-0 결과 파일 경로 + 도메인 파라미터
     │   └─ 지시: "WTIS 제안서 분석을 위한 심층 리서치. domain-params.md의 소스 우선순위 준수"
-    │   └─ 결과 파일: outputs/reports/{domain}/{date}_{slug}/{date}_wtis-research.md
+    │   └─ 결과 파일: outputs/reports/{domain}/{l2_slug}/{date}_wtis-research.md
     │
     ├─ [3] SKILL-1 실행 (subagent_type: researcher, model: opus)
     │   └─ 프롬프트: skill-1-selection.md 로드
     │   └─ 입력: SKILL-0 Brief 파일 + research-deep 결과 파일 (경로 2개 전달)
     │   └─ 선정검증 + 3B 전략 제언
-    │   └─ 결과 파일: outputs/reports/{domain}/{date}_{slug}/skill1.md
+    │   └─ 결과 파일: outputs/reports/{domain}/{l2_slug}/skill1.md
     │   └─ status: fail → 파이프라인 중단, "부적합" 사유 보고
     │
     ├─ [4] validator 에이전트 호출 (Layer 2 위임)
@@ -255,7 +255,7 @@ outputs/reports/{domain}/{domain}-portfolio.md       # 포트폴리오 종합
     │   └─ 최대 1회만 실행 (무한 루프 방지)
     │
     ├─ [5] 최종 보고서 생성
-    │   └─ 경로: outputs/reports/{domain}/{date}_{slug}/{date}_wtis-{slug}.md
+    │   └─ 경로: outputs/reports/{domain}/{l2_slug}/{date}_wtis-{slug}.md
     │
     ├─ [5.5] 포트폴리오 갱신 (자동)
     │   └─ outputs/reports/{domain}/{domain}-portfolio.md 읽기 (없으면 신규 생성)
@@ -282,20 +282,20 @@ outputs/reports/{domain}/{domain}-portfolio.md       # 포트폴리오 종합
     │   └─ prior_reports 있으면 SKILL-1/2에 이전 판정 컨텍스트 전달
     │
     ├─ [0.5] 세션 폴더 생성
-    │   └─ mkdir -p outputs/reports/{domain}/{date}_{slug}/
+    │   └─ mkdir -p outputs/reports/{domain}/{l2_slug}/
     │
     ├─ research-deep 에이전트 호출 (Layer 2 위임)
     │   └─ 입력: 검증 대상 + 도메인 파라미터 + prior_reports (있으면)
-    │   └─ 결과 파일: outputs/reports/{domain}/{date}_{slug}/{date}_wtis-research.md
+    │   └─ 결과 파일: outputs/reports/{domain}/{l2_slug}/{date}_wtis-research.md
     │
     ├─ SKILL-1 또는 SKILL-2 실행 (선정 또는 진행 검증)
-    │   └─ 결과 파일: outputs/reports/{domain}/{date}_{slug}/{date}_wtis-skill1.md
+    │   └─ 결과 파일: outputs/reports/{domain}/{l2_slug}/{date}_wtis-skill1.md
     │
     ├─ validator 에이전트 호출 (Layer 2 위임)
-    │   └─ 결과 파일: outputs/reports/{domain}/{date}_{slug}/{date}_wtis-validator.md
+    │   └─ 결과 파일: outputs/reports/{domain}/{l2_slug}/{date}_wtis-validator.md
     │
     ├─ 최종 보고서 생성
-    │   └─ 경로: outputs/reports/{domain}/{date}_{slug}/{date}_wtis-{slug}.md
+    │   └─ 경로: outputs/reports/{domain}/{l2_slug}/{date}_wtis-{slug}.md
     │
     ├─ [5.5] 포트폴리오 갱신 (자동)
     │
@@ -311,33 +311,33 @@ outputs/reports/{domain}/{domain}-portfolio.md       # 포트폴리오 종합
     │   └─ prior_reports 있으면 discover에 "이미 파악된 기회 중복 제외" 지시
     │
     ├─ [0.5] 세션 폴더 생성
-    │   └─ mkdir -p outputs/reports/{domain}/{date}_{slug}/
+    │   └─ mkdir -p outputs/reports/{domain}/{l2_slug}/
     │
     ├─ [1] discover 스킬 호출 (Layer 2 위임) — SKILL-3 대체
     │   └─ 입력: 도메인 + domain-params.md의 competitors, taxonomy 전달
     │   └─ prior_reports 있으면: "기존 포트폴리오" 파라미터로 전달 (중복 방지)
-    │   └─ 결과 파일: outputs/reports/{domain}/{date}_{slug}/{date}_wtis-discover.md
+    │   └─ 결과 파일: outputs/reports/{domain}/{l2_slug}/{date}_wtis-discover.md
     │
     ├─ [2] research-deep 에이전트 호출 (Layer 2 위임) — SKILL-4 대체
     │   └─ 입력: discover 결과 파일 + 도메인 파라미터 + prior_reports (있으면)
-    │   └─ 결과 파일: outputs/reports/{domain}/{date}_{slug}/{date}_wtis-research.md
+    │   └─ 결과 파일: outputs/reports/{domain}/{l2_slug}/{date}_wtis-research.md
     │
     ├─ [3] SKILL-1 실행 (subagent_type: researcher, model: opus)
     │   └─ discover + research-deep 결과를 입력으로 전달
-    │   └─ 결과 파일: outputs/reports/{domain}/{date}_{slug}/{date}_wtis-skill1.md
+    │   └─ 결과 파일: outputs/reports/{domain}/{l2_slug}/{date}_wtis-skill1.md
     │
     ├─ [4] validator 에이전트 호출 (Layer 2 위임) — SKILL-5 대체
-    │   └─ 결과 파일: outputs/reports/{domain}/{date}_{slug}/{date}_wtis-validator.md
+    │   └─ 결과 파일: outputs/reports/{domain}/{l2_slug}/{date}_wtis-validator.md
     │
     ├─ [5] 최종 보고서 생성
-    │   └─ 경로: outputs/reports/{domain}/{date}_{slug}/{date}_wtis-{slug}.md
+    │   └─ 경로: outputs/reports/{domain}/{l2_slug}/{date}_wtis-{slug}.md
     │
     ├─ [5.5] 포트폴리오 갱신 (자동)
     │
     └─ [6] design-system MCP → render_pdf({date}_wtis-{slug}.md + {domain}-portfolio.md)
 ```
 
-### Full Mode (종합 투자 제안서)
+### Full Mode (종합 기술 전략 제안서)
 
 Standard Go/Conditional Go 기술에 대해 전략 옵션 + 후보 기업 + ROI를 하나의 문서로 통합한다.
 
@@ -371,12 +371,12 @@ Standard Go/Conditional Go 기술에 대해 전략 옵션 + 후보 기업 + ROI�
     │   └─ 3시나리오 매출 전망 (낙관/기본/비관)
     │   └─ ROI + 회수 기간 + 민감도 분석
     │
-    ├─ [6] 종합 투자 제안서 작성
+    ├─ [6] 종합 기술 전략 제안서 작성
     │   └─ §1 기술 평가 요약 + §2 전략 옵션 + §3 후보 기업 + §4 투자 케이스 + §5 실행 로드맵
-    │   └─ 경로: outputs/reports/{domain}/{date}_{slug}/{date}_wtis-full-{slug}.md
+    │   └─ 경로: outputs/reports/{domain}/{l2_slug}/{date}_wtis-full-{slug}.md
     │
     ├─ [7] fact-checker 팩트 체크 (Devil's Advocate)
-    │   └─ 종합 투자 제안서에서 핵심 주장 3~5개 자동 추출
+    │   └─ 종합 기술 전략 제안서에서 핵심 주장 3~5개 자동 추출
     │   └─ "최초", "유일", "압도적", 수치 비교 등 강한 주장 대상
     │   └─ WebSearch로 반례 탐색 → 사실/과장/미확인 판정
     │   └─ 결과를 리포트 §6 교차검증 결과에 팩트 체크 테이블로 반영
@@ -412,7 +412,7 @@ base_scenario_roi: "{N}%"
 payback_period: "{N}년"
 ---
 
-# 기술 투자 제안서: {기술명}
+# 기술 도입 전략 제안서: {기술명}
 
 > **WTIS 판정**: {verdict} ({score}/200) | **권고 전략**: {strategy} | **ROI (기본)**: {N}%
 
@@ -719,7 +719,7 @@ design-system MCP → render_pdf(
 )
 ```
 
-- 성공 시: `{domain}/{date}_{slug}/{date}_wtis-{slug}.pdf` + `{domain}/{domain}-portfolio.pdf` 생성
+- 성공 시: `{domain}/{l2_slug}/{date}_wtis-{slug}.pdf` + `{domain}/{domain}-portfolio.pdf` 생성
 - 실패 시: 오류 메시지 출력 후 마크다운 파일 경로를 대신 안내 (파이프라인 중단 없음)
 
 ### Step C: Next Steps 안내
@@ -728,7 +728,7 @@ design-system MCP → render_pdf(
 
 ```
 📋 Next Steps:
-  📈 종합 투자 제안서 (Go/Conditional Go 시):
+  📈 종합 기술 전략 제안서 (Go/Conditional Go 시):
     → /wtis full {기술명}                          — 전략+기업+재무 통합 리포트
   📂 Obsidian 동기화:
     → /obsidian-bridge {세션 폴더} wtis           — final.md + PDF 동기화
@@ -752,6 +752,6 @@ design-system MCP → render_pdf(
 실행: {components}
 데이터 소스: {MCP 서버 목록} + WebSearch
 기존 리포트: {N건 발견 → 변화 추이 비교 모드 | 없음 → 신규 분석}
-세션 폴더: outputs/reports/{domain}/{date}_{slug}/
+세션 폴더: outputs/reports/{domain}/{l2_slug}/
 분석을 시작합니다.
 ```

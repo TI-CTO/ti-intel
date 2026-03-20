@@ -67,7 +67,7 @@ claude
 
 | 하고 싶은 일 | 명령어 |
 |-------------|--------|
-| "이 기술 투자해야 해?" | `/wtis standard {기술명}` |
+| "이 기술 도입해야 해?" | `/wtis standard {기술명}` |
 | "이번 주 뭐 바뀌었어?" | `/weekly-monitor {도메인}` |
 | "이 주제 조사해줘" | `/research-session {주제}` |
 | "새 기술 기회 찾아줘" | `/discover {분야}` |
@@ -91,13 +91,13 @@ claude
 
 ## 4. 역할별 워크플로우
 
-### 전략기획 — "투자 판정 + 포트폴리오 관리"
+### 전략기획 — "기술 도입 판정 + 포트폴리오 관리"
 
-핵심 흐름: **기술 평가(Standard) → 판정 → 종합 투자 제안서(Full) → CTO 보고**
+핵심 흐름: **기술 평가(Standard) → 판정 → 종합 기술 전략 제안서(Full) → CTO 보고**
 
 ```
 ① /wtis standard 동형암호 키워드 검색      ← 200점 정량 평가 + Go/No-Go 판정
-② /wtis full he-keyword-search            ← 종합 투자 제안서 (전략+기업+재무 통합)
+② /wtis full he-keyword-search            ← 종합 기술 전략 제안서 (전략+기업+재무 통합)
 ③ 포트폴리오 확인                           ← outputs/reports/{domain}/{domain}-portfolio.md
 ④ /weekly-monitor secure-ai               ← 매주 기술 변화 추적 → 판정 재검토 트리거
 ```
@@ -107,7 +107,7 @@ claude
 **자주 쓰는 질문 예시**:
 - "Secure AI 포트폴리오 현황 보여줘" → portfolio.md 요약
 - "PQC 기술 Go/No-Go 판정해줘" → `/wtis standard` 실행
-- "이 기술 투자 제안서 만들어줘" → `/wtis full` 실행 (전략+기업+재무 통합)
+- "이 기술 도입 전략 제안서 만들어줘" → `/wtis full` 실행 (전략+기업+재무 통합)
 - "지난주 대비 변화된 기술 있어?" → `/weekly-monitor` 또는 `get_weekly_diff`
 - "SKT KT 양자암호 최근 동향" → intel-store 경쟁사 토픽 검색 + 웹 서치
 
@@ -156,7 +156,7 @@ claude
 ```
 → 5개 L3 빠른 스캔 → 변화 감지된 L3 심층 분석 → 주간 리포트 + PDF
 
-### "이 기술에 투자할까?"
+### "이 기술 도입할까?"
 
 ```
 /wtis standard 동형암호 키워드 검색

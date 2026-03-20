@@ -57,7 +57,7 @@ Scorecard (1~5 per item):
 | Execution speed | | | | |
 | **Total** | | | | |
 
-Gap analysis → priority investment areas.
+Gap analysis → priority adoption areas.
 
 ### 6. Candidate Priority Matrix
 Classify candidates:
