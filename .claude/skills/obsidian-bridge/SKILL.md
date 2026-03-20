@@ -96,6 +96,7 @@ vault_paths: ["Obsidian 볼트 내 경로 목록"]
 | `guide-final-review-demo.md` | `플랫폼/` | `30-최종리뷰-데모.md` |
 | `spec-dashboard-ui.md` | `스타트업DB/` | `10-대시보드-UI스펙.md` |
 | `spec-startup-dashboard.md` | `스타트업DB/` | `01-대시보드-개요.md` |
+| `guide-strategy-analysis.md` | `전략분석/` | `01-전략-분석-가이드.md` |
 
 ## Process
 

@@ -2,7 +2,7 @@
 name: wtis
 description: "Winning Tech Intelligence System v4.1 — 기술 인텔리전스. L2 기술 단위 분석, 포트폴리오 관리, 선정/진행 검증을 수행한다."
 user-invokable: true
-argument-hint: "[proposal|quick|standard|deep] [query or file path]"
+argument-hint: "[proposal|standard|deep|full] [query or file path]"
 ---
 
 # WTIS v4.1 Orchestrator
@@ -18,9 +18,10 @@ v4.1: L2 단위 분석 + 포트폴리오 구조 전환.
 
 | 모드 | 언제 쓰나 | 호출 예시 | 소요 시간 |
 |------|-----------|-----------|----------|
-| **standard** | 과제 타당성 검증 | `/wtis AI-RAN 과제 Go/No-Go 검증` | ~10분 |
-| **deep** | 신규 기회 발굴 | `/wtis edge AI 기회 탐색 및 전략 비교` | ~15분 |
-| **proposal** | 제안서 전체 분석 | `/wtis proposal.md` | ~20분 |
+| **standard** | 과제 타당성 검증 | `/wtis standard AI-RAN Go/No-Go 검증` | ~15분 |
+| **deep** | 신규 기회 발굴 | `/wtis deep edge AI 기회 탐색` | ~15분 |
+| **proposal** | 제안서 전체 분석 | `/wtis proposal proposal.md` | ~20분 |
+| **full** | 종합 투자 제안서 | `/wtis full speech-generation` | ~30분 |
 
 > **동향/트렌드 파악**은 `/weekly-monitor {domain}`을 사용하세요 (quick 모드 대체).
 
@@ -60,26 +61,30 @@ v4.1: L2 단위 분석 + 포트폴리오 구조 전환.
 
 ## Modes
 
-| Mode | Trigger | Description |
-|------|---------|-------------|
-| **proposal** | 과제 제안서 입력 (텍스트 or 파일 경로) | 제안서 파싱 → 심층 리서치 → 선정검증 → 교차검증 |
-| **standard** | 과제 검증 요청, 정기 보고 | research-deep + SKILL-1 or 2 + validator |
-| **deep** | 신규 과제 발굴, 전략적 의사결정 | discover + research-deep + SKILL-1 + validator |
+| Mode | Tier | Trigger | Description |
+|------|------|---------|-------------|
+| **proposal** | Standard | 과제 제안서 입력 (텍스트 or 파일 경로) | 제안서 파싱 → 심층 리서치 → 선정검증 → 교차검증 |
+| **standard** | Standard | 과제 검증 요청, 정기 보고 | research-deep + SKILL-1 or 2 + validator |
+| **deep** | Standard | 신규 과제 발굴, 전략적 의사결정 | discover + research-deep + SKILL-1 + validator |
+| **full** | **Full** | Go/Conditional Go 기술의 종합 투자 제안서 | Standard + 전략 옵션 + 후보 기업 + ROI 통합 |
 
 > **quick 모드 폐지 (v4.1)**: 기존 quick의 역할(동향/현황 파악)은 `/weekly-monitor`의 Tier 2 심층 리서치가 대체한다. "동향", "트렌드" 질문은 → `/weekly-monitor {domain}` 안내.
+
+> **2-Tier 구조**: Standard(스크리닝) → Full(종합 투자 제안서). 상세: `docs/guide-strategy-analysis.md`
 
 사용자가 모드를 지정하지 않으면 입력 내용으로 자동 판정한다:
 - "제안서", "proposal", 파일 경로 포함 → **proposal**
 - "동향", "트렌드", "뉴스", 단순 질문 → `/weekly-monitor`로 안내
 - "검증", "타당성", "Go/No-Go" → **standard**
 - "발굴", "탐색", "전략", "비교" → **deep**
+- "투자 제안", "종합", "full" → **full**
 
 ## I/O Contract
 
 ### Input
 | Parameter | Required | Type | Description |
 |-----------|----------|------|-------------|
-| `mode` | auto-detect | `proposal` \| `standard` \| `deep` | 분석 모드 (미지정 시 키워드로 자동 판정) |
+| `mode` | auto-detect | `proposal` \| `standard` \| `deep` \| `full` | 분석 모드 (미지정 시 키워드로 자동 판정) |
 | `query` | yes | 텍스트 또는 파일 경로 | 분석 대상 (제안서 경로, 검증 질의, 발굴 도메인) |
 
 ### Output Files
@@ -90,7 +95,8 @@ v4.1: L2 단위 분석 + 포트폴리오 구조 전환.
 | SKILL-1 | `outputs/reports/{domain}/{date}_{slug}/{date}_wtis-skill1.md` | 선정검증 |
 | Validator | `outputs/reports/{domain}/{date}_{slug}/{date}_wtis-validator.md` | 교차검증 |
 | Discover | `outputs/reports/{domain}/{date}_{slug}/{date}_wtis-discover.md` | 기회 탐색 (deep만) |
-| **Final** | `outputs/reports/{domain}/{date}_{slug}/{date}_wtis-{slug}.md` | **최종 보고서** |
+| **Final** | `outputs/reports/{domain}/{date}_{slug}/{date}_wtis-{slug}.md` | **최종 보고서** (Standard) |
+| **Full** | `outputs/reports/{domain}/{date}_{slug}/{date}_wtis-full-{slug}.md` | **종합 투자 제안서** (Full) |
 | Final PDF | `.../{date}_{slug}/{date}_wtis-{slug}.pdf` | PDF 변환 |
 | Portfolio | `outputs/reports/{domain}/{domain}-portfolio.md` | 포트폴리오 (자동 갱신) |
 | Portfolio PDF | `outputs/reports/{domain}/{domain}-portfolio.pdf` | 포트폴리오 PDF |
@@ -329,6 +335,133 @@ outputs/reports/{domain}/{domain}-portfolio.md       # 포트폴리오 종합
     │
     └─ [6] design-system MCP → render_pdf({date}_wtis-{slug}.md + {domain}-portfolio.md)
 ```
+
+### Full Mode (종합 투자 제안서)
+
+Standard Go/Conditional Go 기술에 대해 전략 옵션 + 후보 기업 + ROI를 하나의 문서로 통합한다.
+
+```
+사용자: /wtis full {기술명 또는 Standard 리포트 경로}
+    │
+    ├─ [0] Standard 리포트 확인
+    │   └─ 기존 Standard 리포트가 있으면 Read
+    │   └─ 없으면 Standard 모드를 먼저 자동 실행
+    │   └─ verdict가 No-Go → 중단: "Standard 판정이 No-Go이므로 Full 분석 대상이 아닙니다"
+    │
+    ├─ [1] Standard 데이터 추출
+    │   └─ 5차원 점수, 3B 의사결정, 리스크, 후속 조건, 핵심 플레이어 파싱
+    │
+    ├─ [2] 옵션별 리서치 (research-deep × 3 병렬, 최대 4개)
+    │   ├─ Build 리서치: 내부 역량, 개발 기간, 투자 규모
+    │   ├─ Buy 리서치: 인수 후보, M&A 사례, 라이선스 비용
+    │   ├─ Partner 리서치: 파트너 후보, 유사 사례, 협업 모델
+    │   └─ (추가) 시장·비용 리서치: AICC 시장, 매출 경로, API 비용
+    │
+    ├─ [3] 전략 옵션 스코어링 (5기준 × 20점 = 100점)
+    │   └─ 전략 적합성 / 실행 속도 / 투자 효율 / 리스크 / 지속 가능성
+    │
+    ├─ [4] 후보 기업 분석
+    │   └─ 권고 옵션에 따라: Partner→파트너 후보 / Buy→인수 후보
+    │   └─ startup-db에 등록된 기업은 deal_stage 연동
+    │   └─ 유사 딜/파트너십 사례
+    │
+    ├─ [5] 투자 케이스 (ROI 모델링)
+    │   └─ 비용 구조 (Y1~Y5, 전략 옵션에 맞춤)
+    │   └─ 3시나리오 매출 전망 (낙관/기본/비관)
+    │   └─ ROI + 회수 기간 + 민감도 분석
+    │
+    ├─ [6] 종합 투자 제안서 작성
+    │   └─ §1 기술 평가 요약 + §2 전략 옵션 + §3 후보 기업 + §4 투자 케이스 + §5 실행 로드맵
+    │   └─ 경로: outputs/reports/{domain}/{date}_{slug}/{date}_wtis-full-{slug}.md
+    │
+    ├─ [7] validator 교차검증 (Black-box)
+    │
+    ├─ [8] 포트폴리오 갱신 (자동)
+    │   └─ strategy_option, roi 필드 추가 반영
+    │
+    └─ [9] PDF 생성
+        └─ render_pdf({date}_wtis-full-{slug}.md)
+        └─ render_pdf({domain}-portfolio.md)
+```
+
+#### Full Report Template
+
+```markdown
+---
+topic: {기술명}
+domain: {domain}
+l2_topic: {l2_slug}
+date: {YYYY-MM-DD}
+wtis_version: v4.1
+wtis_mode: full
+skills_executed: [research-deep, strategy-scoring, biz-modeling, validator]
+confidence: {high|medium|low}
+status: completed
+total_references: {N}
+score: {N}/200
+verdict: {Go|Conditional Go}
+strategy_option: {build|buy|partner|hybrid}
+base_scenario_roi: "{N}%"
+payback_period: "{N}년"
+---
+
+# 기술 투자 제안서: {기술명}
+
+> **WTIS 판정**: {verdict} ({score}/200) | **권고 전략**: {strategy} | **ROI (기본)**: {N}%
+
+## Executive Summary
+> 5줄 이내: 기술 평가 요약 → 전략 옵션 → 후보 기업 → ROI → 최종 권고
+
+## 1. 기술 평가 요약
+- 5차원 점수 요약 테이블
+- 핵심 강점/약점 2~3개
+- TAM/SAM/SOM 요약
+- 경쟁 포지션 1줄 요약
+
+## 2. 전략 옵션 비교
+### 2.1 Build (자체 개발) — 요약
+### 2.2 Buy (인수/라이선스) — 요약
+### 2.3 Partner (제휴/협력) — 요약
+### 2.4 정량 비교 매트릭스
+
+| 기준 (각 20점) | Build | Buy | Partner |
+|----------------|-------|-----|---------|
+| 전략 적합성 | | | |
+| 실행 속도 | | | |
+| 투자 효율 | | | |
+| 리스크 | | | |
+| 지속 가능성 | | | |
+| **합계** | | | |
+
+## 3. 후보 기업 분석
+- 권고 옵션별 기업 테이블 (기업명 / 기술 / 협업 모델 또는 밸류에이션 / 적합도)
+- deal_stage (startup-db 연동 시)
+- 유사 딜/파트너십 사례
+
+## 4. 투자 케이스
+### 4.1 비용 구조 (Y1~Y5)
+### 4.2 3시나리오 매출 전망
+### 4.3 ROI & 회수 분석
+### 4.4 민감도 분석
+
+## 5. 실행 로드맵
+- Q 단위 마일스톤
+- 후속 조건 체크리스트 (Conditional Go 연계)
+- 담당 조직 배정
+- 의사결정 전 확인 필요 사항
+
+## 6. 교차검증 결과
+
+## References
+```
+
+#### Full Mode 주의사항
+
+- **Standard No-Go 판정은 Full 실행 불가** — 자동 거부
+- **Standard 리포트 없으면 자동 실행** — Full이 Standard를 선행 호출
+- **research-deep 최대 3~4개 병렬** — Build/Buy/Partner + 시장·비용은 2배치 분할
+- **후보 기업은 startup-db 연동** — 등록된 기업의 deal_stage 표시
+- **모든 재무 수치에 출처 또는 `[추정]` 태그**
 
 ---
 
@@ -588,6 +721,8 @@ design-system MCP → render_pdf(
 
 ```
 📋 Next Steps:
+  📈 종합 투자 제안서 (Go/Conditional Go 시):
+    → /wtis full {기술명}                          — 전략+기업+재무 통합 리포트
   📂 Obsidian 동기화:
     → /obsidian-bridge {세션 폴더} wtis           — final.md + PDF 동기화
     → /obsidian-bridge {portfolio 경로} portfolio  — 포트폴리오 동기화

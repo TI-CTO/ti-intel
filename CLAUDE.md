@@ -48,7 +48,7 @@ Obsidian 볼트 경로: `$OBSIDIAN_VAULT_PATH` (settings.local.json에서 설정
 - **10–19**: 아키텍처·상세 가이드
 - **20–29**: 레퍼런스 (도구, 분류체계)
 - `docs/` 원본은 번호 없이 `guide-`/`spec-` 접두사 유지, `/obsidian-bridge`가 변환
-- 규칙 문서: `10-지식베이스/_index.md` 하단, 매핑: `.claude/skills/obsidian-bridge/SKILL.md`
+- 규칙 문서: `10-지식베이스/00-전체-개요.md` 하단, 매핑: `.claude/skills/obsidian-bridge/SKILL.md`
 
 ## Naming Conventions
 | 유형 | 형식 | 예시 |
