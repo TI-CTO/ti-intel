@@ -76,6 +76,40 @@ Obsidian 볼트 경로: `$OBSIDIAN_VAULT_PATH` (settings.local.json에서 설정
   → projects/design-system MCP   (PDF/PPTX 렌더링)
 ```
 
+## Skills & Agents 요약
+
+> 상세: `docs/guide-tool-reference.md`
+
+### 스킬 (사용자 호출, `/스킬명`)
+
+| 스킬 | 용도 |
+|------|------|
+| `wtis` | 기술 평가 — standard(Go/No-Go) / full(종합 투자 제안서) |
+| `weekly-monitor` | 주간 기술 동향 (L1 도메인별 L3 스캔) |
+| `monitor` | 등록 토픽 정기 모니터링 |
+| `discover` | 신기술/기회 탐색 |
+| `research-session` | 자유 주제 심층 리서치 |
+| `strategy-options` | Build/Buy/Partner 전략 비교 (독립 실행 시) |
+| `biz-case` | ROI 시나리오 분석 (독립 실행 시) |
+| `startup-scout` | 스타트업 후보 발굴 |
+| `startup-analyst` | 특정 기업 심층 분석 |
+| `report-pdf` | 마크다운 → PDF 변환 |
+| `slides` | 마크다운 → PPTX 변환 |
+| `obsidian-bridge` | Obsidian 볼트 동기화 |
+| `work-log` | 업무일지 기록 |
+| `dashboard-implement` | 대시보드 구현 + 자동 검증 |
+
+### 에이전트 (자동 실행, 스킬이 내부 호출)
+
+| 에이전트 | 역할 | 모델 |
+|----------|------|------|
+| `research-deep` | 다중 소스 심층 리서치 | sonnet |
+| `fact-checker` | 외부 사실 검증 (Devil's Advocate) | sonnet |
+| `validator` | 내부 일관성 검증 (Black-box) | sonnet |
+| `researcher` | 빠른 탐색/비교 | haiku |
+| `reviewer` | 코드 리뷰 | sonnet |
+| `implementer` | 코드 구현/수정 | sonnet |
+
 ## Agent Model Selection
 - `haiku` — 빠른 탐색, 간단한 질문
 - `sonnet` — 구현, 리뷰, 일반 작업
