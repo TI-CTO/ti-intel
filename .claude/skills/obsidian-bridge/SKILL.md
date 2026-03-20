@@ -103,7 +103,7 @@ vault_paths: ["Obsidian 볼트 내 경로 목록"]
 1. **소스 파일 읽기**: 첫 번째 인자의 파일 또는 폴더를 Read로 읽는다
 
 2. **타입 자동 감지** (두 번째 인자 생략 시):
-   - 경로에 `outputs/reports/{domain}/{date}_{slug}/` 패턴 → `wtis`
+   - 경로에 `outputs/reports/{domain}/{l2_slug}/` 패턴 → `wtis`
    - 파일명 `*-portfolio.*` → `portfolio`
    - 파일명 `*_weekly-*` → `weekly`
    - 파일명 `*_research-*` → `research`
@@ -125,3 +125,25 @@ vault_paths: ["Obsidian 볼트 내 경로 목록"]
 6. **결과 보고:**
    - 생성된 파일의 전체 경로
    - 복사된 파일 수
+
+## 동기화 영향 범위 체크리스트
+
+**모든 동기화 실행 시** 아래 범위를 확인한다. 특히 폴더명·파일명 변경 시 필수.
+
+| # | 점검 대상 | git 경로 | Obsidian 경로 | 확인 사항 |
+|---|----------|---------|-------------|----------|
+| 1 | 지식베이스 문서 | `docs/` | `10-지식베이스/` | 매핑 테이블 파일명 일치 + 본문 동기화 |
+| 2 | WTIS 리포트 | `outputs/reports/{domain}/{l2_slug}/` | `30-Reports/{domain}/` | 폴더명 + 파일명 정합성 |
+| 3 | 주간 리포트 | `outputs/reports/weekly/` | `30-Reports/weekly/` | 파일명 정합성 |
+| 4 | 포트폴리오 | `outputs/reports/{domain}/{domain}-portfolio.md` | `30-Reports/{domain}/` | 세션 링크(wikilink) 경로 |
+| 5 | 스타트업 노트 | startup-db MCP | `50-Startups/` | company slug 일치 |
+| 6 | 업무일지 | (직접 작성) | `40-DevLog/` | 산출물 링크 경로 |
+
+### 폴더 구조 변경 시 추가 점검
+
+폴더명·파일명 규칙이 바뀔 때는 위 6개 + 아래를 반드시 확인:
+
+- [ ] git 내부 참조: portfolio wikilink, SKILL.md 경로 패턴, prior_report 경로
+- [ ] Obsidian 볼트 내 wikilink: `30-Reports/` 아래 기존 복사본의 링크
+- [ ] MEMORY.md 경로 참조
+- [ ] 전체 개요(`00-전체-개요.md`) 산출물 구조 설명
