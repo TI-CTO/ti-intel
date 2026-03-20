@@ -136,8 +136,9 @@ vault_paths: ["Obsidian 볼트 내 경로 목록"]
 | 2 | WTIS 리포트 | `outputs/reports/{domain}/{l2_slug}/` | `30-Reports/{domain}/` | 폴더명 + 파일명 정합성 |
 | 3 | 주간 리포트 | `outputs/reports/weekly/` | `30-Reports/weekly/` | 파일명 정합성 |
 | 4 | 포트폴리오 | `outputs/reports/{domain}/{domain}-portfolio.md` | `30-Reports/{domain}/` | 세션 링크(wikilink) 경로 |
-| 5 | 스타트업 노트 | startup-db MCP | `50-Startups/` | company slug 일치 |
-| 6 | 업무일지 | (직접 작성) | `40-DevLog/` | 산출물 링크 경로 |
+| 5 | 스팟 리서치 | `outputs/reports/spot/` | `30-Reports/spot/` | 파일 복사 여부 |
+| 6 | 스타트업 노트 | startup-db MCP | `50-Startups/` | company slug 일치 |
+| 7 | 업무일지 | (직접 작성) | `40-DevLog/` | 산출물 링크 경로 |
 
 ### 폴더 구조 변경 시 추가 점검
 

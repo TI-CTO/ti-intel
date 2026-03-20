@@ -78,7 +78,7 @@ outputs/reports/
 | `reports/{domain}/{l2_slug}/` | `30-Reports/{domain}/{l2_slug}/` |
 | `reports/weekly/` | `30-Reports/weekly/` |
 | `reports/startups/` | `60-Spot/companies/` 또는 `50-Startups/` |
-| `reports/spot/` | `60-Spot/` |
+| `reports/spot/` | `30-Reports/spot/` |
 
 ## Rules
 
