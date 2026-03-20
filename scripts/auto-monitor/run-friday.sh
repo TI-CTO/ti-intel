@@ -1,0 +1,143 @@
+#!/bin/zsh
+# 금요일 통합 자동화 스크립트
+# 매주: 주간 종합 + 데이터 건강 체크
+# 매월 첫째 금: + 포트폴리오 리뷰 + 딜 파이프라인 리뷰
+# 분기 첫째 금 (3,6,9,12월): + WTIS 재평가 + 경쟁사 종합
+#
+# Usage: run-friday.sh
+# Schedule: 매주 금요일 09:00 (launchd)
+
+set -euo pipefail
+
+WORKSPACE="/Users/ctoti/Project/ClaudeCode"
+LOG_DIR="$WORKSPACE/logs/auto-monitor"
+DATE=$(date +%Y-%m-%d)
+LOG_FILE="$LOG_DIR/${DATE}_friday.log"
+CLAUDE="$HOME/.local/bin/claude"
+
+# Weekday guard: Friday = 5
+DOW=$(date +%u)
+if [[ "$DOW" -ne 5 && "${FORCE:-}" != "1" ]]; then
+  echo "[SKIP] Friday script scheduled for weekday 5, today is $DOW. Use FORCE=1 to override." | tee -a "$LOG_FILE"
+  exit 0
+fi
+
+mkdir -p "$LOG_DIR"
+
+# 날짜 판단
+DAY_OF_MONTH=$(date +%d)
+MONTH=$(date +%m)
+IS_FIRST_FRIDAY=false
+IS_QUARTER_MONTH=false
+
+# 첫째 금요일: 1~7일 사이의 금요일
+if [[ "$DAY_OF_MONTH" -le 7 ]]; then
+  IS_FIRST_FRIDAY=true
+fi
+
+# 분기 월: 3, 6, 9, 12
+if [[ "$MONTH" == "03" || "$MONTH" == "06" || "$MONTH" == "09" || "$MONTH" == "12" ]]; then
+  IS_QUARTER_MONTH=true
+fi
+
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] Starting Friday automation" | tee -a "$LOG_FILE"
+echo "  First Friday: $IS_FIRST_FRIDAY | Quarter Month: $IS_QUARTER_MONTH" | tee -a "$LOG_FILE"
+
+# ─── 1. 주간 종합 리포트 (매주) ───
+echo "[$(date '+%H:%M:%S')] === Task 1: Weekly Summary ===" | tee -a "$LOG_FILE"
+run_weekly_summary() {
+  cd "$WORKSPACE"
+  "$CLAUDE" -p \
+    --dangerously-skip-permissions \
+    --max-turns 30 \
+    --output-format json \
+    "금요일 주간 종합: 이번 주 outputs/reports/weekly/ 에서 최신 주간 리포트(agentic-ai, voice-ai, secure-ai)와 경쟁사 모니터링 결과를 읽고, CTO용 1페이지 주간 요약을 작성해줘. 포함 항목: (1) 도메인별 핵심 시그널 3줄씩, (2) 🔴 긴급 항목 하이라이트, (3) 포트폴리오 현황 변동, (4) 다음 주 주목 이슈. outputs/reports/weekly/${DATE}_weekly-summary.md 로 저장. PDF도 생성." \
+    2>>"$LOG_FILE"
+}
+RESULT=$(run_weekly_summary) && EXIT_CODE=0 || EXIT_CODE=$?
+echo "[$(date '+%H:%M:%S')] Weekly summary: exit=$EXIT_CODE" | tee -a "$LOG_FILE"
+
+# ─── 2. 데이터 건강 체크 (매주) ───
+echo "[$(date '+%H:%M:%S')] === Task 2: Data Health Check ===" | tee -a "$LOG_FILE"
+run_health_check() {
+  cd "$WORKSPACE"
+  "$CLAUDE" -p \
+    --dangerously-skip-permissions \
+    --max-turns 15 \
+    --output-format json \
+    "데이터 건강 체크: get_intel_stats로 intel-store 현황 확인. 체크 항목: (1) 전체 아이템 수, (2) 최근 7일 수집 건수, (3) 소스별 분포(news/paper/patent), (4) 토픽별 건수. 이상 징후(수집 0건, 특정 소스 누락 등)가 있으면 경고 표시. 결과를 간단히 텍스트로 출력해줘." \
+    2>>"$LOG_FILE"
+}
+HEALTH_RESULT=$(run_health_check) && HEALTH_CODE=0 || HEALTH_CODE=$?
+echo "[$(date '+%H:%M:%S')] Health check: exit=$HEALTH_CODE" | tee -a "$LOG_FILE"
+
+# ─── 3. 포트폴리오 리뷰 (매월 첫째 금) ───
+if [[ "$IS_FIRST_FRIDAY" == "true" ]]; then
+  echo "[$(date '+%H:%M:%S')] === Task 3: Monthly Portfolio Review ===" | tee -a "$LOG_FILE"
+  run_portfolio_review() {
+    cd "$WORKSPACE"
+    "$CLAUDE" -p \
+      --dangerously-skip-permissions \
+      --max-turns 30 \
+      --output-format json \
+      "월간 포트폴리오 리뷰: outputs/reports/ 아래 3개 도메인(agentic-ai, voice-ai, secure-ai)의 portfolio.md를 읽고 종합 분석해줘. (1) 도메인별 Go/Conditional/No-Go/미평가 현황, (2) 지난 달 대비 점수 변동, (3) 미평가 L2 기술 중 다음 달 WTIS 우선 대상 3건 제안, (4) 전체 포트폴리오 건강도 평가. outputs/reports/${DATE}_monthly-portfolio-review.md 로 저장. PDF도 생성." \
+      2>>"$LOG_FILE"
+  }
+  PORT_RESULT=$(run_portfolio_review) && PORT_CODE=0 || PORT_CODE=$?
+  echo "[$(date '+%H:%M:%S')] Portfolio review: exit=$PORT_CODE" | tee -a "$LOG_FILE"
+
+  # ─── 4. 딜 파이프라인 리뷰 (매월 첫째 금) ───
+  echo "[$(date '+%H:%M:%S')] === Task 4: Deal Pipeline Review ===" | tee -a "$LOG_FILE"
+  run_deal_review() {
+    cd "$WORKSPACE"
+    "$CLAUDE" -p \
+      --dangerously-skip-permissions \
+      --max-turns 20 \
+      --output-format json \
+      "딜 파이프라인 리뷰: startup-db의 search_companies를 사용해서 deal_stage별 현황을 확인해줘. (1) 각 deal_stage별 건수, (2) screening 또는 due_diligence 단계에서 30일 이상 정체된 기업 목록, (3) 최근 1개월 deal_stage 변경 이력, (4) 다음 단계로 진행 권고 기업. 결과를 outputs/reports/${DATE}_monthly-deal-review.md 로 저장." \
+      2>>"$LOG_FILE"
+  }
+  DEAL_RESULT=$(run_deal_review) && DEAL_CODE=0 || DEAL_CODE=$?
+  echo "[$(date '+%H:%M:%S')] Deal review: exit=$DEAL_CODE" | tee -a "$LOG_FILE"
+fi
+
+# ─── 5. WTIS 전수 재평가 (분기 첫째 금) ───
+if [[ "$IS_FIRST_FRIDAY" == "true" && "$IS_QUARTER_MONTH" == "true" ]]; then
+  echo "[$(date '+%H:%M:%S')] === Task 5: Quarterly WTIS Re-evaluation ===" | tee -a "$LOG_FILE"
+  run_wtis_reeval() {
+    cd "$WORKSPACE"
+    "$CLAUDE" -p \
+      --dangerously-skip-permissions \
+      --max-turns 60 \
+      --output-format json \
+      "분기 WTIS 재평가: outputs/reports/ 아래 3개 도메인의 portfolio.md를 읽고, Go 또는 Conditional Go 판정을 받은 L2 기술들을 확인해줘. 각 기술의 마지막 평가일이 60일 이상 경과한 것만 대상으로, 주요 변화 사항(시장, 경쟁, 기술 성숙도)을 간략히 조사하고 재평가 필요 여부를 판단해줘. 전수 재실행은 하지 말고, 재평가 권고 목록만 작성해서 outputs/reports/${DATE}_quarterly-wtis-reeval.md 로 저장." \
+      2>>"$LOG_FILE"
+  }
+  WTIS_RESULT=$(run_wtis_reeval) && WTIS_CODE=0 || WTIS_CODE=$?
+  echo "[$(date '+%H:%M:%S')] WTIS re-eval: exit=$WTIS_CODE" | tee -a "$LOG_FILE"
+
+  # ─── 6. 경쟁사 전략 종합 (분기 첫째 금) ───
+  echo "[$(date '+%H:%M:%S')] === Task 6: Quarterly Competitor Summary ===" | tee -a "$LOG_FILE"
+  run_competitor_summary() {
+    cd "$WORKSPACE"
+    "$CLAUDE" -p \
+      --dangerously-skip-permissions \
+      --max-turns 40 \
+      --output-format json \
+      "분기 경쟁사 전략 종합: intel-store에서 search_intel(topic='skt-strategy', limit=50)과 search_intel(topic='kt-strategy', limit=50)으로 최근 3개월 데이터를 수집해줘. (1) SKT 전략 방향 변화 요약 (주요 발표, 투자, 제휴), (2) KT 전략 방향 변화 요약, (3) LG U+ 대비 포지셔닝 시사점, (4) 다음 분기 주목 포인트. outputs/reports/${DATE}_quarterly-competitor-summary.md 로 저장. PDF도 생성." \
+      2>>"$LOG_FILE"
+  }
+  COMP_RESULT=$(run_competitor_summary) && COMP_CODE=0 || COMP_CODE=$?
+  echo "[$(date '+%H:%M:%S')] Competitor summary: exit=$COMP_CODE" | tee -a "$LOG_FILE"
+fi
+
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] Friday automation completed" | tee -a "$LOG_FILE"
+
+# Obsidian 일지에 결과 기록
+"$HOME/.local/bin/uv" run "$WORKSPACE/scripts/auto-monitor/log-to-obsidian.py" \
+  --domain "friday-summary" \
+  --exit-code "$EXIT_CODE" \
+  --result "${RESULT:-no-result}" \
+  --log-file "$LOG_FILE"
+
+exit 0
