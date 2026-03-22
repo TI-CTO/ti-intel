@@ -5,7 +5,7 @@
 
 ---
 
-## Agentic AI (월요일)
+## Agentic AI (월요일, L3 12개)
 
 ### 1. Self Evolving Architecture
 | L3 | slug | 검색 키워드 |

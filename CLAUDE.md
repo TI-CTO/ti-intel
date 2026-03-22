@@ -84,7 +84,7 @@ Obsidian 볼트 경로: `$OBSIDIAN_VAULT_PATH` (settings.local.json에서 설정
 
 | 스킬 | 용도 |
 |------|------|
-| `wtis` | 기술 평가 — standard(Go/No-Go) / full(종합 투자 제안서) |
+| `wtis` | 기술 평가 — standard(Go/No-Go) / full(종합 기술 전략 제안서) |
 | `weekly-monitor` | 주간 기술 동향 (L1 도메인별 L3 스캔) |
 | `monitor` | 등록 토픽 정기 모니터링 |
 | `discover` | 신기술/기회 탐색 |

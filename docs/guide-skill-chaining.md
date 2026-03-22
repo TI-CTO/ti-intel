@@ -35,7 +35,7 @@
 
 ┌──────────────┐                ┌──────────────────┐
 │wtis standard │── Go/C.Go ───▶│    wtis full     │
-│ 기술 스크리닝  │                │ 종합 투자 제안서   │
+│ 기술 스크리닝  │                │ 종합 기술 전략 제안서   │
 │ (~15분)      │                │ 전략+기업+재무 통합 │
 └──────────────┘                │ (~30분)          │
        │ No-Go                  └────────┬─────────┘
@@ -84,7 +84,7 @@
 | **startup-analyst** | 분석 완료 | startup-db MCP | Section 8 JSON → upsert_company / add_funding_round |
 | **startup-analyst** | WTIS 검증 필요 | wtis standard | 기업의 핵심 기술 → Go/No-Go 검증 |
 | **discover** | 플레이어 탐색 | startup-scout | 도메인 키워드 → 스타트업 후보 발굴 |
-| **wtis** (standard) | Go/Conditional Go | wtis full | Standard 리포트 → 종합 투자 제안서 |
+| **wtis** (standard) | Go/Conditional Go | wtis full | Standard 리포트 → 종합 기술 전략 제안서 |
 
 ### 출력 변환 스킬 (하류)
 
@@ -157,12 +157,12 @@ file_path: "주요 산출물 절대 경로"
   → /obsidian-bridge {리포트} research
 ```
 
-### 시나리오 4: 기술 검증 → 종합 투자 제안서 (2-Tier)
+### 시나리오 4: 기술 검증 → 종합 기술 전략 제안서 (2-Tier)
 ```
 /wtis standard speech-generation
   → Conditional Go (128/200)
   → /wtis full speech-generation
-  → 종합 투자 제안서 (전략 Partner 72/100, ROI 664%, 회수 Y1)
+  → 종합 기술 전략 제안서 (전략 Partner 72/100, ROI 664%, 회수 Y1)
   → /report-pdf {full 리포트}         CTO 보고용 PDF
   → /slides {full 리포트}             발표용 PPTX
 ```

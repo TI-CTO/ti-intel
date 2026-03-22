@@ -22,7 +22,7 @@
           │ 내부적으로 호출                │
           ▼                              ▼
 ┌─── 에이전트 (자동) ───┐    ┌─── MCP 프로젝트 (데이터) ───┐
-│ research-deep         │    │ intel-store (14 도구)       │
+│ research-deep         │    │ intel-store (13 도구)       │
 │ validator             │    │ trend-tracker (5 도구)      │
 │ researcher            │    │ design-system (4 도구)      │
 │ reviewer              │    │ startup-db (15 도구)        │
@@ -237,7 +237,7 @@
 
 > 뉴스·논문·특허를 **한곳에 모으고**, 키워드+AI 검색으로 **즉시 꺼내 쓰는** 저장소.
 
-**14개 도구**:
+**13개 도구**:
 
 | 구분 | 도구 | 설명 | 예시 |
 |------|------|------|------|
