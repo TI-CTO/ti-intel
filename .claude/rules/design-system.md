@@ -16,9 +16,7 @@ globs: "projects/design-system/**/*.py"
 - 5열+ 테이블: 포스트프로세서에서 `wide-table` 클래스 자동 부여
 
 ## Citation badge
-- 마크다운 인용 형식: `[S-01](#ref-s-01)` (단일 대괄호 + 앵커 링크)
-- References 앵커: `<a id="ref-s-01"></a>S-01`
-- 접미사 ID 금지 (G-01-S 등): 순차 번호만 사용 (G-01, G-02, ...)
+- 인용 형식·ID 규칙은 `.claude/rules/report-writing.md` 참조
 - `_preprocess()`에서 citation 패턴은 wikilink 변환 스킵
 
 ## MCP 서버 코드 수정 후

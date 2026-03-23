@@ -36,3 +36,8 @@ UI/CSS 수정 시 우선순위 기반 체크리스트를 따른다:
   - 색상: 상승=#10B981, 하락=#EF4444
 ```
 사용자가 결과를 보고 체크리스트 항목 단위로 수정을 요청하면, 해당 항목만 변경하여 재구현한다.
+
+## Streamlit 실행 설정
+Streamlit 앱 실행 시 항상 headless 모드를 사용한다:
+- `server.headless=true`, `browser.gatherUsageStats=false`
+- 대화형 프롬프트(이메일 입력 등)에 의존하지 않는다
