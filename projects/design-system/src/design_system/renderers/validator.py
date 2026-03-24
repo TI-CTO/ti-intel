@@ -282,6 +282,30 @@ def validate_markdown(source: str, meta: dict) -> list[CheckResult]:
             )
         )
 
+    # M-12: Heading hierarchy — ### or #### directly before table (outside References)
+    body_without_refs = source[: refs_match.start()] if refs_match else source
+    heading_before_table = re.findall(
+        r"^(#{3,4} .+)\n+\|",
+        body_without_refs,
+        re.MULTILINE,
+    )
+    # This is informational — not an error since the renderer now preserves these headings,
+    # but warns if the pattern exists in case of unexpected caption conversion.
+    results.append(
+        CheckResult(
+            check_id="M-12",
+            name="Heading before table (body)",
+            passed=True,  # informational, always pass
+            severity="warning",
+            message=(
+                f"{len(heading_before_table)} heading(s) directly before table: "
+                f"{[h.strip() for h in heading_before_table[:5]]}"
+                if heading_before_table
+                else ""
+            ),
+        )
+    )
+
     # --- Type-specific checks ---
     if report_type == "weekly":
         results.extend(_validate_weekly(source, meta))

@@ -34,7 +34,7 @@
       </div>
       {% endif %}
       {% if executive_summary_html %}
-      <div class="callout-box no-break">
+      <div class="callout-box no-break" id="toc-exec">
         <div class="callout-title">Executive Summary</div>
         {% if verdict %}
         <div class="verdict-card">
@@ -59,12 +59,28 @@
         {{ executive_summary_html | safe }}
       </div>
       {% endif %}
+
+      {% if toc and toc | length > 2 %}
+      <!-- ── Table of Contents ──────────────────────────────────── -->
+      <div class="toc-section no-break">
+        <div class="toc-title">목차</div>
+        <ul class="toc-list">
+          {% for entry in toc %}
+          {% if entry.level == 2 %}
+          <li class="toc-h2"><a href="#{{ entry.anchor }}">{{ entry.title }}</a></li>
+          {% else %}
+          <li class="toc-h3"><a href="#{{ entry.anchor }}">{{ entry.title }}</a></li>
+          {% endif %}
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
     </div>
 
     <!-- ── Content Zone (page 2+) ─────────────────────────────── -->
     <div class="content-zone">
       {% for section in main_sections %}
-      <div class="section-block{% if not loop.first %} section-block-break{% endif %}">
+      <div class="section-block{% if not loop.first %} section-block-break{% endif %}" id="toc-s{{ loop.index }}">
         <h2 class="section-title">
           {% if section.number %}
           <span class="section-number">{{ section.number }}</span>
@@ -82,7 +98,7 @@
 
   <!-- ══ REFERENCES ═════════════════════════════════════════════ -->
   {% if references_html %}
-  <div class="references-section">
+  <div class="references-section" id="toc-refs">
     <h2>References</h2>
     {{ references_html | safe }}
   </div>

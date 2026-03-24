@@ -489,6 +489,47 @@ pre code {
     flex-shrink: 0;
 }
 
+/* ── Table of Contents ──────────────────────────────────────────── */
+.toc-section {
+    margin-top: 8mm;
+}
+
+.toc-title {
+    font-size: 11pt;
+    font-weight: 700;
+    color: var(--color-dark);
+    margin-bottom: 2mm;
+}
+
+.toc-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.toc-list li {
+    margin: 0;
+    line-height: 1.8;
+}
+
+.toc-h2 {
+    font-size: 9.5pt;
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.toc-h3 {
+    font-size: 8.5pt;
+    font-weight: 400;
+    color: var(--color-text-secondary);
+    padding-left: 4mm;
+}
+
+.toc-list a {
+    color: var(--color-primary);
+    text-decoration: underline;
+}
+
 /* ── Page Break Controls ────────────────────────────────────────── */
 .page-break {
     page-break-before: always;

@@ -36,6 +36,15 @@ _REFERENCES_KEYS = ("References", "참조", "Reference")
 
 
 @dataclass
+class TocEntry:
+    """Single TOC item with anchor ID."""
+
+    level: int  # 2 = h2 section, 3 = h3 sub-section
+    title: str
+    anchor: str
+
+
+@dataclass
 class ReportSection:
     """Parsed section from a WTIS markdown report."""
 
@@ -162,12 +171,8 @@ def _postprocess(html: str) -> str:
         r'\2<caption>&lt; \1 &gt;</caption>',
         html,
     )
-    # Move h3 heading before table into <caption> (e.g. References sub-tables)
-    html = re.sub(
-        r"<h3>(.*?)</h3>\s*(<div class=\"table-wrapper\"><table class=\"data-table\">)",
-        r'\2<caption>&lt; \1 &gt;</caption>',
-        html,
-    )
+    # NOTE: h3→caption 변환은 References 섹션 전용으로 _postprocess_references()에서 수행.
+    # 본문 h3("플레이어 동향" 등)이 삼켜지는 버그 방지를 위해 여기서는 수행하지 않는다.
     # Citation ID pattern: G-01, P-03, G-13-S, G-01-C (optional hyphen-suffix)
     _cid = r"[A-Z]+-\d+(?:-[A-Za-z]+)?"
     # Case 1a: mistune converted [[G-01]](#ref-g-01) → <a href="#ref-...">[G-01]</a>
@@ -198,6 +203,93 @@ def _postprocess(html: str) -> str:
     html = re.sub(
         r'(?<!href=")(https?://[^\s<,|"]+)',
         r'<a href="\1" target="_blank">\1</a>',
+        html,
+    )
+    return html
+
+
+def _build_toc(
+    exec_summary: ReportSection | None,
+    main_sections: list[ReportSection],
+    has_references: bool,
+) -> list[TocEntry]:
+    """Build table of contents from section structure.
+
+    Extracts h2 (sections) and h3 (sub-sections) for a 2-level TOC.
+    Generates stable anchor IDs for cross-linking.
+    """
+    entries: list[TocEntry] = []
+    counter = 0
+
+    if exec_summary:
+        entries.append(TocEntry(level=2, title="Executive Summary", anchor="toc-exec"))
+
+    for section in main_sections:
+        counter += 1
+        sec_anchor = f"toc-s{counter}"
+        entries.append(TocEntry(level=2, title=section.clean_title, anchor=sec_anchor))
+
+        # Extract h3 sub-headings from section HTML
+        h3_matches = re.findall(r"<h3>(.*?)</h3>", section.html)
+        for j, h3_title in enumerate(h3_matches, 1):
+            # Strip HTML tags from title (e.g. <strong>)
+            clean = re.sub(r"<[^>]+>", "", h3_title).strip()
+            entries.append(
+                TocEntry(level=3, title=clean, anchor=f"{sec_anchor}-{j}")
+            )
+
+    if has_references:
+        entries.append(TocEntry(level=2, title="References", anchor="toc-refs"))
+
+    return entries
+
+
+def _inject_toc_anchors(
+    exec_summary: ReportSection | None,
+    main_sections: list[ReportSection],
+    toc: list[TocEntry],
+) -> None:
+    """Inject anchor IDs into section HTML so TOC links work."""
+    sec_idx = 0
+
+    # Skip exec summary entry in TOC
+    if exec_summary:
+        sec_idx = 1  # toc[0] = Executive Summary
+
+    for section in main_sections:
+        # Find this section's TOC entry
+        sec_entry = next((e for e in toc[sec_idx:] if e.level == 2), None)
+        if not sec_entry:
+            break
+        sec_idx = toc.index(sec_entry)
+
+        # Get h3 entries for this section
+        h3_entries = []
+        for e in toc[sec_idx + 1 :]:
+            if e.level == 2:
+                break
+            h3_entries.append(e)
+
+        # Inject anchor IDs into h3 tags in section HTML
+        h3_idx = 0
+
+        def _add_h3_anchor(m: re.Match) -> str:
+            nonlocal h3_idx
+            if h3_idx < len(h3_entries):
+                anchor = h3_entries[h3_idx].anchor
+                h3_idx += 1
+                return f'<h3 id="{anchor}">{m.group(1)}</h3>'
+            return m.group(0)
+
+        section.html = re.sub(r"<h3>(.*?)</h3>", _add_h3_anchor, section.html)
+        sec_idx += 1 + len(h3_entries)
+
+
+def _postprocess_references(html: str) -> str:
+    """References 섹션 전용 후처리: h3 heading을 table caption으로 변환."""
+    html = re.sub(
+        r"<h3>(.*?)</h3>\s*(<div class=\"table-wrapper\"><table class=\"data-table\">)",
+        r'\2<caption>&lt; \1 &gt;</caption>',
         html,
     )
     return html
@@ -235,6 +327,10 @@ def _parse_sections(body: str) -> list[ReportSection]:
 
         html = _postprocess(md(_preprocess(content)))
 
+        is_references = any(k in title for k in _REFERENCES_KEYS)
+        if is_references:
+            html = _postprocess_references(html)
+
         sections.append(
             ReportSection(
                 title=title,
@@ -242,7 +338,7 @@ def _parse_sections(body: str) -> list[ReportSection]:
                 number=number,
                 html=html,
                 is_exec_summary=any(k in title for k in _EXEC_SUMMARY_KEYS),
-                is_references=any(k in title for k in _REFERENCES_KEYS),
+                is_references=is_references,
             )
         )
 
@@ -452,6 +548,10 @@ class PdfRenderer(BaseRenderer):
             s for s in sections if not s.is_exec_summary and not s.is_references
         ]
 
+        # Build TOC and inject anchor IDs
+        toc = _build_toc(exec_summary, main_sections, references is not None)
+        _inject_toc_anchors(exec_summary, main_sections, toc)
+
         # Extract intro content between H1 and first ## heading
         intro_html = ""
         first_h2 = re.search(r"^## ", body, re.MULTILINE)
@@ -487,6 +587,7 @@ class PdfRenderer(BaseRenderer):
             intro_html=intro_html,
             executive_summary_html=exec_summary.html if exec_summary else "",
             main_sections=main_sections,
+            toc=toc,
             references_html=_split_large_tables(references.html) if references else "",
             css=css,
             pagedjs_script=_build_pagedjs_script(),
