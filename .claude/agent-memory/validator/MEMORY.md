@@ -43,6 +43,7 @@
 | 2026-03-18_he-keyword-search/skill1 | 2026-03-18 | PARTIAL | Critical 1건(G-02 GM Insights $234.7M 2025→원본 $178.4M/2023 불일치), 고아 소스 2건(E-03, P-05), SKT/KT 투자액 단일 소스 반복 |
 | 2026-03-18_spam-phishing-detection/skill1 | 2026-03-18 | PARTIAL | Critical 2건(+91% YoY 수치 불일치·Truecaller EBITDA -49% 출처 미확인), 고아 소스 1건(P-03), 판정 기준 모순(115점이 재검토 범위인데 Conditional Go 표기) |
 | 2026-03-18_speech-perception/skill1 | 2026-03-18 | PARTIAL | Critical 1건(G-25 카카오 판결 주장↔범용 가이드라인 불일치), 채점 합산 오류(세부합 118 vs 표기 131), Hume $72.8M "Series B" 오표기, 고아 소스 12건(38.7%) |
+| 2026-03-24_speech-generation/skill1 | 2026-03-24 | PARTIAL | 수치 내부 불일치 1건(1,210% vs 1,300% 동일 출처), MOS 4.14 시점 불일치(이전 기준→현재값 오서술), 고아 소스 9건(G-02/12/13/18, E-05/06, P-02/03, I-01 미인용), Deutsche Telekom 출처 미등재 |
 
 ### 반복 패턴 (agentic-ai 도메인)
 - G-21 반복 위험: Mintz 법률 블로그가 특허·시장성공률·Gartner 예측 등 이질적 주장에 동시 인용되는 패턴 발생 → 차기 검증 시 G-21 인용 맥락 우선 점검 (adaptive-rag에서는 NVIDIA case study로 정상 사용됨)
