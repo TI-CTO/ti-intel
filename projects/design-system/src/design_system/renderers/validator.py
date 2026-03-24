@@ -434,12 +434,7 @@ def _validate_weekly(source: str, meta: dict) -> list[CheckResult]:
         expected_cols=3, severity="warning",
     )
 
-    # M-09: Key papers table 3 columns (relocated from common)
-    _check_section_table(
-        source, results, "M-09", "Key papers table 3 columns",
-        section_pattern=r"(?:주요 논문|학술 동향|Key Papers|Academic)",
-        expected_cols=3, severity="warning",
-    )
+    # M-09: removed — 학술 동향 섹션이 시장 시그널의 "연구 동향" 카테고리로 흡수됨
 
     # M-10: Market signals = bullet list (relocated from common)
     _check_market_signals(source, results)
@@ -448,7 +443,7 @@ def _validate_weekly(source: str, meta: dict) -> list[CheckResult]:
     # Deep sections use ### for L3 name, #### for sub-sections (기술 동향, 플레이어 동향, etc.)
     # If sub-sections like 기술 동향 appear as ### (h3), the heading level is wrong.
     deep_subsection_as_h3 = re.findall(
-        r"^### (기술 동향|플레이어 동향|시장 시그널|시장 수요|학술 동향|전략적 시사점|이전 대비 변화)",
+        r"^### (기술 동향|플레이어 동향|시장 시그널|시장 수요|전략적 시사점|이전 대비 변화)",
         source,
         re.MULTILINE,
     )

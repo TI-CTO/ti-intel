@@ -327,7 +327,7 @@ class TestGenericNoWeeklyChecks:
         # M-03, M-08, M-09, M-10 are weekly-only now
         assert "M-03" not in ids
         assert "M-08" not in ids
-        assert "M-09" not in ids
+        # M-09 removed
         assert "M-10" not in ids
         # W-xx should not appear
         assert not any(i.startswith("W-") for i in ids)
@@ -361,7 +361,7 @@ class TestWeeklyChecks:
         assert "W-02" in ids  # Signal emoji
         assert "W-03" in ids  # Deep analysis count
         assert "M-08" in ids  # Player trends
-        assert "M-09" in ids  # Key papers
+        # M-09 removed — 학술 동향이 시장 시그널로 흡수
         assert "M-10" in ids  # Market signals
 
     # M-03: Executive Summary (weekly version)
@@ -433,10 +433,7 @@ class TestWeeklyChecks:
         results = validate_markdown(MINIMAL_WEEKLY_MD, WEEKLY_META)
         assert _find(results, "M-08").passed
 
-    # M-09: Key papers (now weekly-only)
-    def test_m09_correct_columns(self):
-        results = validate_markdown(MINIMAL_WEEKLY_MD, WEEKLY_META)
-        assert _find(results, "M-09").passed
+    # M-09: removed — 학술 동향이 시장 시그널 "연구 동향"으로 흡수
 
     # M-10: Market signals (now weekly-only)
     def test_m10_table_in_market_signals(self):
@@ -479,7 +476,7 @@ class TestWtisChecks:
         assert not any(i.startswith("W-") for i in ids)
         assert "M-03" not in ids
         assert "M-08" not in ids
-        assert "M-09" not in ids
+        # M-09 removed
         assert "M-10" not in ids
 
     # T-01: 경영진 요약
