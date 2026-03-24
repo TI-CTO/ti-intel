@@ -198,28 +198,32 @@ Deep 심층 리서치 대상: 2개 (🔴 1, 🟡 1)
 
 ### Step 2-1: 포괄적 데이터 수집
 
-`research-deep` 에이전트를 호출한다. L3 토픽별로 **개별 호출** (병렬 가능):
+L3 토픽별로 **2개 에이전트를 병렬 호출**한다:
 
 ```
-research-deep 에이전트 (sonnet):
-  목표: "{L3 이름}의 최근 1주 기술/시장/경쟁 동향 종합 리서치"
-  도구·소스:
-    - intel-store MCP: collect_papers(topic, query) — 최신 논문 전수 수집+저장
-    - intel-store MCP: collect_patents(topic, query) — 최신 특허 출원 수집+저장
-    - intel-store MCP: collect_news(topic, query) — 뉴스 전수 수집 (Tavily+GDELT, 중복 제거)
-    - intel-store MCP: find_similar(text) — 관련 아이템 탐색
-    - WebSearch: MCP 결과 보강 (최신 뉴스, 블로그, 공식 발표)
-  태스크 경계:
-    - Go/No-Go 판정하지 않음 (WTIS standard/proposal의 역할)
-    - 전략 권고하지 않음 (팩트 수집 + 분석에 집중)
-  출력 경로: outputs/reports/weekly/YYYY-MM-DD_research-{l3-slug}.md
-    ⚠️ 반드시 weekly/ 폴더에 저장 (메인 리포트와 같은 위치)
-  출력 내용:
-    - 기술 동향 (논문/표준/오픈소스 변화)
-    - 플레이어 동향 (기업별 움직임)
-    - 시장 시그널 (투자/M&A/파트너십)
-    - References 테이블 (전수)
+┌─ research-deep 에이전트 (sonnet) ─────────────────────────┐
+│  목표: "{L3 이름}의 최근 1주 기술/시장/경쟁 동향 종합 리서치"  │
+│  도구·소스:                                                │
+│    - intel-store MCP: collect_papers, collect_patents,      │
+│      collect_news, find_similar                            │
+│    - WebSearch: MCP 결과 보강                               │
+│  태스크 경계:                                               │
+│    - Go/No-Go 판정하지 않음 (WTIS의 역할)                    │
+│    - 전략 권고하지 않음 (팩트 수집 + 분석에 집중)              │
+│  출력: outputs/reports/weekly/YYYY-MM-DD_research-{slug}.md │
+└──────────────────────────────────────────────────────────┘
+                        ↕ 병렬
+┌─ voice-of-market 에이전트 (sonnet) ───────────────────────┐
+│  목표: "{L3 이름} 관련 컨퍼런스 영상에서 수요 시그널 추출"     │
+│  도구·소스:                                                │
+│    - WebSearch: 관련 컨퍼런스 영상 탐색                      │
+│    - youtube-transcript MCP: 트랜스크립트 추출 (최대 3개)     │
+│  출력: 고객 페인포인트, 도입 장벽, 시장 니즈 (구조화 반환)     │
+│  ⚠️ 영상 없으면 skip 반환 (실패 아님)                        │
+└──────────────────────────────────────────────────────────┘
 ```
+
+**병렬 실행 제한**: research-deep + voice-of-market 합산으로 동시 에이전트 최대 6개 (L3 3개 × 2 에이전트). L3 4개 이상이면 2배치로 분할.
 
 ### Step 2-2: 이전 스냅샷 대비 변화 분석
 
@@ -354,6 +358,11 @@ research-deep 에이전트에도 동일한 스키마가 정의되어 있다.
 ### T4: 시장 시그널
 - **테이블 금지** — 불릿 리스트로만 작성.
 
+### T4b: 시장 수요
+- **테이블 금지** — 불릿 리스트로만 작성.
+- 고객 페인포인트 / 도입 장벽 / 시장 니즈를 **볼드 소제목**으로 구분.
+- voice-of-market 에이전트 `skip` 시 섹션 전체 생략.
+
 ### T-C: 경쟁사 동향 (4열)
 ```
 | 항목 | 내용 | 관련 L3 | 출처 |
@@ -435,6 +444,19 @@ deep_count: {Deep 실행된 L3 수}
 
 #### 시장 시그널
 - 투자/M&A/파트너십 동향 (불릿 리스트)
+
+#### 시장 수요 (voice-of-market)
+
+> voice-of-market 에이전트 결과를 통합. 에이전트가 `skip` 반환 시 이 섹션 생략.
+
+**고객 페인포인트**
+- {페인포인트} — 출처: {영상 제목} ({발표자})
+
+**도입 장벽**
+- {장벽} — 출처: {영상 제목} ({발표자})
+
+**시장 니즈**
+- {니즈} — 출처: {영상 제목} ({발표자})
 
 #### 학술 동향 (주요 논문)
 

@@ -104,6 +104,7 @@ Obsidian 볼트 경로: `$OBSIDIAN_VAULT_PATH` (settings.local.json에서 설정
 | 에이전트 | 역할 | 모델 |
 |----------|------|------|
 | `research-deep` | 다중 소스 심층 리서치 | sonnet |
+| `voice-of-market` | YouTube 컨퍼런스 수요 시그널 추출 | sonnet |
 | `fact-checker` | 외부 사실 검증 (Devil's Advocate) | sonnet |
 | `validator` | 내부 일관성 검증 (Black-box) | sonnet |
 | `researcher` | 빠른 탐색/비교 | haiku |
