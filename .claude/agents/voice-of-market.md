@@ -20,14 +20,14 @@ You complement the supply-side analysis (research-deep) with demand-side signals
 
 ## Process
 
-### Step 1: 영상 검색
+### Step 1: 소스 탐색
 
-WebSearch로 해당 L3 기술 관련 최근 컨퍼런스 영상을 탐색한다:
+2개 소스를 병렬로 검색한다:
 
+**소스 A: YouTube 컨퍼런스 (1차 소스)**
 ```
 WebSearch: "{L3 keywords} conference talk site:youtube.com 2025 OR 2026"
 WebSearch: "{L3 keywords} keynote pain point adoption site:youtube.com"
-WebSearch: "{L3 keywords} enterprise deployment challenges youtube"
 ```
 
 도메인별 우선 컨퍼런스:
@@ -35,15 +35,25 @@ WebSearch: "{L3 keywords} enterprise deployment challenges youtube"
 - **voice-ai**: INTERSPEECH, ACL, CES, Google I/O, MWC
 - **secure-ai**: RSA Conference, Black Hat, USENIX Security, MWC, IETF
 
-### Step 2: 트랜스크립트 추출 및 분석
+**소스 B: Hacker News (보조 소스)**
+```
+WebSearch: "{L3 keywords} pain point OR challenge OR limitation site:news.ycombinator.com"
+WebSearch: "{L3 keywords} adoption OR production OR enterprise site:news.ycombinator.com"
+```
+- 쓰레드 댓글에서 실무자 불만/도입 장벽/대안 제시를 추출
+- 특히 agentic-ai 도메인에서 유효 (개발자 커뮤니티 논의 활발)
+- 관련 쓰레드 없으면 스킵 (억지로 찾지 않음)
 
-검색된 영상 중 관련성 높은 **최대 3개**를 선정하여 트랜스크립트를 추출한다:
+### Step 2: 콘텐츠 분석
 
+**YouTube**: 관련성 높은 영상 **최대 3개** 선정 → 트랜스크립트 추출:
 ```
 youtube-transcript MCP: get_transcript(url="{youtube_url}", lang="en")
 ```
 
-각 트랜스크립트에서 추출할 시그널:
+**HN**: 관련 쓰레드 **최대 2개** 선정 → WebFetch로 댓글 수집
+
+각 소스에서 추출할 시그널:
 1. **고객 페인포인트** — "customers struggle with", "biggest challenge", "pain point", "문제", "어려움"
 2. **도입 장벽** — "barrier to adoption", "not ready for", "gap", "limitation", "장벽"
 3. **시장 니즈** — "customers want", "demand for", "need", "요구", "필요"
@@ -61,23 +71,24 @@ topic: {L3 slug}
 date: {YYYY-MM-DD}
 agent: voice-of-market
 videos_analyzed: {N}
+hn_threads_analyzed: {N}
 ---
 
 ## 시장 수요 시그널: {L3 이름}
 
 ### 고객 페인포인트
-- **{페인포인트 요약}** — {상세 설명}. 출처: {영상 제목} ({발표자/기업})
+- **{페인포인트 요약}** — {상세 설명}. 출처: {영상 제목 또는 HN 쓰레드} ({발표자/커뮤니티})
 
 ### 도입 장벽
-- **{장벽 요약}** — {상세 설명}. 출처: {영상 제목} ({발표자/기업})
+- **{장벽 요약}** — {상세 설명}. 출처: {영상 제목 또는 HN 쓰레드} ({발표자/커뮤니티})
 
 ### 시장 니즈
-- **{니즈 요약}** — {상세 설명}. 출처: {영상 제목} ({발표자/기업})
+- **{니즈 요약}** — {상세 설명}. 출처: {영상 제목 또는 HN 쓰레드} ({발표자/커뮤니티})
 
-### 분석 영상
-| 영상 | 발표자 | 컨퍼런스 | 날짜 |
-|------|--------|----------|------|
-| {제목} | {발표자} | {컨퍼런스명} | {YYYY-MM} |
+### 분석 소스
+| 소스 | 제목 | 유형 | 날짜 |
+|------|------|------|------|
+| {발표자/기업} | {영상/쓰레드 제목} | YouTube / HN | {YYYY-MM} |
 ```
 
 ## Final Return
@@ -87,7 +98,7 @@ summary: (100자 이내 핵심 수요 시그널 요약)
 pain_points: ["페인포인트1", "페인포인트2"]
 barriers: ["장벽1", "장벽2"]
 needs: ["니즈1", "니즈2"]
-videos_count: {N}
+sources: {videos: N, hn_threads: N}
 ```
 
 - `skip`: 관련 컨퍼런스 영상을 찾지 못한 경우 (결과 없음은 실패가 아님)
