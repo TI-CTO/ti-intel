@@ -16,6 +16,7 @@ argument-hint: "<agentic-ai | voice-ai | secure-ai>"
 2. **뉴스 최대 수집** — 중복이 아닌 한 가능한 모든 뉴스를 수집. 몇 건 수준이 아닌 포괄적 수집
 3. **논문/특허/뉴스 종합** — 심층 리서치는 research-deep 수준으로 3개 소스를 모두 활용
 4. **WTIS quick 대체** — weekly-monitor의 Deep이 충분히 깊으므로 별도 WTIS quick 실행 불필요
+5. **7일 이내 소식만 포함** — 모든 섹션(기술 동향, 플레이어, 시장 시그널, 경쟁사 동향 포함)에서 최근 7일 이내 발행된 소식만 사용. WebSearch 결과도 동일 기준 적용. 오래된 뉴스가 섞이면 "주간 delta" 원칙이 훼손됨
 
 ## 빠른 시작
 
@@ -160,10 +161,13 @@ WebSearch: "{L3 keywords} 2026 latest news" (intel-store 결과 부족 시)
 ### Step 1-2b: 경쟁사 동향 수집
 
 Quick 스캔과 병행하여 해당 도메인 관련 경쟁사(SKT/KT) 뉴스를 수집한다.
+**7일 이내 소식만 포함** — 경쟁사 동향도 다른 섹션과 동일하게 주간 delta 원칙 적용.
 
 ```
 intel-store: search_intel(query="{도메인 L2 키워드}", topic="skt-strategy", since={7일전}, limit=15, mode="keyword")
 intel-store: search_intel(query="{도메인 L2 키워드}", topic="kt-strategy", since={7일전}, limit=15, mode="keyword")
+WebSearch: "SKT {도메인 키워드} site:news.sktelecom.com" (7일 이내 결과만 사용)
+WebSearch: "KT {도메인 키워드} site:corp.kt.com" (7일 이내 결과만 사용)
 ```
 
 - 도메인별 L2 키워드 예시:
@@ -171,6 +175,7 @@ intel-store: search_intel(query="{도메인 L2 키워드}", topic="kt-strategy",
   - voice-ai: "음성", "TTS", "AI 스피커", "보이스"
   - secure-ai: "보안", "피싱", "양자암호", "동형암호"
 - 수집된 뉴스를 기업별(SKT/KT)로 그룹핑하여 리포트 경쟁사 섹션에 사용
+- 7일 이내 신규 뉴스 없으면 "이번 주 해당 도메인 관련 경쟁사 뉴스 없음" 표기
 
 ### Step 1-3: 사용자 확인
 
