@@ -46,19 +46,19 @@ MINIMAL_WEEKLY_MD = """\
 
 Details here with [[G-01]](#ref-g-01) citation.
 
-### 플레이어 동향
+#### 플레이어 동향
 
 | 기업 | 동향 | 의미 |
 |------|------|------|
 | Co A | News | Impact |
 
-### 주요 논문
+#### 주요 논문
 
 | 논문 | 핵심 기여 | 시사점 |
 |------|-----------|--------|
 | Paper A | Contribution | Implication |
 
-### 시장 시그널
+#### 시장 시그널
 
 - Signal A
 - Signal B

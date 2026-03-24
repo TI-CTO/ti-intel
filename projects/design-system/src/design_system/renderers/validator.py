@@ -444,6 +444,29 @@ def _validate_weekly(source: str, meta: dict) -> list[CheckResult]:
     # M-10: Market signals = bullet list (relocated from common)
     _check_market_signals(source, results)
 
+    # W-04: Deep sub-sections must be h4 (####), not h3 (###)
+    # Deep sections use ### for L3 name, #### for sub-sections (기술 동향, 플레이어 동향, etc.)
+    # If sub-sections like 기술 동향 appear as ### (h3), the heading level is wrong.
+    deep_subsection_as_h3 = re.findall(
+        r"^### (기술 동향|플레이어 동향|시장 시그널|시장 수요|학술 동향|전략적 시사점|이전 대비 변화)",
+        source,
+        re.MULTILINE,
+    )
+    results.append(
+        CheckResult(
+            check_id="W-04",
+            name="Deep sub-sections use h4",
+            passed=len(deep_subsection_as_h3) == 0,
+            severity="error",
+            message=(
+                f"{len(deep_subsection_as_h3)} sub-section(s) incorrectly at h3 level "
+                f"(should be ####): {deep_subsection_as_h3[:5]}"
+                if deep_subsection_as_h3
+                else ""
+            ),
+        )
+    )
+
     return results
 
 
