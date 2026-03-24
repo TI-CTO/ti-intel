@@ -48,7 +48,32 @@ You receive a file path and verify its contents WITHOUT any context about how th
 3. List all quantitative claims and check source count
 4. Review conclusions vs evidence for logical coherence
 5. Check for one-sided framing
-6. Produce verification report
+6. **URL-Content 전수 검증** (아래 상세)
+7. Produce verification report
+
+### Step 6: URL-Content 전수 검증
+
+References 테이블의 **모든 URL**에 대해 WebFetch로 실제 페이지를 열고, 본문에서 해당 출처를 인용한 주장이 그 페이지에 실제로 존재하는지 확인한다.
+
+```
+각 Reference에 대해:
+1. WebFetch(url, prompt="이 페이지에 다음 내용이 있는지 확인: {본문에서 이 출처를 인용한 주장}")
+2. 판정:
+   - ✅ 일치: 주장이 페이지 내용과 부합
+   - ⚠️ 부분 일치: 관련 내용은 있으나 구체적 수치/표현이 다름
+   - ❌ 불일치: 페이지에 해당 내용 없음 (잘못된 출처 매핑)
+   - 🔗 접근 불가: URL이 깨졌거나 인증 필요
+3. ❌ 불일치 발견 시: 올바른 출처를 WebSearch로 탐색하여 대안 URL 제시
+```
+
+**결과를 검증 리포트에 포함:**
+```markdown
+## 5. URL-Content 검증
+| # | URL 상태 | 본문 주장 | 판정 | 비고 |
+|---|---------|---------|------|------|
+| G-01 | 200 OK | ElevenLabs v3 GA 출시 | ✅ 일치 | |
+| E-03 | 200 OK | A.auto 르노코리아 탑재 | ❌ 불일치 | 페이지는 MWC 전략 발표, A.auto 언급 없음. 대안: https://... |
+```
 
 ## Output Format
 
@@ -94,6 +119,10 @@ reinforcement_needed:
     current_sources: 1
     suggested_keywords: ["keyword1", "keyword2"]
 ```
+
+## 5. URL-Content 검증
+| # | URL 상태 | 본문 주장 | 판정 | 비고 |
+|---|---------|---------|------|------|
 
 ## 3. 논리 검증
 - (논리적 도약 발견 시 인용)

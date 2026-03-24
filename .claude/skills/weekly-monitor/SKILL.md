@@ -276,6 +276,21 @@ outputs/reports/weekly/
 ⚠️ **Deep research-deep 에이전트 호출 시 `file_path`를 반드시 `weekly/` 경로로 지정한다.**
 잘못된 예: `outputs/reports/YYYY-MM-DD_research-xxx.md` (reports 루트에 저장 — 금지)
 
+### Step 4.5: 출처 검증 (validator)
+
+메인 리포트 생성 후, PDF 변환 전에 `validator` 에이전트를 호출하여 References URL-Content 전수 검증을 실행한다.
+
+```
+validator 에이전트 (sonnet):
+  입력: 메인 리포트 절대경로
+  검증 범위: URL-Content 전수 검증 (References 테이블의 모든 URL)
+  출력: 검증 리포트 (같은 폴더에 저장)
+```
+
+- ❌ 불일치 발견 시: 본문의 출처 인용을 수정하거나 올바른 URL로 교체한 후 PDF 진행
+- ⚠️ 부분 일치: 경고만 출력, PDF 진행
+- 🔗 접근 불가: 경고만 출력, PDF 진행
+
 ### Step 5: PDF 생성 + 품질 검증
 
 ```
