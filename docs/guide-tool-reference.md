@@ -148,7 +148,7 @@
 - **Tier 1**: 모든 L3 기술을 빠르게 스캔 → 🟢(안정) / 🟡(주의) / 🔴(변화감지) 분류
 - **Tier 2**: 🔴 기술만 심층 리서치 (research-deep 에이전트 사용)
 
-**스케줄**: 월(agentic-ai) / 화(voice-ai) / 수(secure-ai)
+**스케줄**: 매주 월 07:30 순차 실행 (agentic-ai → voice-ai → secure-ai → 경쟁사 브로드스캔)
 
 **산출물**: `outputs/reports/weekly/`
 

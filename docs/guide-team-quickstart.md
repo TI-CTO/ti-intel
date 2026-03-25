@@ -83,7 +83,7 @@ claude
 ## 3. 도메인 구조
 
 3개 L1 도메인 × 10개 L2 기술영역 × 25개 L3 세부기술.
-주간 모니터링은 L1 단위(월: Agentic AI / 화: Voice AI / 수: Secure AI)로 실행한다.
+주간 모니터링은 매주 월요일 07:30에 3개 L1 도메인(Agentic AI → Voice AI → Secure AI)을 순차 실행한다.
 
 > 전체 목록: `docs/tech-taxonomy-overview.md` (기술분류체계)
 
@@ -215,8 +215,8 @@ L1 도메인별 L2 평가 결과 종합 현황판. WTIS 평가 완료 시 자동
 
 ## 8. 주간 운영
 
-월(Agentic AI) → 화(Voice AI) → 수(Secure AI) 순으로 `/weekly-monitor` 실행.
-목·금은 WTIS 검증, 리서치, 스타트업 분석 등 자유 일정.
+매주 월요일 07:30에 Agentic AI → Voice AI → Secure AI → 경쟁사 브로드스캔을 순차 자동 실행.
+금요일 07:30에 주간 종합 + 데이터 건강 체크. 화~목은 WTIS 검증, 리서치, 스타트업 분석 등 자유 일정.
 
 > 상세 타임라인: `docs/guide-platform-overview.md` (주간 운영 사이클)
 
