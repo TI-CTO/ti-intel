@@ -8,17 +8,16 @@
   <key>ProgramArguments</key>
   <array>
     <string>/bin/zsh</string>
-    <string>/Users/ctoti/Project/ClaudeCode/scripts/auto-monitor/run-weekly-monitor.sh</string>
-    <string>agentic-ai</string>
+    <string>/Users/ctoti/Project/ClaudeCode/scripts/auto-monitor/run-monday.sh</string>
   </array>
   <key>StartCalendarInterval</key>
   <dict>
     <key>Weekday</key>
     <integer>1</integer>
     <key>Hour</key>
-    <integer>9</integer>
+    <integer>7</integer>
     <key>Minute</key>
-    <integer>0</integer>
+    <integer>30</integer>
   </dict>
   <key>EnvironmentVariables</key>
   <dict>
