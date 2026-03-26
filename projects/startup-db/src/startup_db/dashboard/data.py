@@ -167,10 +167,7 @@ def cached_funding_by_domain() -> dict:
     for i in range(0, len(cids_with_topics), 50):
         chunk = cids_with_topics[i : i + 50]
         result = (
-            client.table("su_companies")
-            .select("id,name,slug,country")
-            .in_("id", chunk)
-            .execute()
+            client.table("su_companies").select("id,name,slug,country").in_("id", chunk).execute()
         )
         for c in result.data or []:
             company_info[c["id"]] = c
@@ -207,19 +204,93 @@ def cached_funding_by_domain() -> dict:
             by_l2[l2]["total_raised"] += raised
 
             if info:
-                companies_by_l2.setdefault(l2, []).append({
-                    "name": info.get("name", ""),
-                    "slug": info.get("slug", ""),
-                    "country": info.get("country", ""),
-                    "raised": raised,
-                    "rounds": rounds,
-                })
+                companies_by_l2.setdefault(l2, []).append(
+                    {
+                        "name": info.get("name", ""),
+                        "slug": info.get("slug", ""),
+                        "country": info.get("country", ""),
+                        "raised": raised,
+                        "rounds": rounds,
+                    }
+                )
 
     return {
         "by_l1": by_l1,
         "by_l2": by_l2,
         "companies_by_l2": companies_by_l2,
     }
+
+
+@st.cache_data(ttl=3600)
+def cached_funding_momentum() -> list[dict]:
+    """Fetch all funding rounds with company info and L3 topics.
+
+    Joins su_funding_rounds (announced_date, raised_amount, company_id) with
+    su_company_topics (l3_slug) and su_companies (name, slug). Uses taxonomy
+    to derive L1/L2 from each L3 slug.
+
+    Returns:
+        List of dicts: {company_id, company_name, slug, announced_date,
+                        raised_amount, l3_slug, l1, l2}
+    """
+    from startup_db.taxonomy import get_l1_for_l3, get_l2_for_l3
+
+    client = get_repo()._client
+
+    # Step 1: All funding rounds with date and amount
+    all_rounds: list[dict] = []
+    offset = 0
+    while True:
+        batch = (
+            client.table("su_funding_rounds")
+            .select("company_id,announced_date,raised_amount")
+            .range(offset, offset + 999)
+            .execute()
+        ).data or []
+        all_rounds.extend(batch)
+        if len(batch) < 1000:
+            break
+        offset += 1000
+
+    # Step 2: Topics map {company_id: [l3_slugs]}
+    topics_map = cached_company_topics_bulk()
+
+    # Step 3: Company info for display
+    cids_with_rounds = {r["company_id"] for r in all_rounds}
+    company_info: dict[str, dict] = {}
+    cids_list = list(cids_with_rounds)
+    for i in range(0, len(cids_list), 50):
+        chunk = cids_list[i : i + 50]
+        result = client.table("su_companies").select("id,name,slug").in_("id", chunk).execute()
+        for c in result.data or []:
+            company_info[c["id"]] = c
+
+    # Step 4: Expand rounds × topics → flat records
+    records: list[dict] = []
+    for round_row in all_rounds:
+        cid = round_row["company_id"]
+        l3_slugs = topics_map.get(cid, [])
+        if not l3_slugs:
+            continue
+        info = company_info.get(cid, {})
+        for l3 in l3_slugs:
+            l1 = get_l1_for_l3(l3)
+            l2 = get_l2_for_l3(l3)
+            if not l1 or not l2:
+                continue
+            records.append(
+                {
+                    "company_id": cid,
+                    "company_name": info.get("name", ""),
+                    "slug": info.get("slug", ""),
+                    "announced_date": round_row.get("announced_date"),
+                    "raised_amount": float(round_row.get("raised_amount") or 0),
+                    "l3_slug": l3,
+                    "l1": l1,
+                    "l2": l2,
+                }
+            )
+    return records
 
 
 @st.cache_data(ttl=3600)

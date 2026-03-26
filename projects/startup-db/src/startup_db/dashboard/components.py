@@ -13,6 +13,7 @@ PAGES = [
     ("overview", "Overview", "📊", "/"),
     ("companies", "Companies", "🏢", "/companies"),
     ("funding", "Funding", "💰", "/funding"),
+    ("momentum", "Momentum", "🔥", "/momentum"),
     ("scores", "Scores", "⭐", "/scores"),
     ("network", "Network", "🕸️", "/network"),
     ("investors", "Investors", "🏦", "/investors"),
