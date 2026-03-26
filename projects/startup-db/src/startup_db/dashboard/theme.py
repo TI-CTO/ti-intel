@@ -663,14 +663,11 @@ def inject_css(dark: bool = False) -> str:
         justify-content: center;
     }}
 
-    /* ── YoY delta — right-aligned, vertically centered with value ── */
+    /* ── YoY delta — below value, left-aligned ── */
     [data-testid="stMetricDelta"] {{
-        position: absolute;
-        right: 24px;
-        top: 50%;
-        transform: translateY(-10%);
-        font-size: 1.05rem !important;
+        font-size: 0.85rem !important;
         font-weight: 600 !important;
+        margin-top: 2px;
     }}
 
     /* ── KPI hover lift + glow ────────────────────── */
