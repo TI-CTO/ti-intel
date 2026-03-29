@@ -139,11 +139,6 @@ sources_used: [intel-store, trend-tracker, websearch]
 ## 8. 전략적 시사점
 (기회, 위협, 권고사항)
 
-## 신뢰도 평가
-- 높은 확신 [A/B]:
-- 추가 검증 필요 [C/D]:
-- 데이터 공백:
-
 ## References
 
 (T5 스키마 — 전수 포함, 유형별 분리 금지, 하나의 테이블)
@@ -164,6 +159,7 @@ file_path: (절대 경로)
 ```
 
 ## Critical Rules
+- Low confidence claims ([C]/[D]) must have inline badges: [추가확인 필요] or [미검증]
 - NEVER fabricate citations, statistics, or source URLs — 존재하지 않는 출처를 만들면 전체 보고서가 무효화된다
 - NEVER present single-source claims as established facts — 반드시 [D] 태그 또는 "단일 소스" 명시
 - NEVER skip the References table — 본문 인용 없는 주장은 validator가 즉시 FAIL 처리한다

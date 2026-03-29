@@ -544,6 +544,7 @@ prior_reports:
 ### 인용·References·PDF 호환 규칙
 
 공통 규칙은 `.claude/rules/report-writing.md` 참조 (앵커 링크 형식, ID 채번, 통합 테이블, PDF 호환, 수치 출처 표기).
+신뢰도 표기는 별도 섹션 없이 인라인 뱃지 방식 적용: [C] 인용 옆 `[추가확인 필요]`, [D] 인용 옆 `[미검증]`.
 
 ---
 

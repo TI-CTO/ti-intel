@@ -205,9 +205,6 @@ Evaluate each factor with evidence:
 ## 7. 정량 평가 (xxx/200)
 (scoring table from Step 7)
 
-## 신뢰도: High / Medium / Low
-- 근거: (e.g., "시장 데이터 2개 출처 교차확인 완료, 특허 데이터는 단일 소스")
-
 ## References
 ### 글로벌 출처 (G-xx)
 | 번호 | 출처명 | 발행일 | 기관유형 | 제목 | 인용원문(한글) | 관련성 | 신뢰성 | 최신성 | URL |
@@ -236,6 +233,7 @@ Evaluate each factor with evidence:
 - **시간/비용 추정값은 반드시 근거 필수** — 경쟁사 사례, 벤치마크, 또는 산업 표준 인용. 근거 없는 추정은 반드시 "[추정, 근거부족]" 표시 + [D] 태그 부여
 - **데이터 부족 자동 경고** — "데이터 부족" 항목이 3개 이상이면 전체 신뢰도를 자동으로 Low로 하향
 - **보강 검색 키워드 제시** — 각 "데이터 부족" 항목에 해당 데이터를 보강할 수 있는 구체적 검색 키워드 1~2개를 함께 기재 (예: `데이터 부족 — 보강 키워드: "the organization voice security ARPU", "통화보안 유료서비스 전환율"`)
+- **인라인 신뢰도 뱃지** — [C] 출처 인용 옆에 `[추가확인 필요]`, [D] 출처는 삭제하거나 `[미검증]` 뱃지 부여 (`.claude/rules/report-writing.md` 참조)
 
 ## Return Fields
 - `status`: pass (feasible) / fail (not feasible) / uncertain (insufficient data)

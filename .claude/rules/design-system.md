@@ -10,7 +10,7 @@ globs: "projects/design-system/**/*.py"
 ## paged.js 핵심 규칙
 - body/wrapper에 절대 width 하드코딩 금지 → `width: 100%` 사용
 - `:has()` 선택자: paged.js 미지원 → 포스트프로세서에서 클래스 직접 추가
-- 30행 초과 테이블: `_split_large_tables()`로 분할 (paged.js 테이블 중복 렌더링 버그 우회)
+- 30행 초과 테이블: `_split_large_tables()`로 분할 (paged.js 테이블 중복 렌더링 버그 우회). 고아 방지: 38행 이하는 분할 안 함, 나머지 8행 미만이면 균등 분할
 - `@page` margin box: CSS가 아닌 `afterRendered()` JS로 주입
 - nowrap 전면 제거: 모든 열 `white-space: normal`
 - 5열+ 테이블: 포스트프로세서에서 `wide-table` 클래스 자동 부여

@@ -122,9 +122,25 @@ def _split_large_tables(html: str, max_rows: int = 30) -> str:
         table_tag = re.search(r"<table[^>]*>", full)
         table_open = table_tag.group(0) if table_tag else "<table>"
 
+        # Avoid orphan chunks and unnecessary splits
+        min_orphan = 8
+        total = len(rows)
+        remainder = total % max_rows
+        if remainder == 0:
+            chunk_size = max_rows
+        elif total <= max_rows + min_orphan:
+            # Only slightly over threshold — don't split at all
+            chunk_size = total
+        elif remainder < min_orphan:
+            # Would create a tiny orphan — split evenly instead
+            n_chunks = (total + max_rows - 1) // max_rows
+            chunk_size = (total + n_chunks - 1) // n_chunks
+        else:
+            chunk_size = max_rows
+
         chunks: list[str] = []
-        for i in range(0, len(rows), max_rows):
-            chunk_rows = rows[i : i + max_rows]
+        for i in range(0, len(rows), chunk_size):
+            chunk_rows = rows[i : i + chunk_size]
             chunk = (
                 f'{table_open}\n{thead}\n<tbody>\n'
                 + "\n".join(chunk_rows)
