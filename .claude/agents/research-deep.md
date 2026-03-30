@@ -43,7 +43,7 @@ Collect data from all available sources:
 
 **Web Sources:**
 - WebSearch for recent news, market reports, company announcements
-- WebFetch for specific documents when URL is known
+- **WebFetch로 원문 검증 필수**: WebSearch 요약에서 수치·발언을 인용할 때, 해당 URL을 WebFetch로 읽어 원문에 실제 존재하는지 확인한 후 인용한다. WebSearch 요약은 검색 엔진이 생성한 것이며 원문과 다를 수 있다. 원문 접근 불가 시 `[원문 미확인]` 태그를 붙인다.
 
 **Existing Knowledge:**
 - Search `outputs/reports/` for previous research on the topic

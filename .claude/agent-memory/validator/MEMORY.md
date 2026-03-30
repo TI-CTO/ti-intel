@@ -48,6 +48,8 @@
 | 2026-03-27_personal-intelligence/skill1 | 2026-03-27 | PARTIAL | Critical 2건(G-11 ROI 4배→원문 미확인, G-05 MIT TR 소스 귀속 오류→실제 출처는 MIT TR 공식), Minor 4건(G-14 $221M 시점 오류, G-07 무료화 일정 미지지, 고아 소스 5건: G-12/18/23/P-03/04), E계열 URL 전량 미등재 |
 | 2026-03-30_weekly-agentic-ai | 2026-03-30 | PARTIAL | Critical 3건(G-01 v0.13.2 존재 미확인·기능들 이전 버전에 이미 적용, G-09 Axis Intelligence 핵심 수치 6개 미확인, G-21 소스 귀속 오류: Groq 인수→기술 블로그 대신 CNBC 등 필요), Minor 5건(G-02 RC5/3/20 미지지, G-03 NVIDIA 파트너십 미확인, G-05 Policy Controls 미확인, G-23 수치 불일치 $7.3~7.6B→실제 $7.80B, G-27 부분 미언급) |
 | 2026-03-30_weekly-voice-ai | 2026-03-30 | PARTIAL | Critical 3건(TTFA 90ms→실제 70ms, Voice AI 시장 $2.4B→실제 $3.14B, E-01 날짜 3/14→실제 1/14), Minor 6건(G-21 URL 귀속 오류, G-22 수치 미지지, G-26 수치 미지지, G-24 Flux 260ms 해석 오류, G-25 Retell ARR 미지지, P-04 Alibaba Qwen 저자 미확인), 고아 소스 1건(G-30) |
+| 2026-03-30_weekly-secure-ai | 2026-03-30 | PARTIAL | Critical 3건(G-09/E-02 AFWERX·MDA SHIELD 수치 귀속 오류, G-16 Multiverse+Axelera PQC KSE3 주장 근거 없음, G-28 FHE.org 콘퍼런스 수치 소스 오귀속→실제 fhe.org 공식 페이지), Minor 4건(G-12 CRYSTALS-Kyber·SKT 협력 원문 미언급, G-19 "14%"·"12~15년" 원문 미확인, G-31 KT 전략 원문 불일치, G-29 Zama $1.5억+ 과대→실제 $107.8M) |
+| 2026-03-30_he-keyword-search/skill1 | 2026-03-30 | PARTIAL | Critical 2건(G-17 ID 충돌: CISA URL이 Apple BFV PIR 인용에 오용, G-18 CyberArk 블로그 CNSA 2.0 2027-01 미지지), Minor 3건(G-09/P-04 고아 소스, E-07 날짜 3/26→원본 3/24, G-28 TEE 비교 주장 미지지), Zama $1B 유니콘 소스 없음 |
 
 ### 반복 패턴 (agentic-ai 도메인)
 - G-21 반복 위험: Mintz 법률 블로그가 특허·시장성공률·Gartner 예측 등 이질적 주장에 동시 인용되는 패턴 발생 → 차기 검증 시 G-21 인용 맥락 우선 점검 (adaptive-rag에서는 NVIDIA case study로 정상 사용됨)
@@ -95,3 +97,15 @@
 - 기업 수치가 공식 보도자료에 없는 패턴: SoundHound "3천만 건 AI 인터랙션(2025)"이 공식 PR에 없음(대신 "billions"). Retell AI ARR $40M+도 기술 블로그에 없음. 기업 성과 수치는 IR 발표·Earnings Call 직접 확인 필요
 - Voice AI 시장 시작점 불일치: VoiceAIWrapper(G-13, [C])가 2024년 $3.14B로 기재했으나 리포트는 $2.4B로 기재. [C] 등급 소스의 수치는 WebFetch로 원본 확인 필수
 - EU AI Act 과징금 미기재 패턴: EU Digital Strategy 코드 오브 프랙티스 공식 페이지는 투명성 CoP 내용만 있고 과징금 규정(7%/EUR 1,500만)은 없음. 과징금은 EU AI Act 본문(Article 99)에서 인용해야 함
+
+### 반복 패턴 (secure-ai weekly 도메인)
+- QuSecure 계약 정보 분산 귀속 패턴: SEC PQFIF 뉴스 URL(G-09)에 AFWERX $3.9M·MDA SHIELD $151B 수치를 함께 귀속하는 오류. 이 두 계약은 별도 발표이며 별도 URL 필요(qusecure.com/tacfi-il6... 및 qusecure.com/qusecure-awarded-mda-shield-contract/). 단일 URL에 서로 다른 발표 내용을 집약하는 패턴 주의
+- 파트너십 기사에 PQC 기능 추가 귀속 패턴: Multiverse+Axelera 협력(G-16)처럼 AI 모델 압축 파트너십 기사에 "PQC KSE3 결합"을 추가 기술하는 오류. 파트너십 기사 원문에 없는 기능을 조합하여 서술하는 패턴 → 파트너십 관련 기술 특성 주장은 WebFetch로 원문 확인 필수
+- FHE.org 콘퍼런스 수치 소스 분산 패턴: Digest(뉴스레터)와 공식 콘퍼런스 페이지(fhe.org/conferences/conference-2026/)가 담는 정보가 다름. 발표 수·포스터 수·스폰서는 공식 페이지에, 이벤트 안내는 Digest에. 수치 인용 시 공식 페이지 직접 URL 필요
+- Zama 투자액 혼용 패턴: SeedTable(G-29)은 누적 $107.8M(= Series A $73M + 일부 이전 라운드)으로 집계하나, 공식 발표는 Series B 2025-06 $57M으로 유니콘 달성, 총 누적 $130M+. "$1.5억+" 표기는 어느 출처도 지지하지 않는 수치 → Zama 투자액은 CoinDesk/TechCrunch 공식 발표 URL 직접 확인 필수
+
+### 반복 패턴 (he-keyword-search / PQC·FHE 도메인)
+- References ID 충돌 패턴: 동일 번호(G-17)를 두 URL에 할당하고 하나를 "G-17 (Apple)"로 변형하는 비표준 표기 발생. 이 경우 본문 `[[G-17]]` 앵커가 두 URL 중 먼저 선언된 것(CISA)으로 연결되어 Apple BFV PIR 주장의 출처가 CISA 페이지로 오귀속. 동일 번호 재사용 금지, 접미사("-apple" 등) 없이 순차 재번호 필수
+- 규제 타임라인 출처 미지지 패턴: NSA CNSA 2.0 2027-01 의무화 같은 구체적 의무화 시점은 [B] 등급 블로그(CyberArk)로 근거를 삼는 경우 원문이 해당 내용을 포함하지 않는 사례 발생. 의무화 날짜는 NSA/NIST 공식 문서 직접 URL 필수
+- FHE.org 빅테크 스폰서 주장: "Apple/AWS/Google FHE.org 후원 진입" 주장이 FHE.org Digest에서 미확인. 스폰서 정보는 fhe.org 공식 콘퍼런스 페이지에서 확인 필요
+- Zama $1B 유니콘 미검증 반복: 이번 he-keyword-search에서도 Zama $1B 유니콘을 G-22/E-07 귀속으로 기재했으나 두 URL 모두 해당 내용 없음. Zama 기업 가치 수치는 독립 IR 보도자료 URL 필수 (이전 weekly-secure-ai에서도 동일 패턴)

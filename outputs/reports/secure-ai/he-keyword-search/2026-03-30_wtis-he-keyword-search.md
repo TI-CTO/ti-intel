@@ -1,0 +1,323 @@
+---
+topic: 양자/동형 암호
+domain: secure-ai
+l2_topic: he-keyword-search
+date: 2026-03-30
+wtis_version: v4.1
+wtis_mode: standard
+skills_executed: [research-deep, SKILL-1, validator]
+confidence: high
+status: completed
+total_references: 24
+prior_report: 2026-03-18_wtis-he-keyword-search.md
+prior_report_date: 2026-03-18
+score: 134/200
+verdict: Conditional Go
+strategy: Borrow(CryptoLab) + Build(AICC/PQC 통합) + Watch(HW)
+---
+
+# WTIS Report: 양자/동형 암호 (On-Device PQC + FHE 키워드 검색)
+
+## Executive Summary
+
+**Conditional Go, 134/200** (이전 125/200 대비 +9). Google 2029 Post-Quantum Cryptography (PQC) 데드라인 선언과 Android 17 ML-DSA 네이티브 탑재(3/25~26)로 양자내성암호 마이그레이션 긴박도가 한 단계 상향됐다. 동형암호(Fully Homomorphic Encryption, FHE) 영역에서는 "Privacy at your Fingertips" 클라이언트 97% 경량화가 EuroS&P 2026 피어리뷰로 확정되고, Zama+T-REX가 $32B 기관 금융 인프라에 FHE를 실 도입(3/26)하며, CryptoLab HEaaN Zero-Leak RAG가 TTA GS 1등급을 획득(3/26)하여 공공 조달 경로가 열렸다. 전략은 **Borrow(CryptoLab FHE 엔진) + Build(AICC·PQC 통합) + Watch(HW 가속)**를 유지하되, PQC 로드맵 조기화와 FHE 공공 조달 착수를 새로운 실행 항목으로 추가한다.
+
+## 평가 항목 및 배점 안내
+
+> 본 보고서는 WTIS 평가 체계(200점 만점, 5개 항목 각 40점)에 따라 정량 평가한다.
+> 상세 기준: scoring-framework.md 참조.
+
+---
+
+## 1. 목표 검증
+
+### SMART Test
+
+| Criterion | 평가 | 근거 |
+|-----------|------|------|
+| Specific | **충족** | PQC: On-Device E2E 보이스 암호화 PoC. FHE: AICC 키워드 검색 <1초 PoC. 두 KPI 모두 정량 정의 완료 |
+| Measurable | **충족** | PQC: 대역폭 오버헤드(%), 지연시간(ms). FHE: 쿼리 레이턴시(ms), 정확도(precision/recall) 측정 가능 |
+| Achievable | **조건부 충족** | FHE: 서버 사이드 HET-PIR 3.9ms [[P-03]](#ref-p-03), CAT GPU 1초/10³행 [[P-02]](#ref-p-02) 달성. On-Device 엔드-투-엔드는 미실증. PQC: Android 17 ML-DSA API 공개로 모바일 구현 경로 확보 [[E-01]](#ref-e-01). 단, 대역폭 100배 증가 문제 미해결 [[E-03]](#ref-e-03) |
+| Relevant | **충족** | AI기본법 시행(2026-01), 개인정보보호법(PIPA) 강화, NSA CNSA 2.0 2027-01 발효 [[G-18]](#ref-g-18) [추가확인 필요] — 규제가 수요를 직접 창출 |
+| Time-bound | **조건부** | FHE PoC 12~18개월 현실적. PQC: Google 2029 데드라인 [[G-01]](#ref-g-01)이 기존 NIST 2030보다 1년 앞당겨 통신사 로드맵 조기화 압박. Apple iOS 18 BFV PIR 1~2년 선행 지속 |
+
+### Market Sizing
+
+| 구분 | 규모 | CAGR | 출처 |
+|------|------|------|------|
+| TAM (FHE 글로벌) | $251~310M(2026) → $1,319M(2035) | 20.2% | [[G-25]](#ref-g-25) [추가확인 필요] |
+| TAM (FHE 보수) | $350~600M(2030) | ~8% | [이전 리서치] [추가확인 필요] |
+| SAM (AICC 음성보안) | $2.4B(2025) → $13.5B(2034) | 20.8% | [이전 리서치] |
+| SOM (한국 FHE) | $7~15M (PoC 단계) | — | [추정, D] |
+
+**이전 대비 변화**: 시장 규모 추정치 자체는 동일 수준. 신규 앵커 레퍼런스로 Zama+T-REX $32B RWA 인프라 실도입 [[G-22]](#ref-g-22), [[E-07]](#ref-e-07)이 FHE 시장 전망의 실현 가능성을 높이는 역할. 단, 금융 블록체인과 통신 AICC 도메인이 다르므로 직접 외삽 불가.
+
+---
+
+## 2. 기술 성숙도 맵
+
+### 액션 맵
+
+| 사분면 | 기술 | TRL | 판단 근거 |
+|--------|------|-----|----------|
+| 🔴 유지 (High TRL, Low Disruption) | Apple iOS 18 BFV PIR | 8~9 | 실 배포 완료. 인덱스 PIR(키워드 아님). 통신사 직접 활용 불가 [[G-33]](#ref-g-33) |
+| 🔴 유지 | SKT QKD+PQC 하이브리드 장비 | 7~8 | 2024-10 상용 출시. 세계 최초. 5G SA 환경 테스트 완료 [[G-07]](#ref-g-07), [[E-04]](#ref-e-04) |
+| 🟡 베팅 (High TRL, High Disruption) | Android 17 ML-DSA | 7 | OS 네이티브 PQC. 모바일 생태계 전환점. 2026 H2 출시 예정 [[E-01]](#ref-e-01) |
+| 🟡 베팅 | KT QENC PQC 장비 | 6~7 | 보안기능확인 시험 완료. 2026년 공공 조달 착수 [[G-11]](#ref-g-11) |
+| ⚪ Conditional Go (Low TRL, High Disruption) | On-Device FHE 키워드 검색 | 3~4 | 서버 3.9ms [[P-03]](#ref-p-03), 클라이언트 97% 경량화 확정 [[P-01]](#ref-p-01). On-Device E2E 미실증 |
+| ⚪ Conditional Go | CryptoLab HEaaN Zero-Leak RAG | 5~6 | TTA GS 1등급 획득(3/26). 공공 조달 경로 확보. 상용 배포 준비 단계 [[G-14]](#ref-g-14), [[E-06]](#ref-e-06) |
+| 🔵 탐색 (Low TRL, Low Disruption) | CKKS+/GL 5세대 스킴 | 4~5 | DESILO×Gentry 학술 단계. 벤치마크 미공개 |
+| 🔵 탐색 | Intel Heracles FHE ASIC | 5 | ISSCC 데모 완료. 양산 일정 미발표. PCIe 카드 형태 [[E-05]](#ref-e-05) |
+| 🔵 탐색 | Niobium+SemiFive FHE ASIC | 3~4 | Samsung 8nm 설계 진행 중. KRW 10B 계약 [[G-21]](#ref-g-21) |
+
+**이전 대비 변화**:
+- Android 17 ML-DSA: 신규 진입 (🟡 베팅). 모바일 PQC의 플랫폼 지원이 "계획"에서 "공식 발표"로 전환
+- CryptoLab HEaaN Zero-Leak RAG: TRL 4~5 → **5~6 상향**. GS 1등급 획득으로 공공 조달 요건 충족
+- On-Device FHE: TRL 유지(3~4)이나 4 도달 조건 단축 — EuroS&P 피어리뷰 확정 + CAT GPU 33× 가속
+
+---
+
+## 3. 경쟁사 현황
+
+### 경쟁 비교표
+
+| 경쟁사 | PQC 진행 | FHE 진행 | 단계 | 타임라인 | 출처 |
+|--------|----------|----------|------|----------|------|
+| SKT | QKD+PQC 하이브리드 상용 출시(국내 1위). Thales 5G SIM PQC 테스트 완료 | 미추진 (공식 발표 없음) | PQC 상용 / FHE 미진입 | PQC 선행 1~2년 | [[G-07]](#ref-g-07), [[E-04]](#ref-e-04) |
+| KT | QENC PQC 장비 보안기능확인 완료. 2026년 공공 조달 착수. MWC에서 동형암호 "계획 언급" | FHE 계획 언급 수준 (구체적 PoC 없음) | PQC 조달 준비 / FHE 미착수 | PQC: SKT와 동등. FHE: 미정 | [[G-11]](#ref-g-11), [[G-12]](#ref-g-12) |
+| LGU+ | PQC 네트워크·전자서명 상용화 발표. 공공·금융 파일럿 계획 | CryptoLab과 ixi-O AICC 동형암호 PoC **유일** | PQC 후발 / FHE 선두 | FHE PoC 진행 중. 상용화 시점 미발표 | [[G-13]](#ref-g-13), [[E-06]](#ref-e-06) |
+| Apple | — | iOS 18 BFV PIR 실 배포 | 상용(인덱스 PIR) | 1~2년 선행 | [[G-33]](#ref-g-33) |
+| Intel | — | Heracles ASIC 5,547× 발표 | 데모(ISSCC) | 양산 미정 | [[E-05]](#ref-e-05) |
+| Zama | — | $32B RWA 기관 인프라 실도입(3/26). $1B 유니콘 | 상용(금융 블록체인) | 선행 | [[G-22]](#ref-g-22), [[E-07]](#ref-e-07) |
+| CryptoLab | — | HEaaN Zero-Leak RAG GS 1등급. LGU+ PoC. 공공 조달 6월 등록 계획 | PoC → 상용 전환 중 | 6~9개월 내 조달 등록 | [[G-14]](#ref-g-14), [[E-06]](#ref-e-06) |
+
+### Gap Analysis
+
+| 역량 | 자사 위치 | 격차 | 변화(vs 3/18) |
+|------|----------|------|--------------|
+| PQC 장비·인프라 | SKT 대비 후발, KT와 동등 | SKT 1~2년 선행 | 변화 없음 |
+| FHE AICC 적용 | LGU+ PoC 유일 → 추격 가능 | SKT/KT 미추진 → **선점 기회 유지** | KT "계획 언급" 추가 |
+| FHE 인증·조달 | CryptoLab GS 1등급 Borrow 가능 | 자체 인증 없으나 파트너 경유 가능 | ↑ GS 인증 획득으로 Borrow 경로 확정 |
+| On-Device FHE | 미실증 | Apple BFV PIR 1~2년 선행 유지 | 변화 없음 |
+| PQC 모바일 | Android 17 API 활용 가능 | Google 플랫폼 의존 | ↑ 신규 경로 확보 |
+| 글로벌 빅테크 FHE | Apple·AWS·Google FHE.org 후원 진입 | 자체 FHE 서비스 출시 시 시장 잠식 위험 | ↑ 위협 강화 |
+
+---
+
+## 4. 3B 전략 분석
+
+### 의사결정 매트릭스
+
+| 평가 요소 | 점수/판단 | 근거 | 변화(vs 3/18) |
+|----------|----------|------|--------------|
+| 차별화 중요도 | **7/10** | CKKS 원천 특허(한국)+AICC 특화. 빅테크 미커버 영역이나 Apple·AWS·Google 후원 진입으로 중기 위협 | 유지 |
+| 내부 역량 | **부분** | FHE 원천 미보유. AICC 인프라 보유. PQC 자체 소프트웨어 미보유 | 유지 |
+| 시장 윈도우 | **>18개월 (단축 중)** | FHE AICC 상용 배포 기업 전무. 단, CryptoLab GS 인증 → 6개월 내 공공 조달 경로 확보 시 선점 기회 | ↑ 윈도우 단축 |
+| 시장 긴급성 | **6/10 (이전 5/10)** | Google 2029 데드라인 선언 [[G-01]](#ref-g-01), NSA CNSA 2.0 2027-01 [[G-18]](#ref-g-18) [추가확인 필요], CISA 1군 즉시 구매 의무 [[G-33]](#ref-g-33) — 규제 압박이 "향후"에서 "현재"로 전환 | ↑ +1 |
+| 기술 갭 | **0~1년(국내), 1~2년(vs Apple)** | SKT/KT FHE 미추진. Apple BFV PIR은 키워드 검색 아님 | 유지 |
+
+### 3B 결론
+
+**Borrow(CryptoLab) + Build(AICC·PQC 통합) + Watch(HW 가속)** — 이전과 동일 전략 유지.
+
+신규 추가:
+- **Build 확장 — PQC 로드맵 조기화**: Google 2029 데드라인 대응. Android 17 ML-DSA API 기반 보이스 보안 앱 프로토타입 포함
+- **Borrow 강화 — CryptoLab 공공 조달 연계**: GS 1등급 활용 공공 AICC 보안 프로젝트 공동 입찰 경로 추가
+
+| 기술 요소 | 전략 | 세부 | 변화 |
+|----------|------|------|------|
+| FHE 키워드 검색 엔진 | **Borrow** | CryptoLab CKKS+ 파트너십 | 유지 |
+| HEaaN Zero-Leak RAG | **Borrow** | GS 1등급 인증 솔루션 공공 조달 연계 | **신규** |
+| On-Device 경량화 | **Borrow** | Aikata 기법 학술 협력 | 유지 |
+| AICC 통합 인프라 | **Build** | 자사 AICC에 FHE 통합 | 유지 |
+| PQC 보이스 보안 앱 | **Build** | Android 17 ML-DSA API 기반 프로토타입 | **신규** |
+| 하드웨어 가속 | **Watch** | Niobium/Intel 양산 추적 | 유지 |
+| DESILO GL 5세대 | **Watch** | 벤치마크 공개 대기 | 유지 |
+
+---
+
+## 5. 최종 제언
+
+```
+[과제명]: 양자/동형 암호 (On-Device PQC + FHE 키워드 검색)
+[추천 방향]: Borrow(CryptoLab) + Build(AICC·PQC 통합) + Watch(HW)
+[핵심 근거]:
+  - 시장: FHE TAM $251~310M(2026) → $1,319M(2035), CAGR 20.2% [G-25].
+    Zama+T-REX $32B 기관 실도입으로 시장 실현 가능성 앵커 형성 [G-22]
+  - 기술: FHE 클라이언트 97% 경량화 피어리뷰 확정 [P-01],
+    CAT GPU 33× 가속 [P-02], CryptoLab GS 1등급 [E-06].
+    PQC는 Android 17 ML-DSA 네이티브 [E-01] + Google 2029 데드라인 [G-01]
+  - 사업: SKT/KT FHE 미추진 → 국내 선점 창구 유지.
+    CryptoLab GS 인증 → 공공 조달 경로 확보(6월).
+    LGU+ PoC 유일 → 경쟁사 압박 가능
+[리스크]:
+  - On-Device E2E FHE 미실증 — 확률: M, 영향: H
+  - PQC 대역폭 100배 증가(VoIP 적용 시) — 확률: H, 영향: M [E-03]
+  - 빅테크(Apple/AWS/Google) FHE 클라우드 서비스 선점 — 확률: M, 영향: H
+  - Intel Heracles 양산 지연 시 서버 사이드 FHE 병목 지속 — 확률: M, 영향: M
+[Next Action]:
+  - [ ] 기술기획: CryptoLab 파트너십 후속 — On-Device 단말 벤치마크 <1초 PoC (2026-Q2)
+  - [ ] 기술기획: CryptoLab GS 1등급 솔루션 공공 AICC 공동 입찰 기획 (2026-06 조달 등록 연계)
+  - [ ] 연구소: Android 17 ML-DSA API 기반 PQC 보이스 보안 프로토타입 착수 (2026-Q3)
+  - [ ] 전략기획: Google 2029 데드라인 대응 PQC 마이그레이션 로드맵 조기화 검토
+  - [ ] 사업기획: Niobium Gen2 ASIC 양산 일정·가격 수집 (2026-H2)
+  - [ ] 법무/규제: AI기본법 AICC 고위험 분류 확정 여부 + NSA CNSA 2.0 국내 영향 모니터링
+```
+
+---
+
+## 6. 3축 평가 근거
+
+### 고객가치
+
+| 구분 | 내용 | 출처 |
+|------|------|------|
+| 강점 | AI기본법(2026-01 시행)으로 AICC 고위험 AI 분류 가능성 → 암호화 상태 처리 의무 수요 생성 | [이전 리서치] |
+| 강점 | AICC 고객 개인정보(상담 이력, 통화 내용) 암호화 상태 검색 → 유출 사고 시에도 개인정보 보호 유지 | [[G-13]](#ref-g-13) |
+| 강점 | PQC: Store-Now-Decrypt-Later(SNDL) 공격 방어 — 현재 수집한 통화 데이터가 향후 양자 컴퓨터로 해독될 위험 차단 | [[G-01]](#ref-g-01) |
+| 리스크 | WTP(지불의향) 미검증. 소비자가 "암호화 AICC"에 프리미엄을 지불할 의향이 있는지 데이터 부재 | [미검증] |
+| 리스크 | TEE(Trusted Execution Environment) 대체재: Intel SGX, AMD SEV가 유사 보안을 10~100× 낮은 오버헤드로 제공 | [[G-28]](#ref-g-28) |
+| 리스크 | FHE On-Device 적용 범위 제한: 저전력 GPU 부적합 → 상위 티어 스마트폰으로 한정될 가능성 | [이전 리서치] |
+
+### 사업포텐셜
+
+| 구분 | 내용 | 출처 |
+|------|------|------|
+| 강점 | FHE TAM CAGR 20.2% (적극) / ~8% (보수) — 복수 기관 전망 교차 확인 | [[G-25]](#ref-g-25) |
+| 강점 | AICC 글로벌 시장 $2.4B(2025) → $13.5B(2034), CAGR 20.8% | [이전 리서치] |
+| 강점 | CryptoLab GS 1등급 → 나라장터 등록 전제조건 충족 → 공공 AICC 보안 시장 진입 경로 확보(6월) | [[G-14]](#ref-g-14), [[E-06]](#ref-e-06) |
+| 강점 | NSA CNSA 2.0(2027-01) + CISA 1군 즉시 PQC 의무 → 방산·공공 통신 장비 PQC 탑재 의무 확산 | [[G-18]](#ref-g-18) [추가확인 필요], [[G-33]](#ref-g-33) |
+| 강점 | Zama+T-REX $32B RWA 실도입 — FHE 상용화 실현 가능성의 기관 앵커 레퍼런스 | [[G-22]](#ref-g-22), [[E-07]](#ref-e-07) |
+| 리스크 | 한국 FHE SOM $7~15M(PoC 단계)으로 당장 수익 규모 제한적 | [추정, D] |
+| 리스크 | 빅테크 FHE.org 후원 진입(Apple·AWS·Google) — 자체 클라우드 FHE 서비스 출시 시 시장 잠식 위험 | [[G-24]](#ref-g-24) |
+
+### 기술경쟁력
+
+| 구분 | 내용 | 출처 |
+|------|------|------|
+| 강점 | CKKS 원천 특허(한국, CryptoLab). 글로벌 빅테크와 알고리즘 수준 대등 | [[E-06]](#ref-e-06) |
+| 강점 | Aikata "Boosted-Deflation" 클라이언트 97% 경량화 — EuroS&P 2026 피어리뷰 확정 [A] | [[P-01]](#ref-p-01) |
+| 강점 | HET-PIR 3.9ms 키워드 검색, CAT GPU 33× 가속, Intel Heracles 5,547× — 서버 사이드 병목 해소 방향 다수 확인 | [[P-03]](#ref-p-03), [[P-02]](#ref-p-02), [[E-05]](#ref-e-05) |
+| 강점 | CryptoLab HEaaN Zero-Leak RAG GS 1등급 + CC 인증(EAL2) 9월 목표 | [[G-14]](#ref-g-14), [[E-06]](#ref-e-06) |
+| 강점 | PQC: NIST FIPS 203/204/205 확정. Android 17 ML-DSA API 공개로 모바일 구현 경로 확보 | [[G-03]](#ref-g-03), [[E-01]](#ref-e-01) |
+| 리스크 | On-Device FHE E2E 벤치마크 미완 — TRL 4 도달 전제조건(≤150ms) 미충족 | [자체 평가] |
+| 리스크 | PQC 메시징 대역폭 100배 증가 — VoIP 적용 시 QoS 저하 위험. IBM 재설계 제안 존재하나 통신사 실증 미완 | [[E-03]](#ref-e-03) |
+| 리스크 | 내부 FHE 원천 기술 인력 부재 — CryptoLab 의존도 높음 | [자체 평가] |
+
+---
+
+## 7. 정량 평가 (134/200)
+
+### 이전 대비 점수 변동 상세
+
+| # | 평가 항목 | 이전(3/18) | 현재(3/30) | 변동 | 변동 근거 |
+|---|----------|-----------|-----------|------|----------|
+| 1 | 고객가치 | 24 | **26** | +2 | 규제 수요 현실화(CNSA 2.0 2027-01, Google 2029). pain point 심각도·가치 명확성 각 +1 |
+| 2 | 시장매력도 | 29 | **31** | +2 | Zama $32B 실도입 앵커 + CryptoLab GS 인증 공공 조달. 타이밍 +1, 규제 +1 |
+| 3 | 기술경쟁력 | 28 | **30** | +2 | EuroS&P 피어리뷰 확정(TRL 신뢰도↑), CryptoLab GS 1등급(표준/인증 +1), CAT GPU 가속(TRL +1) |
+| 4 | 경쟁우위 | 24 | **25** | +1 | CryptoLab GS 인증으로 공공 조달 선점 가능성(생태계/파트너 +1) |
+| 5 | 실행가능성 | 20 | **22** | +2 | GS 인증 솔루션 Borrow 경로 확정(일정 +1), Android 17 API로 PQC 구현 경로 확보(내부 역량 +1) |
+| | **총점** | **125** | **134** | **+9** | |
+
+### 세부 채점표
+
+| # | 평가 항목 | 세부1 | 세부2 | 세부3 | 세부4 | 소계 |
+|---|----------|-------|-------|-------|-------|------|
+| 1 | 고객가치 | 8 (pain point) | 7 (가치 명확성) | 5 (대체재 대비) | 6 (수용성) | **26/40** |
+| 2 | 시장매력도 | 6 (TAM/SAM) | 7 (CAGR) | 9 (타이밍) | 9 (규제) | **31/40** |
+| 3 | 기술경쟁력 | 7 (TRL 3~4→4임박) | 8 (CKKS 특허) | 7 (기술 장벽) | 8 (표준/인증) | **30/40** |
+| 4 | 경쟁우위 | 6 (포지션) | 6 (지속성) | 5 (대응력) | 8 (생태계) | **25/40** |
+| 5 | 실행가능성 | 6 (내부 역량) | 5 (ROI) [미검증] | 7 (일정) | 4 (리스크) | **22/40** |
+| | **총점** | | | | | **134/200** |
+
+### 세부 채점 근거
+
+**1. 고객가치 (26/40)**
+- pain point 심각도 **8**(이전 7): SNDL 위협 + AI기본법 + NSA CNSA 2.0 2027-01 발효 [[G-18]](#ref-g-18) [추가확인 필요] → 규제가 "향후"에서 "현재" 수준으로 전환. Google 2029 데드라인이 기업 고객 인식을 높이는 가속제 [[G-01]](#ref-g-01)
+- 가치 명확성 **7**(유지): FHE 키워드 검색으로 개인정보 유출 차단, PQC로 양자 위협 방어. 이전과 동일
+- 대체재 대비 **5**(유지): TEE(SGX/SEV)가 10~100× 낮은 오버헤드로 유사 보안 제공 [[G-28]](#ref-g-28). FHE의 "복호화 없는 연산" 독점적 가치는 있으나 성능 격차 지속
+- 수용성 **6**(이전 5): Android 17 ML-DSA API 공개로 PQC 모바일 구현이 표준 API 수준으로 전환 [[E-01]](#ref-e-01). 개발자 진입 장벽 하락. 단, FHE WTP 미검증 유지 [미검증]
+
+**2. 시장매력도 (31/40)**
+- TAM/SAM **6**(유지): FHE $251~310M(2026), 보수 $350~600M(2030). 복수 출처 확인이나 편차 큼 [[G-25]](#ref-g-25) [추가확인 필요]
+- CAGR **7**(유지): 20.2%(적극) / ~8%(보수). 적극 시나리오 복수 확인. 보수 시나리오도 안정적 성장
+- 타이밍 **9**(이전 8): Google 2029 독자 데드라인 → 민간 빅테크가 정부보다 빠른 전환 추진. 통신사 2030 기준 로드맵은 이미 뒤처질 위험 [[G-01]](#ref-g-01). CryptoLab GS 인증 6월 조달 등록 → 2026 H2가 공공 사업 진입 최적기 [[E-06]](#ref-e-06)
+- 규제 **9**(이전 8): NSA CNSA 2.0 신규 시스템 2027-01 의무화 [[G-18]](#ref-g-18) [추가확인 필요], CISA 1군 즉시 PQC 구매 의무 [[G-33]](#ref-g-33), AI기본법 시행. 삼중 규제 압박이 동시 현실화
+
+**3. 기술경쟁력 (30/40)**
+- TRL **7**(이전 6): FHE 키워드 검색 TRL 3~4이나, EuroS&P 피어리뷰 확정 [[P-01]](#ref-p-01) + CAT GPU 33× [[P-02]](#ref-p-02) + CryptoLab GS 인증 [[E-06]](#ref-e-06)로 TRL 4 도달 조건 단축. On-Device E2E는 미실증이나 구성 요소별 검증 완료
+- 특허 **8**(유지): CKKS 원천 특허(CryptoLab, 한국). 글로벌 빅테크(BFV-Apple, TFHE-Zama, HEIR-Google)와 알고리즘 수준 대등
+- 기술 장벽 **7**(유지): FHE 연산 복잡도 자체가 높은 진입 장벽. CKKS 심층 전문인력 글로벌 희소
+- 표준/인증 **8**(이전 7): CryptoLab TTA GS 1등급 획득(3/26) [[G-14]](#ref-g-14). NIST Threshold FHE 4/20 마감. ISO 18033-8 진행 중. PQC FIPS 203/204/205 확정 [[G-03]](#ref-g-03)
+
+**4. 경쟁우위 (25/40)**
+- 포지션 **6**(유지): 국내 FHE AICC는 LGU+ PoC 유일. SKT/KT 미추진. 글로벌은 Apple BFV PIR 선행 (키워드 PIR 아님)
+- 지속성 **6**(유지): CKKS 원천 특허 + 통신사 AICC 도메인 특화로 1~2년 우위 가능. 빅테크 진입 시 침식 위험
+- 대응력 **5**(유지): FHE 원천 기술 내부 부재. CryptoLab 의존도 높음. 파트너 이탈 시 대안 제한적
+- 생태계 **8**(이전 7): CryptoLab GS 1등급 + UClone ES2 RAG 통합 + 공공 조달 6월 등록 계획 → Borrow 생태계가 인증·조달 경로까지 확장 [[G-14]](#ref-g-14), [[E-06]](#ref-e-06)
+
+**5. 실행가능성 (22/40)**
+- 내부 역량 **6**(이전 5): Android 17 ML-DSA API로 PQC 모바일 구현이 표준 API 수준으로 전환 [[E-01]](#ref-e-01). AICC 인프라 보유. FHE 전문인력은 외부 의존 유지
+- ROI **5**(유지): WTP 미검증, 한국 SOM $7~15M PoC 단계. 공공 조달 수주 시 단일 계약 수억~수십억 원 예상 [추정, D] [미검증]
+- 일정 **7**(이전 6): CryptoLab GS 인증 솔루션 6월 조달 등록 계획으로 Borrow 일정 구체화 [[E-06]](#ref-e-06). FHE PoC 12~18개월 현실적. PQC 로드맵은 Google 2029 대응으로 조기화 필요
+- 리스크 **4**(유지): On-Device E2E 미실증, 대역폭 100배 문제 [[E-03]](#ref-e-03), 하드웨어 가속기 양산 불확실성, CryptoLab 단일 파트너 의존도
+
+### 판정
+
+**Conditional Go (134/200)** — Conditional Go 범위 중간. 이전 125점에서 +9점 상승.
+
+**상승 요인 (총 +9)**:
+1. Google 2029 데드라인 + NSA CNSA 2.0 → 규제 긴박도 상향 (고객가치 +2, 시장매력도 +2)
+2. CryptoLab GS 1등급 → 공공 조달 경로 확보 (기술경쟁력 +1, 경쟁우위 +1, 실행가능성 +1)
+3. EuroS&P 피어리뷰 확정 + CAT GPU → TRL 신뢰도 상향 (기술경쟁력 +1)
+4. Android 17 ML-DSA API → PQC 모바일 구현 경로 (실행가능성 +1)
+
+**제약 요인 (불변)**:
+1. On-Device FHE E2E 벤치마크 미실증 — Go 전환 필수 조건
+2. WTP(지불의향) 미검증 — 수익성 불확실
+3. CryptoLab 단일 파트너 의존도
+4. PQC 대역폭 100배 증가 문제 (VoIP 적용 시)
+
+### Go 전환 조건 (업데이트)
+
+| # | 조건 | 상태 | 변화 |
+|---|------|------|------|
+| 1 | On-Device PoC 벤치마크 <1초 실증 | **미충족** (필수) | 97% 경량화 피어리뷰 확정으로 조건 단축 |
+| 2 | CryptoLab 파트너십 공식 계약 | **미충족** (필수) | GS 인증으로 계약 가치 상승 |
+| 3 | AICC 고객 실 데이터 검증 | **미충족** (필수) | LGU+ PoC 진행 중 — 결과 대기 |
+| 4 | 공공 조달 등록 완료 | **진행 중** (신규) | CryptoLab 6월 조달 등록 계획 |
+| 5 | 대체재(TEE) 대비 우위 정량화 | **미충족** (Go 조건) | 변화 없음 |
+| 6 | PQC 대역폭 문제 해결 방안 확보 | **일부 진전** (신규) | IBM 서버 분산 검증 제안 존재. 통신사 실증 필요 |
+
+---
+
+## References
+
+| # | 출처 | URL | 유형 | 날짜 | 신뢰도 |
+|---|------|-----|------|------|--------|
+| <a id="ref-g-01"></a>G-01 | Google Blog — Quantum Frontiers: PQC Migration Timeline 2029 | [링크](https://blog.google/innovation-and-ai/technology/safety-security/cryptography-migration-timeline/) | news | 2026-03-25 | [A] |
+| <a id="ref-g-03"></a>G-03 | NIST CSRC — FIPS 203/204/205 Post-Quantum Cryptography Standards Finalized | [링크](https://csrc.nist.gov/news/2024/postquantum-cryptography-fips-approved) | news | 2024-08-14 | [A] |
+| <a id="ref-g-07"></a>G-07 | Thales — Thales and SK Telecom: Pioneering Quantum-Resistant Cryptography for 5G Networks | [링크](https://www.thalesgroup.com/en/markets/digital-identity-and-security/mobile/5G-skt-post-quantum-user-case) | news | 2026-03-02 | [B] |
+| <a id="ref-g-11"></a>G-11 | AI Times Korea — KT 양자내성암호 솔루션 상용화 준비 완료 | [링크](https://www.aitimes.kr/news/articleView.html?idxno=31327) | news | 2024-06 | [B] |
+| <a id="ref-g-12"></a>G-12 | The Lec — KT, 양자암호 PQC+QKD 하이브리드 대세될 것 | [링크](https://www.thelec.kr/news/articleView.html?idxno=28391) | news | 2024 | [B] |
+| <a id="ref-g-13"></a>G-13 | Korea IT Times — LG Uplus Unveils AI, Homomorphic Encryption and Quantum-Resistant Security at MWC26 | [링크](https://www.koreaittimes.com/news/articleView.html?idxno=151253) | news | 2026-03-10 | [B] |
+| <a id="ref-g-14"></a>G-14 | Seoul Economic Daily — CryptoLab Earns Top-Tier GS Certification | [링크](https://en.sedaily.com/news/2026/03/27/cryptolab-earns-top-tier-gs-certification-targets-public) | news | 2026-03-27 | [B] |
+| <a id="ref-g-17"></a>G-17 | CISA — Product Categories for Technologies That Use PQC Standards | [링크](https://www.cisa.gov/resources-tools/resources/product-categories-technologies-use-post-quantum-cryptography-standards) | news | 2026-01-23 | [A] |
+| <a id="ref-g-18"></a>G-18 | CyberArk Blog — NIST's New Timeline for Post-Quantum Encryption (CNSA 2.0) | [링크](https://www.cyberark.com/resources/blog/nist-s-new-timeline-for-post-quantum-encryption) | blog | 2026 | [B] |
+| <a id="ref-g-21"></a>G-21 | evertiq — SemiFive secures design win with Niobium for FHE accelerator | [링크](https://evertiq.com/design/2026-02-20-semifive-secures-design-win-with-niobium-for-fhe-accelerator) | news | 2026-02-20 | [B] |
+| <a id="ref-g-22"></a>G-22 | Decrypt — T-REX Network and Zama Launch Institutional-Grade FHE Confidentiality | [링크](https://decrypt.co/362436/t-rex-network-and-zama-launch-institutional-grade-confidentiality-infrastructure-for-rwa-tokenization) | news | 2026-03-26 | [B] |
+| <a id="ref-g-24"></a>G-24 | FHE.org Digest #38 — 2026 Conference, Apple/AWS/Google 후원 | [링크](https://fheorg.substack.com/p/fheorg-digest-38-fheorg-2026-conference) | news | 2026-03 | [B] |
+| <a id="ref-g-25"></a>G-25 | 360 Research Reports — Homomorphic Encryption Market CAGR 20.2% | [링크](https://www.360researchreports.com/market-reports/homomorphic-encryption-market-206111) | blog | 2026 | [C] |
+| <a id="ref-g-28"></a>G-28 | arXiv 2502.14291 — Efficient Privacy-Preserving Similarity Search for Encrypted Vectors | [링크](https://arxiv.org/html/2502.14291) | paper | 2025-02 | [A] |
+| <a id="ref-p-01"></a>P-01 | Aikata, Krieger, Sinha Roy — Privacy at your Fingertips (EuroS&P 2026) | [링크](https://eprint.iacr.org/2026/515) | paper | 2026-03-15 | [A] |
+| <a id="ref-p-02"></a>P-02 | CAT: GPU-Accelerated FHE Framework (arXiv 2503.22227) | [링크](https://arxiv.org/abs/2503.22227) | paper | 2026-03-28 | [A] |
+| <a id="ref-p-03"></a>P-03 | HET-PIR — Keyword PIR 3.9ms (Springer Cybersecurity 2026) | [링크](https://link.springer.com/journal/42400) | paper | 2026 | [A] |
+| <a id="ref-p-04"></a>P-04 | FHECore: GPU Microarchitecture for FHE (arXiv 2602.22229) | [링크](https://arxiv.org/abs/2602.22229) | paper | 2026-02 | [A] |
+| <a id="ref-e-01"></a>E-01 | Google Security Blog — Implementing PQC in Android 17 | [링크](https://security.googleblog.com/2026/03/post-quantum-cryptography-in-android.html) | IR/발표 | 2026-03-26 | [A] |
+| <a id="ref-e-03"></a>E-03 | IBM Research Blog — Securing communication from quantum risks (Signal+Threema) | [링크](https://research.ibm.com/blog/signal-threema-quantum-safe) | IR/발표 | 2026-03-10 | [A] |
+| <a id="ref-e-04"></a>E-04 | Thales / Nasdaq — World first quantum-safe security for 5G | [링크](https://www.nasdaq.com/press-release/thales-sets-world-first-quantum-safe-security-5g-networks-2026-03-02) | IR/발표 | 2026-03-02 | [A] |
+| <a id="ref-e-05"></a>E-05 | IEEE Spectrum — Intel Heracles FHE ASIC (ISSCC 2026) | [링크](https://spectrum.ieee.org/fhe-intel) | IR/발표 | 2026-03-10 | [A] |
+| <a id="ref-e-06"></a>E-06 | CryptoLab / Moneytoday — HEaaN Zero-Leak RAG GS 1등급 획득 | [링크](https://www.mt.co.kr/future/2026/03/26/2026032614461522253) | IR/발표 | 2026-03-26 | [A] |
+| <a id="ref-e-07"></a>E-07 | Zama Official — Confidentiality Layer for T-REX Ledger | [링크](https://www.zama.org/post/zama-becomes-the-confidentiality-layer-for-the-t-rex-ledger) | IR/발표 | 2026-03-26 | [A] |
+| <a id="ref-g-09"></a>G-09 | The Quantum Insider — PQShield Ultra-Small PQC Library (Embedded World 2026) | [링크](https://thequantuminsider.com/2026/03/10/pqshield-ultra-small-pqc-embedded-security-embedded-world/) | news | 2026-03-10 | [B] |
+| <a id="ref-g-33"></a>G-33 | Apple ML Research — iOS 18 BFV PIR | [링크](https://machinelearning.apple.com/research/homomorphic-encryption) | 공식 | 2024 | [A] |

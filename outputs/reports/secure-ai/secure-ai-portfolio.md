@@ -1,7 +1,7 @@
 ---
 domain: secure-ai
 domain_name: Secure AI
-updated: 2026-03-18
+updated: 2026-03-30
 wtis_version: v4.1
 total_l2: 3
 evaluated: 3
@@ -13,7 +13,7 @@ evaluated: 3
 |---------|-----------|------|------|------|----------|
 | 온디바이스 AI | **2026-03-10** | **107/200** | **재검토** | **Borrow(SDK) + Build(한국어) + B2B 선회** | [[ondevice-ai/2026-03-10_wtis-ondevice-ai]] |
 | 스팸/피싱/탐지 | **2026-03-18** | **115/200** | **재검토** | **Borrow+Build (경찰청연계+고령자PSTN)** | [[spam-phishing-detection/2026-03-18_wtis-spam-phishing-detection]] |
-| 양자동형암호 | **2026-03-18** | **125/200** | **Conditional** | **Borrow(CryptoLab)+Build(AICC)+Watch(HW)** | [[he-keyword-search/2026-03-18_wtis-he-keyword-search]] |
+| 양자동형암호 | **2026-03-30** | **134/200** | **Conditional** | **Borrow(CryptoLab)+Build(AICC/PQC)+Watch(HW)** | [[he-keyword-search/2026-03-30_wtis-he-keyword-search]] |
 
 > **참고**: 온디바이스 AI는 v4.1에서 L2 단위 독립 분석 완료 (v4.0 통합 분석 120점 → v4.1 독립 분석 107점). 스팸/피싱/탐지, 양자동형암호는 v4.0 통합 분석 점수 유지 중 (개별 재평가 시 점수 변동 가능).
 
@@ -25,15 +25,15 @@ evaluated: 3
 | 온디바이스 AI | OnDevice sLM (한국어) | 7~8 | Build 기회 | KT 믿:음 2.3B, ETRI Eagle 3B 오픈소스 |
 | 온디바이스 AI | 실시간 화자분할 (2인, 온디바이스) | 7 | Borrow 기회 | Picovoice Falcon SDK 상용, 배터리·한국어 DER 미검증 |
 | 스팸/피싱/탐지 | Samsung S26 자체 탐지 | 8~9 | Critical Risk | 경찰청 3만건 학습, 무료, 전 갤럭시 |
-| 양자동형암호 | PQC VoLTE E2E | 5~6 | 유일 차별화축 | ML-KEM 표준 확정, MWC 2026 시연 |
-| 양자동형암호 | 동형암호 키워드 검색 (비실시간 AICC) | 3~4 | Conditional Go | HET-PIR 3.9ms, Aikata 97% 경량화, LGU+ PoC |
+| 양자동형암호 | PQC VoLTE E2E | 5~6 → 6~7 | 유일 차별화축 | Android 17 ML-DSA API, Google 2029 데드라인 |
+| 양자동형암호 | 동형암호 키워드 검색 (비실시간 AICC) | 3~4 | Conditional Go | HET-PIR 3.9ms, 97% 경량화 EuroS&P 확정, CryptoLab GS 1등급 |
 | 양자동형암호 | 동형암호 (HE 실시간 통화) | 2~3 | 불가 → Watch | TFHE 32ms/8xH100, ITU-T 150ms 초과 |
 
 ## 종합 권고
 
 - **우선 추진**: 없음
 - **조건부**: 스팸/피싱/탐지, 양자동형암호
-  - 조건 1 (갱신): ~~HE 제거~~ → HE는 비실시간 AICC 키워드 검색으로 유스케이스 전환 (125/200, 2026-03-18)
+  - 조건 1 (갱신): HE 비실시간 AICC 키워드 검색 유스케이스 (134/200, 2026-03-30, +9점 상승)
   - 조건 2: 2026H2 서비스 출시 마일스톤 확정 (필수)
   - 조건 3: PQC E2E 파트너 확보 (필수)
   - 조건 4: Samsung S26 대응 포지셔닝 명확화 (필수)
@@ -65,3 +65,4 @@ evaluated: 3
 | **2026-03-10** | **온디바이스 AI** | **107/200** | **재검토** | **v4.1 L2 독립 분석, B2C→B2B 전략 전환 권고** |
 | **2026-03-18** | **양자동형암호 (HE 키워드검색)** | **125/200** | **Conditional Go** | **TRL 2~3→3~4 상향. Borrow(CryptoLab)+Build(AICC). 비실시간 AICC 유스케이스 전환** |
 | **2026-03-18** | **스팸/피싱/탐지** | **115/200** | **재검토** | **3중 압박(Samsung+Meta+MS) 심화. 경찰청 연계+고령자 PSTN 특화가 유일 차별화** |
+| **2026-03-30** | **양자동형암호** | **134/200** | **Conditional Go** | **+9점. Google 2029 PQC 데드라인, CryptoLab GS 1등급, EuroS&P 피어리뷰. Borrow 경로 강화** |

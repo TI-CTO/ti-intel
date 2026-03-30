@@ -52,6 +52,7 @@ argument-hint: "[topic-slug | all]"
 | Artifact | Path Pattern | Description |
 |----------|-------------|-------------|
 | 보고서 | `outputs/reports/weekly/YYYY-MM-DD_monitor-{topic-slug}.md` | 🟡🔴 토픽만 생성 |
+| PDF | `outputs/reports/weekly/YYYY-MM-DD_monitor-{topic-slug}.pdf` | 🟡🔴 보고서 PDF |
 
 ### Return
 ```yaml
@@ -105,6 +106,32 @@ files: ["생성된 보고서 절대 경로 목록"]
 2. 🟡/🔴 토픽에 대해 파일 저장:
    `/Users/ctoti/Project/ClaudeCode/outputs/reports/weekly/{YYYY-MM-DD}_monitor-{topic-slug}.md`
 3. 종합 요약 출력
+
+### Phase 6: 출처 검증 (🟡🔴 보고서)
+🟡/🔴 보고서가 생성된 경우, PDF 변환 전에 validator 에이전트로 References URL-Content 전수 검증을 실행한다.
+
+```
+validator 에이전트 (sonnet):
+  입력: 보고서 절대경로
+  검증 범위: URL-Content 전수 검증
+  출력: 같은 폴더에 {date}_monitor-{slug}-validator.md
+```
+
+- ❌ 불일치: 본문 수치/인용 수정 후 PDF 진행
+- ⚠️ 부분 일치/접근 불가: 경고 출력, PDF 진행
+
+### Phase 7: PDF 생성 (🟡🔴 보고서)
+🟡/🔴 보고서가 생성된 경우 PDF로 변환한다:
+
+```
+design-system MCP → render_pdf(
+  markdown_path = "<보고서 절대경로>",
+  theme = "professional"
+)
+```
+
+- 성공 시: 같은 폴더에 `.pdf` 생성
+- 실패 시: 경고 출력 후 마크다운 경로 안내 (파이프라인 중단 없음)
 
 ## Output Format
 
