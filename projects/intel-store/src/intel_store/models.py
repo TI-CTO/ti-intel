@@ -18,6 +18,7 @@ class ItemType(str, Enum):
     STATEMENT = "statement"
     REPORT = "report"
     STANDARD = "standard"
+    COMMUNITY = "community"
 
 
 class ReliabilityTag(str, Enum):
@@ -107,6 +108,18 @@ class StandardMetadata(BaseModel):
 
     organization: str = ""
     standard_id: str = ""
+
+
+class CommunityMetadata(BaseModel):
+    """JSONB metadata for community signal items (Reddit, HN, Polymarket)."""
+
+    platform: str = ""
+    engagement: int = 0
+    comments: int = 0
+    subreddit: str | None = None
+    collector: str = ""
+    outcome_prices: dict | None = None
+    liquidity: float | None = None
 
 
 # ── Core models ──────────────────────────────────────────────────────
@@ -221,6 +234,29 @@ def patent_from_collector(raw: dict) -> IntelItem:
             applicant=raw.get("applicant", ""),
             filing_date=raw.get("filing_date"),
             ipc_codes=raw.get("ipc_codes", []),
+        ).model_dump(),
+    )
+
+
+def community_from_collector(raw: dict) -> IntelItem:
+    """Convert a community collector dict to an IntelItem."""
+    return IntelItem(
+        item_type=ItemType.COMMUNITY,
+        external_id=raw.get("external_id"),
+        title=raw["title"],
+        abstract=raw.get("summary") or "",
+        source_name=raw.get("source", "unknown"),
+        source_url=raw.get("url"),
+        published_date=_parse_date(raw.get("published_date")),
+        reliability=raw.get("reliability_tag", "C"),
+        metadata=CommunityMetadata(
+            platform=raw.get("platform", ""),
+            engagement=raw.get("engagement", 0),
+            comments=raw.get("comments", 0),
+            subreddit=raw.get("subreddit"),
+            collector=raw.get("collector", ""),
+            outcome_prices=raw.get("outcome_prices"),
+            liquidity=raw.get("liquidity"),
         ).model_dump(),
     )
 

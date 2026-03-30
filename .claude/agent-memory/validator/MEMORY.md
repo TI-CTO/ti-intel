@@ -46,6 +46,8 @@
 | 2026-03-24_speech-generation/skill1 | 2026-03-24 | PARTIAL | 수치 내부 불일치 1건(1,210% vs 1,300% 동일 출처), MOS 4.14 시점 불일치(이전 기준→현재값 오서술), 고아 소스 9건(G-02/12/13/18, E-05/06, P-02/03, I-01 미인용), Deutsche Telekom 출처 미등재 |
 | 2026-03-27_speech-generation/skill1 | 2026-03-27 | PARTIAL | Critical 2건(Pindrop 99.2% E-05 귀속 오류→실제 2026-02-26 헬스케어 발표, "10초 음성"→원문 "a few seconds"), 56개국 불일치(INTERPOL "47개국"), "범죄 1순위" 원문 미지지, TTS TAM G-08 귀속 오류, SKT 11억 건 미검증, 고아 소스 5건(G-03/19/20, I-01/02) |
 | 2026-03-27_personal-intelligence/skill1 | 2026-03-27 | PARTIAL | Critical 2건(G-11 ROI 4배→원문 미확인, G-05 MIT TR 소스 귀속 오류→실제 출처는 MIT TR 공식), Minor 4건(G-14 $221M 시점 오류, G-07 무료화 일정 미지지, 고아 소스 5건: G-12/18/23/P-03/04), E계열 URL 전량 미등재 |
+| 2026-03-30_weekly-agentic-ai | 2026-03-30 | PARTIAL | Critical 3건(G-01 v0.13.2 존재 미확인·기능들 이전 버전에 이미 적용, G-09 Axis Intelligence 핵심 수치 6개 미확인, G-21 소스 귀속 오류: Groq 인수→기술 블로그 대신 CNBC 등 필요), Minor 5건(G-02 RC5/3/20 미지지, G-03 NVIDIA 파트너십 미확인, G-05 Policy Controls 미확인, G-23 수치 불일치 $7.3~7.6B→실제 $7.80B, G-27 부분 미언급) |
+| 2026-03-30_weekly-voice-ai | 2026-03-30 | PARTIAL | Critical 3건(TTFA 90ms→실제 70ms, Voice AI 시장 $2.4B→실제 $3.14B, E-01 날짜 3/14→실제 1/14), Minor 6건(G-21 URL 귀속 오류, G-22 수치 미지지, G-26 수치 미지지, G-24 Flux 260ms 해석 오류, G-25 Retell ARR 미지지, P-04 Alibaba Qwen 저자 미확인), 고아 소스 1건(G-30) |
 
 ### 반복 패턴 (agentic-ai 도메인)
 - G-21 반복 위험: Mintz 법률 블로그가 특허·시장성공률·Gartner 예측 등 이질적 주장에 동시 인용되는 패턴 발생 → 차기 검증 시 G-21 인용 맥락 우선 점검 (adaptive-rag에서는 NVIDIA case study로 정상 사용됨)
@@ -77,3 +79,19 @@
 - E계열 URL 전량 미등재 패턴 (personal-intelligence): E계열 테이블에 검색 키워드만 기재하고 URL이 없어 독립 검증 불가. E계열 소스 검증 시 WebSearch로 기사를 직접 탐색해야 함
 - Tredence 블로그 ROI 수치 과장 패턴: Tredence "agentic-ai-trends-telecom" 블로그가 "ROI 4배"의 소스로 인용되었으나 원문에는 1.7x~3.4x 언급에 불과. Tredence 블로그 수치는 반드시 WebFetch로 확인 필수
 - 블로그 소스 MIT TR 주장 귀속 오류: Skywork AI 등 제3자 블로그가 MIT TR 선정을 주장의 근거로 활용되나 해당 블로그에 MIT TR 내용이 없는 패턴. MIT TR 인용은 technologyreview.com 직접 URL 필수
+
+### 반복 패턴 (weekly-monitor 도메인, agentic-ai)
+- Axis Intelligence 통계 집약 블로그 수치 미확인 패턴: Axis Intelligence(axis-intelligence.com)가 Gartner 예측·펀딩 평균·채택률 등 여러 시장 수치를 하나의 페이지에 집약하는 형태로 인용되나, WebFetch 시 페이지 내 수치가 본문 주장과 다른 수치를 보여주는 패턴 → 동 출처 인용 시 실제 페이지 수치와 비교 필수
+- 버전 번호 귀속 오류 패턴: SDK/프레임워크의 특정 버전(예: v0.13.2)에 이전 버전들에서 누적 추가된 기능들을 일괄 귀속하는 오류. SDK changelog 페이지는 각 기능의 실제 도입 버전을 명시하므로 changelog 직접 확인 필수
+- 기술 블로그 vs 기업 소식 소스 귀속 혼동: M&A·파트너십 같은 기업 소식을 해당 기업의 기술 제품 블로그 URL로 인용하는 패턴(G-21: Groq 인수 → Groq 3 LPX 기술 블로그). 기업 이벤트는 PR뉴스와이어·GlobeNewswire·CNBC 등 별도 소스 필요
+- The New Stack 등 CSS/JS 헤비 페이지 WebFetch 실패 패턴: 실제 기사 내용 대신 CSS/JS 코드만 반환되어 내용 검증 불가. 이런 URL은 WebSearch로 기사 핵심 주장을 교차 확인하는 방식으로 대체 필요
+
+### 반복 패턴 (voice-ai weekly 도메인)
+- TTFA 수치 오기입 패턴: 공식 블로그(G-01 Mistral)에서 "70ms for a typical input voice sample of 10 seconds"임에도 리포트에 "90ms"로 기재. 레이턴시 수치는 반드시 공식 발표 페이지 WebFetch로 직접 확인 필수
+- 비교 절감치 → 절대값 오해 패턴: Deepgram Flux G-24에서 "200~600ms 개선치(comparative vs pipeline)"를 "EOT ~260ms"(절대값)로 오해하여 기재. "cuts latency by X ms" 표현은 개선폭이지 절대 레이턴시가 아님 → 단위 해석 주의
+- E-01 (SKT 뉴스룸) 날짜 오기입: 에이닷 오토 보도자료(2026-01-14)를 "3/14"로 기재하는 오류. 한국어 뉴스룸 날짜 확인 시 기사 메타데이터 직접 확인 필수
+- 동일 URL 이중 등재 패턴: G-05와 E-04가 동일 IBM Newsroom URL을 가리키면서 서로 다른 출처처럼 인용. E-04 귀속 주장(IBM 40% 절감)이 해당 URL에 없음. 같은 URL의 G계열/E계열 이중 등재 시 두 인용이 실제로 다른 주장을 지지하는지 확인 필수
+- Assembl AI G-21 URL 귀속 오류: "introducing-new-products-and-model-updates" URL은 Universal-2/Slam 발표(2025-10-22), Universal-3 Pro Streaming 발표는 별도 URL. 신제품 발표 URL은 정확한 slug 확인 필요
+- 기업 수치가 공식 보도자료에 없는 패턴: SoundHound "3천만 건 AI 인터랙션(2025)"이 공식 PR에 없음(대신 "billions"). Retell AI ARR $40M+도 기술 블로그에 없음. 기업 성과 수치는 IR 발표·Earnings Call 직접 확인 필요
+- Voice AI 시장 시작점 불일치: VoiceAIWrapper(G-13, [C])가 2024년 $3.14B로 기재했으나 리포트는 $2.4B로 기재. [C] 등급 소스의 수치는 WebFetch로 원본 확인 필수
+- EU AI Act 과징금 미기재 패턴: EU Digital Strategy 코드 오브 프랙티스 공식 페이지는 투명성 CoP 내용만 있고 과징금 규정(7%/EUR 1,500만)은 없음. 과징금은 EU AI Act 본문(Article 99)에서 인용해야 함

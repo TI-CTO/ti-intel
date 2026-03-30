@@ -1,16 +1,16 @@
 # intel-store
 
 ## 역할
-통합 인텔리전스 저장소 — 뉴스·논문·특허·기업발언·리포트를 단일 `intel_items` 테이블에 저장하고, 벡터+키워드 하이브리드 검색(RRF)을 MCP 도구로 노출하는 서버.
+통합 인텔리전스 저장소 — 뉴스·논문·특허·기업발언·리포트·커뮤니티 시그널을 단일 `intel_items` 테이블에 저장하고, 벡터+키워드 하이브리드 검색(RRF)을 MCP 도구로 노출하는 서버.
 
 ## Architecture
 - **DB**: Supabase PostgreSQL + pgvector (HNSW 인덱스)
 - **임베딩**: multilingual-e5-large (로컬, 1024차원, 한영 다국어)
 - **전문검색**: tsvector + GIN 인덱스 (simple config)
 - **하이브리드 검색**: Reciprocal Rank Fusion (k=60) — keyword + semantic 결과 병합
-- **수집기**: Semantic Scholar, arXiv, Google Patents (SerpAPI), Tavily, GDELT, Naver News
+- **수집기**: Semantic Scholar, arXiv, Google Patents (SerpAPI), Tavily, GDELT, Naver News, Reddit, HackerNews, Polymarket
 
-## MCP 도구 (13개)
+## MCP 도구 (14개)
 | 도구 | 설명 |
 |------|------|
 | `search_intel` | 통합 검색 (keyword/semantic/hybrid with RRF) |
@@ -24,7 +24,8 @@
 | `collect_arxiv` | arXiv → 수집+저장 (Semantic Scholar 대안) |
 | `collect_patents` | Google Patents (SerpAPI) → 수집+저장 |
 | `collect_news` | Tavily/GDELT/Naver → 수집+저장 |
-| `collect_all` | 전체 소스 일괄 수집 (papers+arxiv+patents+news) |
+| `collect_community` | Reddit/HackerNews/Polymarket → 커뮤니티 시그널 수집+저장 |
+| `collect_all` | 전체 소스 일괄 수집 (papers+arxiv+patents+news+community) |
 | `get_intel_stats` | 실시간 집계 통계 |
 
 ## 수집기
@@ -36,6 +37,9 @@
 | Tavily | AI 최적화 뉴스 | news | 1,000 req/월 (free) |
 | GDELT | 글로벌 뉴스 | news | 무제한 |
 | Naver News | 한국어 뉴스 | news | API 키 필요 |
+| Reddit | 커뮤니티 토론 | community | 60 req/min (무료) |
+| HackerNews | 개발자 커뮤니티 | community | 10,000 req/hour (무료) |
+| Polymarket | 예측 시장 | community | 1,000 req/hour (무료) |
 
 ## DB 테이블
 - `intel_items` — 통합 저장 (벡터 1024차원 + tsvector + JSONB metadata)

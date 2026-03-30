@@ -434,6 +434,7 @@ research-deep 에이전트에도 동일한 스키마가 정의되어 있다.
   - **시장 전망** — TAM/CAGR, 애널리스트 예측, 설문 결과
   - **도입 사례** — 프로덕션 배포, PoC, 파일럿
   - **연구 동향** — 주요 논문·벤치마크 (제목, 저자, 시사점 1줄). 기존 "학술 동향" 섹션 대체.
+  - **커뮤니티 시그널** — Reddit/HackerNews 토론, Polymarket 예측 확률. 높은 engagement 중심. `collect_community` MCP 도구로 수집. References ID는 `C-xx`.
 - 해당 항목 없는 카테고리는 생략. 최소 1개 카테고리 필수.
 
 ### T4b: 시장 수요

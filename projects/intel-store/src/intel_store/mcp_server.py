@@ -587,6 +587,97 @@ def collect_arxiv(
     }
 
 
+# ── community collection ─────────────────────────────────────────
+
+
+@mcp.tool()
+def collect_community(
+    topic: str,
+    query: str,
+    since_days: int = 7,
+    limit: int = 20,
+    source: str = "all",
+    generate_embedding: bool = True,
+) -> dict:
+    """Collect community signals from Reddit, HackerNews, and Polymarket.
+
+    Args:
+        topic: Topic slug to associate items with.
+        query: Search query string.
+        since_days: Look back this many days (default 7). Not used for Polymarket.
+        limit: Max results per source (default 20).
+        source: Collector — 'reddit', 'hackernews', 'polymarket', or 'all'.
+        generate_embedding: Generate embeddings for collected items.
+
+    Returns:
+        Dict with collection results per source and stored count.
+    """
+    from intel_store.collectors import hackernews, polymarket, reddit
+    from intel_store.models import community_from_collector
+
+    repo = _get_repo()
+    repo._require_topic_id(topic)
+
+    results: dict = {"topic": topic, "query": query, "sources": {}}
+    all_raw: list[dict] = []
+
+    if source in ("reddit", "all"):
+        try:
+            reddit_items = reddit.collect(query, since_days=since_days, limit=limit)
+            results["sources"]["reddit"] = {"fetched": len(reddit_items)}
+            all_raw.extend(reddit_items)
+        except Exception as e:
+            logger.error("Reddit collection failed: %s", e)
+            results["sources"]["reddit"] = {"fetched": 0, "error": str(e)}
+
+    if source in ("hackernews", "all"):
+        try:
+            hn_items = hackernews.collect(query, since_days=since_days, limit=limit)
+            results["sources"]["hackernews"] = {"fetched": len(hn_items)}
+            all_raw.extend(hn_items)
+        except Exception as e:
+            logger.error("HackerNews collection failed: %s", e)
+            results["sources"]["hackernews"] = {"fetched": 0, "error": str(e)}
+
+    if source in ("polymarket", "all"):
+        try:
+            poly_items = polymarket.collect(query, limit=limit)
+            results["sources"]["polymarket"] = {"fetched": len(poly_items)}
+            all_raw.extend(poly_items)
+        except Exception as e:
+            logger.error("Polymarket collection failed: %s", e)
+            results["sources"]["polymarket"] = {"fetched": 0, "error": str(e)}
+
+    # Deduplicate by URL
+    seen_urls: set[str] = set()
+    unique_raw: list[dict] = []
+    for raw in all_raw:
+        url = raw.get("url", "")
+        if url and url not in seen_urls:
+            seen_urls.add(url)
+            unique_raw.append(raw)
+
+    models = []
+    for raw in unique_raw:
+        model = community_from_collector(raw)
+        if generate_embedding:
+            from intel_store import embeddings
+
+            model.embedding = embeddings.embed_passage(model.embedding_input())
+        models.append(model)
+
+    stored_rows = repo.upsert_items(models)
+
+    item_ids = [row["id"] for row in stored_rows if row.get("id")]
+    if item_ids:
+        repo.batch_link_topic(item_ids, topic)
+
+    results["total_fetched"] = len(all_raw)
+    results["unique_items"] = len(unique_raw)
+    results["stored"] = len(stored_rows)
+    return results
+
+
 # ── orchestration tools ──────────────────────────────────────────
 
 
@@ -601,7 +692,7 @@ def collect_all(
     generate_embedding: bool = True,
     relevance_threshold: float = 0.8,
 ) -> dict:
-    """Collect papers, arxiv, patents, and news in one call, store and link to topic.
+    """Collect papers, arxiv, patents, news, and community signals in one call.
 
     Args:
         topic: Topic slug to associate all items with.
@@ -656,6 +747,17 @@ def collect_all(
         (
             "news",
             lambda q: collect_news(
+                topic=topic,
+                query=q,
+                since_days=since_days,
+                limit=limit,
+                source="all",
+                generate_embedding=generate_embedding,
+            ),
+        ),
+        (
+            "community",
+            lambda q: collect_community(
                 topic=topic,
                 query=q,
                 since_days=since_days,
