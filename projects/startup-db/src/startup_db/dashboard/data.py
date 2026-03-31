@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
+import json
+
 import streamlit as st
 
-from startup_db.db import StartupRepository
+from startup_db.db import StartupRepository, get_client
 
 
 @st.cache_resource
@@ -328,3 +330,244 @@ def cached_company_topics_bulk() -> dict[str, list[str]]:
     for row in all_rows:
         topics.setdefault(row["company_id"], []).append(row["l3_slug"])
     return topics
+
+
+# ── Intel Store data functions ──────────────────────────────────
+
+
+def _intel_client():
+    """Reuse the same Supabase client for intel_items tables."""
+    return get_client()
+
+
+@st.cache_data(ttl=3600)
+def cached_intel_stats() -> dict:
+    """Aggregate intel stats: total, by type, by source, by month.
+
+    Returns:
+        {
+            "total": int,
+            "by_type": {type: count},
+            "by_source": {source_name: count},
+            "by_month": [{month: "YYYY-MM", count: int}],
+        }
+    """
+    client = _intel_client()
+
+    # Fetch all items (id, item_type, source_name, collected_date)
+    all_items: list[dict] = []
+    offset = 0
+    while True:
+        batch = (
+            client.table("intel_items")
+            .select("id,item_type,source_name,collected_date")
+            .range(offset, offset + 999)
+            .execute()
+        ).data or []
+        all_items.extend(batch)
+        if len(batch) < 1000:
+            break
+        offset += 1000
+
+    by_type: dict[str, int] = {}
+    by_source: dict[str, int] = {}
+    by_month: dict[str, int] = {}
+
+    for item in all_items:
+        t = item.get("item_type", "unknown")
+        by_type[t] = by_type.get(t, 0) + 1
+
+        s = item.get("source_name", "unknown")
+        by_source[s] = by_source.get(s, 0) + 1
+
+        cd = item.get("collected_date", "")
+        if cd and len(cd) >= 7:
+            month = cd[:7]
+            by_month[month] = by_month.get(month, 0) + 1
+
+    monthly = [{"month": k, "count": v} for k, v in sorted(by_month.items())]
+
+    return {
+        "total": len(all_items),
+        "by_type": by_type,
+        "by_source": by_source,
+        "by_month": monthly,
+    }
+
+
+@st.cache_data(ttl=3600)
+def cached_intel_by_topic() -> list[dict]:
+    """Intel items grouped by topic.
+
+    Returns:
+        [{topic_slug, topic_name, count, latest_date}]
+    """
+    client = _intel_client()
+
+    # Fetch topic assignments
+    all_links: list[dict] = []
+    offset = 0
+    while True:
+        batch = (
+            client.table("intel_item_topics")
+            .select("item_id,topic_id")
+            .range(offset, offset + 999)
+            .execute()
+        ).data or []
+        all_links.extend(batch)
+        if len(batch) < 1000:
+            break
+        offset += 1000
+
+    # Count by topic_id
+    topic_counts: dict[int, int] = {}
+    for link in all_links:
+        tid = link["topic_id"]
+        topic_counts[tid] = topic_counts.get(tid, 0) + 1
+
+    if not topic_counts:
+        return []
+
+    # Fetch topic metadata
+    topic_ids = list(topic_counts.keys())
+    topics_data: list[dict] = []
+    for i in range(0, len(topic_ids), 50):
+        chunk = topic_ids[i : i + 50]
+        result = (
+            client.table("topics")
+            .select("id,slug,display_name")
+            .in_("id", chunk)
+            .execute()
+        )
+        topics_data.extend(result.data or [])
+
+    topic_map = {t["id"]: t for t in topics_data}
+
+    results = []
+    for tid, count in sorted(topic_counts.items(), key=lambda x: -x[1]):
+        info = topic_map.get(tid, {})
+        results.append({
+            "topic_slug": info.get("slug", f"topic-{tid}"),
+            "topic_name": info.get("display_name", f"Topic {tid}"),
+            "count": count,
+        })
+
+    return results
+
+
+@st.cache_data(ttl=600)
+def cached_intel_items_by_topic(topic_slug: str, limit: int = 50) -> list[dict]:
+    """Fetch intel items for a specific topic.
+
+    Returns:
+        [{id, title, item_type, source_name, source_url, collected_date, metadata}]
+    """
+    client = _intel_client()
+
+    # Get topic id
+    topic_result = (
+        client.table("topics")
+        .select("id")
+        .eq("slug", topic_slug)
+        .limit(1)
+        .execute()
+    )
+    if not topic_result.data:
+        return []
+    topic_id = topic_result.data[0]["id"]
+
+    # Get item ids for this topic
+    links = (
+        client.table("intel_item_topics")
+        .select("item_id")
+        .eq("topic_id", topic_id)
+        .execute()
+    ).data or []
+
+    if not links:
+        return []
+
+    item_ids = [link["item_id"] for link in links]
+
+    # Fetch items
+    items: list[dict] = []
+    for i in range(0, min(len(item_ids), limit), 50):
+        chunk = item_ids[i : i + 50]
+        result = (
+            client.table("intel_items")
+            .select("id,title,item_type,source_name,source_url,collected_date,metadata")
+            .in_("id", chunk)
+            .order("collected_date", desc=True)
+            .execute()
+        )
+        items.extend(result.data or [])
+
+    # Sort by collected_date desc
+    items.sort(key=lambda x: x.get("collected_date", ""), reverse=True)
+
+    # Parse metadata JSON string
+    for item in items:
+        meta = item.get("metadata")
+        if isinstance(meta, str):
+            try:
+                item["metadata"] = json.loads(meta)
+            except (json.JSONDecodeError, TypeError):
+                item["metadata"] = {}
+
+    return items[:limit]
+
+
+@st.cache_data(ttl=600)
+def cached_intel_recent(limit: int = 20) -> list[dict]:
+    """Fetch most recent intel items across all topics."""
+    client = _intel_client()
+    result = (
+        client.table("intel_items")
+        .select("id,title,item_type,source_name,source_url,collected_date,metadata")
+        .order("collected_date", desc=True)
+        .limit(limit)
+        .execute()
+    )
+    items = result.data or []
+    for item in items:
+        meta = item.get("metadata")
+        if isinstance(meta, str):
+            try:
+                item["metadata"] = json.loads(meta)
+            except (json.JSONDecodeError, TypeError):
+                item["metadata"] = {}
+    return items
+
+
+@st.cache_data(ttl=3600)
+def cached_intel_community_engagement() -> list[dict]:
+    """Fetch community items with engagement data for trend analysis.
+
+    Returns:
+        [{title, source_name, collected_date, platform, engagement, comments}]
+    """
+    client = _intel_client()
+    result = (
+        client.table("intel_items")
+        .select("id,title,source_name,collected_date,metadata")
+        .eq("item_type", "community")
+        .order("collected_date", desc=True)
+        .execute()
+    )
+    items = []
+    for row in result.data or []:
+        meta = row.get("metadata", {})
+        if isinstance(meta, str):
+            try:
+                meta = json.loads(meta)
+            except (json.JSONDecodeError, TypeError):
+                meta = {}
+        items.append({
+            "title": row.get("title", ""),
+            "source_name": row.get("source_name", ""),
+            "collected_date": row.get("collected_date", ""),
+            "platform": meta.get("platform", "unknown"),
+            "engagement": meta.get("engagement", 0),
+            "comments": meta.get("comments", meta.get("num_comments", 0)),
+        })
+    return items

@@ -29,6 +29,7 @@ pages = st.navigation(
         st.Page("pages/scores.py", title="Scores", icon="⭐"),
         st.Page("pages/network.py", title="Network", icon="🕸️"),
         st.Page("pages/investors.py", title="Investors", icon="🏦"),
+        st.Page("pages/intel_overview.py", title="Intel", icon="📡", url_path="intel"),
     ]
 )
 
@@ -43,6 +44,7 @@ page_key_map = {
     "Scores": "scores",
     "Network": "network",
     "Investors": "investors",
+    "Intel": "intel",
 }
 active = page_key_map.get(pages.title, "overview")
 render_navbar(active)

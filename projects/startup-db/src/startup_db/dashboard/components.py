@@ -17,6 +17,7 @@ PAGES = [
     ("scores", "Scores", "⭐", "/scores"),
     ("network", "Network", "🕸️", "/network"),
     ("investors", "Investors", "🏦", "/investors"),
+    ("intel", "Intel", "📡", "/intel"),
 ]
 
 _THEME_FILE = Path(__file__).parent / ".theme_pref.json"
