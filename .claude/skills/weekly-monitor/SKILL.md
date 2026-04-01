@@ -145,8 +145,14 @@ Executive Summary의 `전주` 열과 Deep의 "이전 대비 변화" 섹션에 �
 ```
 intel-store: search_intel(query={keywords}, topic={slug}, since={7일전}, limit=30, mode="keyword")
 intel-store: search_intel(query={keywords}, types=["paper"], since={7일전}, limit=5, mode="keyword")
+intel-store: collect_community(topic={slug}, query={keywords}, since_days=7, limit=5, source="all")
 WebSearch: "{L3 keywords} 2026 latest news" (intel-store 결과 부족 시)
 ```
+
+**커뮤니티 수집 참고사항**:
+- `limit=5`로 소스당 최대 5건만 수집 (Quick 속도 유지)
+- 수집 결과 중 engagement 상위 항목만 신호등 판정에 참고
+- Polymarket에 해당 토픽 마켓이 없으면 자동 스킵 (실패 아님)
 
 ### Step 1-2: 신호등 판정
 
@@ -223,7 +229,7 @@ L3 토픽별로 **2개 에이전트를 병렬 호출**한다:
 │  목표: "{L3 이름}의 최근 1주 기술/시장/경쟁 동향 종합 리서치"  │
 │  도구·소스:                                                │
 │    - intel-store MCP: collect_papers, collect_patents,      │
-│      collect_news, find_similar                            │
+│      collect_news, collect_community, find_similar          │
 │    - WebSearch: MCP 결과 보강                               │
 │  태스크 경계:                                               │
 │    - Go/No-Go 판정하지 않음 (WTIS의 역할)                    │
@@ -308,6 +314,33 @@ validator 에이전트 (sonnet):
 - ❌ 불일치 발견 시: 본문의 출처 인용을 수정하거나 올바른 URL로 교체한 후 PDF 진행
 - ⚠️ 부분 일치: 경고만 출력, PDF 진행
 - 🔗 접근 불가: 경고만 출력, PDF 진행
+
+### Step 4.6: 약어 풀어쓰기 검증
+
+메인 리포트의 모든 기술 약어가 첫 사용 시 풀어쓰기되었는지 자동 검증한다.
+
+#### 검증 로직
+
+1. **약어 추출**: 본문에서 `[A-Z]{2,}` 패턴(2글자 이상 대문자)을 모두 추출
+2. **예외 제외**: 아래 약어는 풀어쓰기 면제
+   - 범용: AI, API, SDK, URL, HTTP, HTTPS, HTML, CSS, JS, PDF, CPU, GPU, RAM, SSD, USB, IoT, OS, SQL, SSH, IP, DNS, CDN, IT, ML, LLM, NLP, UI, UX, ID, SaaS, PaaS, IaaS, QR
+   - 직급/조직: CTO, CEO, CFO, VP, SKT, KT, LG, IBM, MS, AWS, GCP
+   - 표준/스킴명: FIPS, NIST 표준 번호(FIPS 203 등), 암호 스킴명(CKKS, BFV, BGV, ML-KEM, ML-DSA, SLH-DSA)
+   - 논문 플랫폼: arXiv, IEEE, ACM
+3. **첫 등장 확인**: 각 약어의 첫 등장 위치에서 `Full Term (ABBR)` 또는 `Full Term(ABBR)` 패턴 존재 여부 확인
+4. **Executive Summary 독립**: Executive Summary와 본문을 별도 스코프로 취급. ES에서 풀이했어도 본문 첫 등장에서 재풀이 필요
+
+#### 검증 결과 처리
+
+- **미풀이 약어 발견 시**: 각 약어의 정식 명칭을 조회하여 첫 등장 위치에 `Full Term (ABBR)` 형태로 자동 삽입 후 진행
+- **자동 수정 후 사용자에게 수정 목록 출력**:
+  ```
+  📝 약어 풀어쓰기 자동 수정 (N건):
+    - ECDSA → Elliptic Curve Digital Signature Algorithm (ECDSA) [Line XX]
+    - HSM → Hardware Security Module (HSM) [Line XX]
+    ...
+  ```
+- **정식 명칭 불확실 시**: `[약어 확인 필요]` 태그를 붙이고 사용자에게 확인 요청
 
 ### Step 5: PDF 생성 + 품질 검증
 

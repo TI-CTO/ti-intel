@@ -99,17 +99,32 @@ Obsidian 볼트 경로: `$OBSIDIAN_VAULT_PATH` (settings.local.json에서 설정
 | `work-log` | 업무일지 기록 |
 | `dashboard-implement` | 대시보드 구현 + 자동 검증 |
 
-### 에이전트 (자동 실행, 스킬이 내부 호출)
+### 에이전트 조직도 (자동 실행, 스킬이 내부 호출)
 
-| 에이전트 | 역할 | 모델 |
-|----------|------|------|
-| `research-deep` | 다중 소스 심층 리서치 | sonnet |
-| `voice-of-market` | YouTube 컨퍼런스 수요 시그널 추출 | sonnet |
-| `fact-checker` | 외부 사실 검증 (Devil's Advocate) | sonnet |
-| `validator` | 내부 일관성 검증 (Black-box) | sonnet |
-| `researcher` | 빠른 탐색/비교 | haiku |
-| `reviewer` | 코드 리뷰 | sonnet |
-| `implementer` | 코드 구현/수정 | sonnet |
+```
+ctoti (Board)
+  └── Orchestrator (Skills)
+        ├── 분석팀 (Analysis)
+        │     ├── research-deep — 수석 분석관
+        │     ├── researcher — 리서치 어소시에이트
+        │     └── voice-of-market — 시장 분석관
+        ├── 품질팀 (Quality)
+        │     ├── fact-checker — 감사역
+        │     └── validator — 품질 검증관
+        └── 엔지니어링팀 (Engineering)
+              ├── implementer — 스태프 엔지니어
+              └── reviewer — 코드 리뷰 리드
+```
+
+| 에이전트 | 직함 | 팀 | 모델 |
+|----------|------|-----|------|
+| `research-deep` | 수석 분석관 (Chief Analyst) | Analysis | sonnet |
+| `researcher` | 리서치 어소시에이트 (Research Associate) | Analysis | haiku |
+| `voice-of-market` | 시장 분석관 (Market Analyst) | Analysis | sonnet |
+| `fact-checker` | 감사역 (Auditor) | Quality | sonnet |
+| `validator` | 품질 검증관 (QA Lead) | Quality | sonnet |
+| `implementer` | 스태프 엔지니어 (Staff Engineer) | Engineering | sonnet |
+| `reviewer` | 코드 리뷰 리드 (Code Review Lead) | Engineering | sonnet |
 
 ## Agent Model Selection
 - `haiku` — 빠른 탐색, 간단한 질문

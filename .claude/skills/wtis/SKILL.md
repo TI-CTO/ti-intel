@@ -682,6 +682,17 @@ L2 목록은 `tech-taxonomy.md`에서 해당 L1 도메인의 L2 기술을 가져
 - voice-ai: Speech Perception, Personal Intelligence, Speech Generation
 - secure-ai: 스팸/피싱탐지, 양자/동형 암호
 
+### Step A.5: 약어 풀어쓰기 검증
+
+PDF 변환 전에 약어 검증을 실행한다. 검증 로직은 weekly-monitor Step 4.6과 동일:
+
+1. 본문에서 `[A-Z]{2,}` 패턴 추출 → 예외 리스트 제외
+2. 각 약어의 첫 등장에서 `Full Term (ABBR)` 패턴 확인
+3. Executive Summary와 본문을 별도 스코프로 취급
+4. 미풀이 약어 → 정식 명칭 자동 삽입, 불확실 시 `[약어 확인 필요]` 태그
+
+예외 목록 및 상세 규칙: `weekly-monitor/SKILL.md` Step 4.6 참조.
+
 ### Step B: PDF 자동 생성 (필수)
 최종 보고서 + 포트폴리오를 PDF로 변환한다.
 

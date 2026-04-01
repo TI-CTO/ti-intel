@@ -343,7 +343,7 @@ W4:    월간 종합 (TODO — 설계 예정)
 ```
 ti-intel/
 ├── .claude/
-│   ├── agents/          ← 에이전트 정의 (*.md)
+│   ├── agents/          ← 에이전트 조직 (3팀 7명, Org Profile 포함)
 │   ├── skills/          ← 스킬 정의 (*/SKILL.md) — I/O Contract + Next Steps 포함
 │   └── rules/           ← 코딩 컨벤션
 ├── docs/                ← 설계·가이드 문서 (원본, git 관리)

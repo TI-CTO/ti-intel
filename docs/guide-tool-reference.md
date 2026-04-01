@@ -21,14 +21,18 @@
 └───────────────────────────────────────────────────────────┘
           │ 내부적으로 호출                │
           ▼                              ▼
-┌─── 에이전트 (자동) ───┐    ┌─── MCP 프로젝트 (데이터) ───┐
-│ research-deep         │    │ intel-store (13 도구)       │
-│ validator             │    │ trend-tracker (5 도구)      │
-│ researcher            │    │ design-system (4 도구)      │
-│ reviewer              │    │ startup-db (15 도구)        │
-│ implementer           │    │ youtube-transcript (1 도구) │
-│                       │    │ context7 (외부 문서 조회)    │
-└───────────────────────┘    └────────────────────────────┘
+┌─── 에이전트 조직 (자동) ──────┐  ┌─── MCP 프로젝트 (데이터) ───┐
+│ 분석팀                        │  │ intel-store (13 도구)       │
+│  research-deep  수석 분석관    │  │ trend-tracker (5 도구)      │
+│  researcher     리서치 어소시  │  │ design-system (4 도구)      │
+│  voice-of-market 시장 분석관  │  │ startup-db (15 도구)        │
+│ 품질팀                        │  │ youtube-transcript (1 도구) │
+│  fact-checker   감사역        │  │ context7 (외부 문서 조회)    │
+│  validator      품질 검증관    │  └────────────────────────────┘
+│ 엔지니어링팀                   │
+│  implementer    스태프 엔지니어 │
+│  reviewer       코드 리뷰 리드 │
+└───────────────────────────────┘
 ```
 
 ---
@@ -216,18 +220,49 @@
 
 ---
 
-## 3. 에이전트 (자동 실행)
+## 3. 에이전트 조직 (자동 실행)
 
-> 에이전트는 직접 호출하지 않음. 스킬이 필요할 때 자동으로 사용.
+> 에이전트는 직접 호출하지 않음. 스킬(Orchestrator)이 필요할 때 자동으로 투입.
+> 각 에이전트는 직함·팀·보고라인을 가진 조직 구성원이다.
 
-| 에이전트 | 역할 | 호출하는 스킬 | 읽기/쓰기 |
-|----------|------|-------------|-----------|
-| **research-deep** | 다중 소스 심층 리서치 | wtis, weekly-monitor | 쓰기 가능 |
-| **validator** | Black-box 독립 검증 (내부 일관성) | wtis | 읽기 전용 |
-| **fact-checker** | Devil's Advocate 외부 사실 검증 | wtis full, biz-case | 읽기 전용 |
-| **researcher** | 빠른 탐색/비교 | (범용) | 읽기 전용 |
-| **reviewer** | 코드 리뷰 | (범용) | 읽기 전용 |
-| **implementer** | 코드 구현/수정 | (범용) | 쓰기 가능 |
+```
+ctoti (Board)
+  └── Orchestrator (Skills)
+        ├── 분석팀 (Analysis)
+        │     ├── research-deep — 수석 분석관
+        │     ├── researcher — 리서치 어소시에이트
+        │     └── voice-of-market — 시장 분석관
+        ├── 품질팀 (Quality)
+        │     ├── fact-checker — 감사역
+        │     └── validator — 품질 검증관
+        └── 엔지니어링팀 (Engineering)
+              ├── implementer — 스태프 엔지니어
+              └── reviewer — 코드 리뷰 리드
+```
+
+| 에이전트 | 직함 | 팀 | 호출하는 스킬 | 읽기/쓰기 |
+|----------|------|-----|-------------|-----------|
+| **research-deep** | 수석 분석관 | Analysis | wtis, weekly-monitor | 쓰기 가능 |
+| **researcher** | 리서치 어소시에이트 | Analysis | (범용) | 읽기 전용 |
+| **voice-of-market** | 시장 분석관 | Analysis | weekly-monitor | 쓰기 가능 |
+| **fact-checker** | 감사역 | Quality | wtis full, biz-case | 쓰기 가능 |
+| **validator** | 품질 검증관 | Quality | wtis | 읽기 전용 |
+| **implementer** | 스태프 엔지니어 | Engineering | (범용) | 쓰기 가능 |
+| **reviewer** | 코드 리뷰 리드 | Engineering | (범용) | 읽기 전용 |
+
+### 핸드오프 흐름
+
+```
+분석팀 워크플로우:
+  researcher (빠른 탐색) → research-deep (심층 종합)
+  voice-of-market (수요 시그널) → research-deep (공급+수요 통합)
+
+품질팀 워크플로우:
+  research-deep 산출물 → fact-checker (외부 사실 검증) → validator (내부 일관성)
+
+엔지니어링팀 워크플로우:
+  implementer (구현) → reviewer (코드 리뷰)
+```
 
 ---
 
