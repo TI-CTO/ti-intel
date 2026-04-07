@@ -24,7 +24,29 @@ if [[ "$DOW" -ne 1 && "${FORCE:-}" != "1" ]]; then
 fi
 
 mkdir -p "$LOG_DIR"
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] Starting Monday automation" | tee -a "$LOG_FILE"
+
+# ─── 동시 실행 방지: lockfile ───
+LOCKFILE="$LOG_DIR/.monday.lock"
+if [[ -f "$LOCKFILE" ]]; then
+  LOCK_PID=$(cat "$LOCKFILE" 2>/dev/null)
+  if kill -0 "$LOCK_PID" 2>/dev/null; then
+    echo "[SKIP] Another instance running (PID=$LOCK_PID). Exiting." | tee -a "$LOG_FILE"
+    exit 0
+  fi
+  rm -f "$LOCKFILE"
+fi
+echo $$ > "$LOCKFILE"
+
+# ─── 절전 방지: caffeinate ───
+caffeinate -s -w $$ &
+CAFFEINATE_PID=$!
+cleanup() {
+  kill "$CAFFEINATE_PID" 2>/dev/null || true
+  rm -f "$LOCKFILE"
+}
+trap cleanup EXIT
+
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] Starting Monday automation (caffeinate PID=$CAFFEINATE_PID)" | tee -a "$LOG_FILE"
 
 # ─── 공통 함수 ───
 run_weekly_monitor() {

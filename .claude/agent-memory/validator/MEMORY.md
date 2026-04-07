@@ -50,6 +50,20 @@
 | 2026-03-30_weekly-voice-ai | 2026-03-30 | PARTIAL | Critical 3건(TTFA 90ms→실제 70ms, Voice AI 시장 $2.4B→실제 $3.14B, E-01 날짜 3/14→실제 1/14), Minor 6건(G-21 URL 귀속 오류, G-22 수치 미지지, G-26 수치 미지지, G-24 Flux 260ms 해석 오류, G-25 Retell ARR 미지지, P-04 Alibaba Qwen 저자 미확인), 고아 소스 1건(G-30) |
 | 2026-03-30_weekly-secure-ai | 2026-03-30 | PARTIAL | Critical 3건(G-09/E-02 AFWERX·MDA SHIELD 수치 귀속 오류, G-16 Multiverse+Axelera PQC KSE3 주장 근거 없음, G-28 FHE.org 콘퍼런스 수치 소스 오귀속→실제 fhe.org 공식 페이지), Minor 4건(G-12 CRYSTALS-Kyber·SKT 협력 원문 미언급, G-19 "14%"·"12~15년" 원문 미확인, G-31 KT 전략 원문 불일치, G-29 Zama $1.5억+ 과대→실제 $107.8M) |
 | 2026-03-30_he-keyword-search/skill1 | 2026-03-30 | PARTIAL | Critical 2건(G-17 ID 충돌: CISA URL이 Apple BFV PIR 인용에 오용, G-18 CyberArk 블로그 CNSA 2.0 2027-01 미지지), Minor 3건(G-09/P-04 고아 소스, E-07 날짜 3/26→원본 3/24, G-28 TEE 비교 주장 미지지), Zama $1B 유니콘 소스 없음 |
+| 2026-04-06_weekly-agentic-ai | 2026-04-06 | PARTIAL | Critical 3건(G-04 Gemma 4 컨텍스트 256K→실제 128K, G-14 펀딩 수치 전면 불일치 $186억→실제 $4.4억, C-06 HN ID 오류 41794566→실제 41863061), Minor 4건(G-05 GKE 300 sandboxes/s 미확인, G-12 Agent Sprawl 표현 미지지, G-20 Ambiq 세부스펙 미확인, G-26 OEM 파트너 명칭 미언급), 고아 소스 1건(G-13 CrewAI), C-03 URL 404(내용은 WebSearch 확인) |
+| 2026-04-06_weekly-secure-ai | 2026-04-06 | PARTIAL | Critical 4건(G-01 "9분" 원문 "a few minutes" 수치 구체화 오류, G-15 CRQC 큐비트 추이 수치 전면 불일치 "900만"→원문 없음, G-44 누적 조달 $146.5M↔G-44원본 $136M 불일치, E-04/G-04 캐나다 PQC "법적 의무화" 과장), Minor 5건(G-01 Ethereum Foundation 공동 저술 과대, P-01 저자 Janssen→Chhetri 오기재, E-05 Oratomic 날짜 3/31→3/30, G-13 CoinDesk 403 접근 불가, G-32 Security Boulevard 403), 고아 소스 1건(G-28 MEXC Zama $1B 블로그 본문 미인용) |
+| 2026-04-06_monitor-skt-strategy | 2026-04-06 | PARTIAL | Critical 1건(G-03 귀속 오류: 한명진 통신CIC장 내용이 이코리아 URL에 없음→대안: EBN 또는 SKT뉴스룸), Minor 4건(G-02 발행일 "2026-03" 오기재→실제 2025-11-13, G-04 삼성증권 PDF 텍스트 추출 불가, G-05/G-06 고아 소스, 미인용 수치 "점유율 40%"/"3배 이상" 인용 없음) |
+| 2026-04-07_weekly-agentic-ai | 2026-04-07 | PARTIAL | Critical 2건(G-12 APNIC 2020년 글에 SoftBank MUP/Jio/Zain/50ms 내용 없음 — 출처 귀속 오류, G-18 MCP 9,700만 설치 수치 Belitsoft 원문 미지지), Minor 4건(G-04 원문 "130+"→본문 "132개" 표현 차이, G-07 ASN.1 2029년 3월 원문 미확인, G-17 고아 소스, G-14 "$450.9억" 단위 혼용), 고아 소스 1건(G-17 미인용) |
+
+### 반복 패턴 (인프라/네트워크 도메인 신규)
+- SRv6 오래된 기술 블로그 귀속 패턴: SRv6 최신 상용 배포 사례(SoftBank MUP 2025-12, Jio 6억 고객 목표, Zain Kuwait 배포)를 2020년 APNIC 블로그에 귀속하는 오류. SRv6 최신 배포 사례는 각 사업자 공식 PR(softbank.jp, jio.com) 또는 Cisco 케이스스터디로 직접 인용 필요
+- 기관별 멤버십 수치 표기 차이: AI-RAN Alliance 회원사 수가 NVIDIA 보도자료는 "130+" 표기이나, AI-RAN Alliance 공식 발표는 "132개". 멤버십 수치는 AI-RAN Alliance 공식 보도자료 URL 1차 소스 필요
+
+### 반복 패턴 (경쟁사 모니터 도메인)
+- SKT 뉴스룸 발행일 오기재 패턴: SKT 뉴스룸(news.sktelecom.com) 조직개편 공지가 "2026년 조직 개편"이라는 제목을 가지더라도 실제 게시 날짜는 2025년(2025-11-13 확인). 리포트가 제목의 연도를 발행일로 오인하는 패턴 → SKT 뉴스룸 URL은 반드시 datePublished 메타데이터 WebFetch로 확인
+- 경쟁사 임원 인사 귀속 오류 패턴: 임원 발탁(한명진 통신CIC장)을 일반 경영전략 비교 기사(이코리아 등)에 귀속하는 오류. 임원 인사는 SKT 뉴스룸 공식 인사 발표 URL이나 EBN/이데일리 등 인사 전문 기사 URL 필요
+- 삼성증권 PDF 텍스트 추출 불가 패턴: samsungpop.com PDF가 이미지 스캔 방식으로 제공되어 WebFetch 텍스트 추출 실패. 증권사 리포트 인용 시 PDF 직접 검증이 불가하므로, 해당 수치를 언론 컨콜 기사(EBN, 이데일리 등)로 교차 확인하는 대안 소스 병기 권장
+- 분석 코멘트 미인용 수치 패턴: 신호 테이블에 없는 "점유율 40%", "현재 대비 3배 이상" 같은 수치가 분석 코멘트 섹션에 인용 앵커 없이 서술되는 패턴 → 경쟁사 모니터 분석 코멘트도 수치 인용 시 [[G-xx]] 앵커 필수
 
 ### 반복 패턴 (agentic-ai 도메인)
 - G-21 반복 위험: Mintz 법률 블로그가 특허·시장성공률·Gartner 예측 등 이질적 주장에 동시 인용되는 패턴 발생 → 차기 검증 시 G-21 인용 맥락 우선 점검 (adaptive-rag에서는 NVIDIA case study로 정상 사용됨)
@@ -104,8 +118,22 @@
 - FHE.org 콘퍼런스 수치 소스 분산 패턴: Digest(뉴스레터)와 공식 콘퍼런스 페이지(fhe.org/conferences/conference-2026/)가 담는 정보가 다름. 발표 수·포스터 수·스폰서는 공식 페이지에, 이벤트 안내는 Digest에. 수치 인용 시 공식 페이지 직접 URL 필요
 - Zama 투자액 혼용 패턴: SeedTable(G-29)은 누적 $107.8M(= Series A $73M + 일부 이전 라운드)으로 집계하나, 공식 발표는 Series B 2025-06 $57M으로 유니콘 달성, 총 누적 $130M+. "$1.5억+" 표기는 어느 출처도 지지하지 않는 수치 → Zama 투자액은 CoinDesk/TechCrunch 공식 발표 URL 직접 확인 필수
 
+### 반복 패턴 (agentic-ai weekly W15 신규 확인)
+- 펀딩 집계 소스 수치 전면 불일치 패턴: G-14(newmarketpitch.com)를 Tracxn 출처로 표기하고 "$186억 누적"을 기재했으나 해당 블로그 원문은 자체 DB 기준 누적 $4.4억(101건). Tracxn 출처 수치는 Tracxn 공식 URL 직접 확인 필수. 블로그 재인용 펀딩 수치는 1차 소스(Tracxn, Dealroom, PitchBook) URL 필수
+- Gemma 4 컨텍스트 창 오기입 패턴: G-04 원문은 128K 컨텍스트이나 본문에 256K로 기재. 주요 모델 스펙(컨텍스트 창, 파라미터 수, 언어 수)은 공식 블로그 WebFetch 수치와 대조 필수
+- HN 아이템 ID 오귀속 패턴: C-06 ID 41794566은 "엔지니어링 아키텍처 제안서" 쓰레드이고, 실제 "AI PCs Aren't Good at AI" 쓰레드는 41863061. HN URL은 아이템 ID로만 식별되므로 반드시 페이지 제목을 WebFetch로 확인 필수
+- GKE Agent Sandbox 수치 귀속 오류: G-05(NVIDIA 블로그)에 귀속한 "초당 300 샌드박스 격리" 수치가 해당 페이지에 없음. Google Cloud 공식 발표와 NVIDIA 파트너 블로그가 서로 다른 내용을 담을 수 있음 → GKE 관련 수치는 cloud.google.com 직접 URL 필요
+- 단일 발표의 두 소식을 G계열/E계열로 분리 인용 시 귀속 오류: IBM G-08(watsonx Orchestrate)이 Elsewedy Electric 협력 내용을 포함하는 것처럼 기재되었으나, Elsewedy Electric 발표는 별도 보도자료(mea.newsroom.ibm.com). 동일 기업의 복수 발표는 각각 별도 URL로 등재 필수
+
 ### 반복 패턴 (he-keyword-search / PQC·FHE 도메인)
 - References ID 충돌 패턴: 동일 번호(G-17)를 두 URL에 할당하고 하나를 "G-17 (Apple)"로 변형하는 비표준 표기 발생. 이 경우 본문 `[[G-17]]` 앵커가 두 URL 중 먼저 선언된 것(CISA)으로 연결되어 Apple BFV PIR 주장의 출처가 CISA 페이지로 오귀속. 동일 번호 재사용 금지, 접미사("-apple" 등) 없이 순차 재번호 필수
 - 규제 타임라인 출처 미지지 패턴: NSA CNSA 2.0 2027-01 의무화 같은 구체적 의무화 시점은 [B] 등급 블로그(CyberArk)로 근거를 삼는 경우 원문이 해당 내용을 포함하지 않는 사례 발생. 의무화 날짜는 NSA/NIST 공식 문서 직접 URL 필수
 - FHE.org 빅테크 스폰서 주장: "Apple/AWS/Google FHE.org 후원 진입" 주장이 FHE.org Digest에서 미확인. 스폰서 정보는 fhe.org 공식 콘퍼런스 페이지에서 확인 필요
 - Zama $1B 유니콘 미검증 반복: 이번 he-keyword-search에서도 Zama $1B 유니콘을 G-22/E-07 귀속으로 기재했으나 두 URL 모두 해당 내용 없음. Zama 기업 가치 수치는 독립 IR 보도자료 URL 필수 (이전 weekly-secure-ai에서도 동일 패턴)
+
+### 반복 패턴 (secure-ai weekly W15 신규 확인)
+- "a few minutes" → 구체 수치(9분) 삽입 패턴: Google ECDLP 논문 블로그(G-01)는 "a few minutes"만 기재하고 있으나 본문이 "9분"으로 구체화. 이전 speech-generation에서도 "a few seconds→10초" 동일 패턴 반복. 원문에 없는 구체 시간 수치는 반드시 PDF 원문(E-01) WebFetch로 확인 필수
+- CRQC 큐비트 추이 수치 혼입 패턴: G-15 원본(The Quantum Insider)의 실제 추이는 2천만(2019)→100만 미만(2025-05)→10만 미만(2026-02)→50만 미만(2026-03)이나, 본문은 "900만→100만→50만/1만"으로 기재. 기준값(900만)과 말단값(1만)이 서로 다른 맥락(RSA vs ECC, Oratomic vs Google)의 수치를 혼입한 것으로 추정. 큐비트 추이 수치는 알고리즘 유형(RSA/ECC)·연도·논문 각각 별도 명시 필수
+- 3차 소스 조달액 vs 공식 보도자료 불일치 패턴: G-44(BankInfoSecurity)에서 Adaptive Security 누적 $136M으로 기재했으나, 공식 PR Newswire 보도자료는 $146.5M. 언론 기사가 Series A/B 합산 방식을 달리하는 사례 → 투자 누적액은 PR Newswire·공식 블로그 1차 소스 URL 확인 필수
+- 정부 권고 로드맵을 "법적 의무화"로 과장하는 패턴: CCCS ITSM.40.001은 권장 로드맵이며 "TBS 별도 정책 수단 발급 예정"이라 명시하나, 본문은 "법적 의무화"로 표현. 정부 PQC 문서는 의무화(mandate)/권고(recommendation)/법(legislation) 구분 확인 필수
+- Apple·AWS·Google FHE.org 스폰서 반복 미검증: W15 secure-ai에서도 "Apple·AWS·Google FHE.org 후원 진입"이 인용 코드 없이 전략적 시사점에 기재. 이전 he-keyword-search에서도 동일 패턴. fhe.org 공식 콘퍼런스 페이지 스폰서 목록 직접 WebFetch 필수

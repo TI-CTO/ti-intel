@@ -25,6 +25,27 @@ fi
 
 mkdir -p "$LOG_DIR"
 
+# ─── 동시 실행 방지: lockfile ───
+LOCKFILE="$LOG_DIR/.friday.lock"
+if [[ -f "$LOCKFILE" ]]; then
+  LOCK_PID=$(cat "$LOCKFILE" 2>/dev/null)
+  if kill -0 "$LOCK_PID" 2>/dev/null; then
+    echo "[SKIP] Another instance running (PID=$LOCK_PID). Exiting." | tee -a "$LOG_FILE"
+    exit 0
+  fi
+  rm -f "$LOCKFILE"
+fi
+echo $$ > "$LOCKFILE"
+
+# ─── 절전 방지: caffeinate ───
+caffeinate -s -w $$ &
+CAFFEINATE_PID=$!
+cleanup() {
+  kill "$CAFFEINATE_PID" 2>/dev/null || true
+  rm -f "$LOCKFILE"
+}
+trap cleanup EXIT
+
 # 날짜 판단
 DAY_OF_MONTH=$(date +%d)
 MONTH=$(date +%m)
@@ -43,6 +64,9 @@ fi
 
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] Starting Friday automation" | tee -a "$LOG_FILE"
 echo "  First Friday: $IS_FIRST_FRIDAY | Quarter Month: $IS_QUARTER_MONTH" | tee -a "$LOG_FILE"
+
+# 실패 추적 변수
+FAILED_TASKS=""
 
 # ─── 공통: claude 실행 + stderr 캡처 ───
 run_claude_task() {
@@ -76,12 +100,14 @@ echo "[$(date '+%H:%M:%S')] === Task 1: Weekly Summary ===" | tee -a "$LOG_FILE"
 RESULT=$(run_claude_task "weekly-summary" 30 \
   "금요일 주간 종합: 이번 주 outputs/reports/weekly/ 에서 최신 주간 리포트(agentic-ai, voice-ai, secure-ai)와 경쟁사 모니터링 결과를 읽고, CTO용 1페이지 주간 요약을 작성해줘. 포함 항목: (1) 도메인별 핵심 시그널 3줄씩, (2) 🔴 긴급 항목 하이라이트, (3) 포트폴리오 현황 변동, (4) 다음 주 주목 이슈. outputs/reports/weekly/${DATE}_weekly-summary.md 로 저장. PDF도 생성.") && EXIT_CODE=0 || EXIT_CODE=$?
 echo "[$(date '+%H:%M:%S')] Weekly summary: exit=$EXIT_CODE" | tee -a "$LOG_FILE"
+[[ $EXIT_CODE -ne 0 ]] && FAILED_TASKS="${FAILED_TASKS:+$FAILED_TASKS,}weekly-summary:${EXIT_CODE}"
 
 # ─── 2. 데이터 건강 체크 (매주) ───
 echo "[$(date '+%H:%M:%S')] === Task 2: Data Health Check ===" | tee -a "$LOG_FILE"
 HEALTH_RESULT=$(run_claude_task "health-check" 15 \
   "데이터 건강 체크: get_intel_stats로 intel-store 현황 확인. 체크 항목: (1) 전체 아이템 수, (2) 최근 7일 수집 건수, (3) 소스별 분포(news/paper/patent), (4) 토픽별 건수. 이상 징후(수집 0건, 특정 소스 누락 등)가 있으면 경고 표시. 결과를 간단히 텍스트로 출력해줘.") && HEALTH_CODE=0 || HEALTH_CODE=$?
 echo "[$(date '+%H:%M:%S')] Health check: exit=$HEALTH_CODE" | tee -a "$LOG_FILE"
+[[ $HEALTH_CODE -ne 0 ]] && FAILED_TASKS="${FAILED_TASKS:+$FAILED_TASKS,}health-check:${HEALTH_CODE}"
 
 # ─── 3. 포트폴리오 리뷰 (매월 첫째 금) ───
 if [[ "$IS_FIRST_FRIDAY" == "true" ]]; then
@@ -89,12 +115,14 @@ if [[ "$IS_FIRST_FRIDAY" == "true" ]]; then
   PORT_RESULT=$(run_claude_task "portfolio-review" 30 \
     "월간 포트폴리오 리뷰: outputs/reports/ 아래 3개 도메인(agentic-ai, voice-ai, secure-ai)의 portfolio.md를 읽고 종합 분석해줘. (1) 도메인별 Go/Conditional/No-Go/미평가 현황, (2) 지난 달 대비 점수 변동, (3) 미평가 L2 기술 중 다음 달 WTIS 우선 대상 3건 제안, (4) 전체 포트폴리오 건강도 평가. outputs/reports/${DATE}_monthly-portfolio-review.md 로 저장. PDF도 생성.") && PORT_CODE=0 || PORT_CODE=$?
   echo "[$(date '+%H:%M:%S')] Portfolio review: exit=$PORT_CODE" | tee -a "$LOG_FILE"
+  [[ $PORT_CODE -ne 0 ]] && FAILED_TASKS="${FAILED_TASKS:+$FAILED_TASKS,}portfolio-review:${PORT_CODE}"
 
   # ─── 4. 딜 파이프라인 리뷰 (매월 첫째 금) ───
   echo "[$(date '+%H:%M:%S')] === Task 4: Deal Pipeline Review ===" | tee -a "$LOG_FILE"
   DEAL_RESULT=$(run_claude_task "deal-review" 20 \
     "딜 파이프라인 리뷰: startup-db의 search_companies를 사용해서 deal_stage별 현황을 확인해줘. (1) 각 deal_stage별 건수, (2) screening 또는 due_diligence 단계에서 30일 이상 정체된 기업 목록, (3) 최근 1개월 deal_stage 변경 이력, (4) 다음 단계로 진행 권고 기업. 결과를 outputs/reports/${DATE}_monthly-deal-review.md 로 저장.") && DEAL_CODE=0 || DEAL_CODE=$?
   echo "[$(date '+%H:%M:%S')] Deal review: exit=$DEAL_CODE" | tee -a "$LOG_FILE"
+  [[ $DEAL_CODE -ne 0 ]] && FAILED_TASKS="${FAILED_TASKS:+$FAILED_TASKS,}deal-review:${DEAL_CODE}"
 fi
 
 # ─── 5. WTIS 전수 재평가 (분기 첫째 금) ───
@@ -103,12 +131,23 @@ if [[ "$IS_FIRST_FRIDAY" == "true" && "$IS_QUARTER_MONTH" == "true" ]]; then
   WTIS_RESULT=$(run_claude_task "wtis-reeval" 60 \
     "분기 WTIS 재평가: outputs/reports/ 아래 3개 도메인의 portfolio.md를 읽고, Go 또는 Conditional Go 판정을 받은 L2 기술들을 확인해줘. 각 기술의 마지막 평가일이 60일 이상 경과한 것만 대상으로, 주요 변화 사항(시장, 경쟁, 기술 성숙도)을 간략히 조사하고 재평가 필요 여부를 판단해줘. 전수 재실행은 하지 말고, 재평가 권고 목록만 작성해서 outputs/reports/${DATE}_quarterly-wtis-reeval.md 로 저장.") && WTIS_CODE=0 || WTIS_CODE=$?
   echo "[$(date '+%H:%M:%S')] WTIS re-eval: exit=$WTIS_CODE" | tee -a "$LOG_FILE"
+  [[ $WTIS_CODE -ne 0 ]] && FAILED_TASKS="${FAILED_TASKS:+$FAILED_TASKS,}wtis-reeval:${WTIS_CODE}"
 
   # ─── 6. 경쟁사 전략 종합 (분기 첫째 금) ───
   echo "[$(date '+%H:%M:%S')] === Task 6: Quarterly Competitor Summary ===" | tee -a "$LOG_FILE"
   COMP_RESULT=$(run_claude_task "competitor-summary" 40 \
     "분기 경쟁사 전략 종합: intel-store에서 search_intel(topic='skt-strategy', limit=50)과 search_intel(topic='kt-strategy', limit=50)으로 최근 3개월 데이터를 수집해줘. (1) SKT 전략 방향 변화 요약 (주요 발표, 투자, 제휴), (2) KT 전략 방향 변화 요약, (3) LG U+ 대비 포지셔닝 시사점, (4) 다음 분기 주목 포인트. outputs/reports/${DATE}_quarterly-competitor-summary.md 로 저장. PDF도 생성.") && COMP_CODE=0 || COMP_CODE=$?
   echo "[$(date '+%H:%M:%S')] Competitor summary: exit=$COMP_CODE" | tee -a "$LOG_FILE"
+  [[ $COMP_CODE -ne 0 ]] && FAILED_TASKS="${FAILED_TASKS:+$FAILED_TASKS,}competitor-summary:${COMP_CODE}"
+fi
+
+# ─── 실패 시 Gmail 알림 ───
+if [[ -n "$FAILED_TASKS" ]]; then
+  echo "[$(date '+%H:%M:%S')] Sending failure alert for: $FAILED_TASKS" | tee -a "$LOG_FILE"
+  "$UV" run "$WORKSPACE/scripts/auto-monitor/send-alert.py" \
+    --script friday \
+    --failures "$FAILED_TASKS" \
+    --log-file "$LOG_FILE" || true
 fi
 
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] Friday automation completed" | tee -a "$LOG_FILE"
