@@ -85,6 +85,7 @@ function rankScore(value: number, allValues: number[]): number {
 function calcApiScore(m: AgentMetrics, allMetrics: AgentMetrics[]): number {
   if (m.totalRuns === 0 && m.issuesDone === 0) return 0;
 
+
   const active = allMetrics.filter((a) => a.totalRuns > 0 || a.issuesDone > 0);
   if (active.length === 0) return 0;
 
@@ -107,7 +108,7 @@ export function buildTeamOverview(
   runs: HeartbeatRun[]
 ): TeamOverviewData {
   const allMetrics = agents
-    .filter((a) => a.role !== "ceo" && a.role !== "cto")
+    .filter((a) => a.role !== "ceo")
     .map((a) => calcAgentMetrics(a, issues, runs));
 
   allMetrics.forEach((m) => {

@@ -108,7 +108,7 @@ export function AgentPerfPage({ context }: { context: { companyId?: string } }) 
       )}
 
       {activeTab === "detail" && (() => {
-        const agents = rawData.agents.filter((a: Agent) => a.role !== "ceo" && a.role !== "cto");
+        const agents = rawData.agents.filter((a: Agent) => a.role !== "ceo");
         const agentId = selectedAgentId || agents[0]?.id;
         const agent = agents.find((a: Agent) => a.id === agentId);
 

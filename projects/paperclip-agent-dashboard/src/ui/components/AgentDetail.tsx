@@ -50,7 +50,7 @@ const AGENT_DOMAIN_MAP: Record<string, string[]> = {
   "안춘수": ["voice-ai", "voice"],
   "김보경": ["secure-ai", "secure"],
   "서진": ["agentic-ai", "agentic"],
-  "장재현": ["competitor", "경쟁사"],
+  "장재현": ["competitor", "경쟁사", "weekly-summary", "summary"],
   "선우혜자": ["startup"],
   "탁현욱": ["secure-ai"],
   "황경민": ["weekly"],
@@ -97,16 +97,20 @@ function matchFilesToIssue(issue: Issue, files: OutputFile[]): OutputFile[] {
 
   const issueDate = toKSTDate(refDate);
   const titleLower = issue.title.toLowerCase();
+  const keywords = titleLower
+    .replace(/[^\w\s가-힣]/g, "")
+    .split(/\s+/)
+    .filter((w) => w.length > 2);
+
   return files.filter((f) => {
     if (f.type !== "md") return false;
     const fileDate = f.name.slice(0, 10);
     if (fileDate !== issueDate) return false;
-    const keywords = titleLower
-      .replace(/[^\w\s가-힣]/g, "")
-      .split(/\s+/)
-      .filter((w) => w.length > 2);
+    // 키워드 매칭 또는 research/weekly/startup 패턴 매칭
     const nameLower = f.name.toLowerCase();
-    return keywords.some((kw) => nameLower.includes(kw));
+    const keywordMatch = keywords.some((kw) => nameLower.includes(kw));
+    const patternMatch = /_(weekly|research|startup|monitor|summary)/.test(nameLower);
+    return keywordMatch || patternMatch;
   });
 }
 
@@ -203,7 +207,7 @@ export function AgentDetail({
   return (
     <div>
       <div style={{ display: "flex", gap: "8px", marginBottom: "24px", flexWrap: "wrap" as const }}>
-        {agents.filter((a) => a.role !== "ceo" && a.role !== "cto").map((a) => {
+        {agents.filter((a) => a.role !== "ceo").map((a) => {
           const isActive = a.id === agent.id;
           return (
             <button
