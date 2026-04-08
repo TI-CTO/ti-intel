@@ -1,0 +1,21 @@
+{
+  "name": "paperclip-plugin-agent-dashboard",
+  "version": "0.0.1",
+  "type": "module",
+  "main": "dist/worker.js",
+  "paperclipPlugin": {
+    "manifest": "dist/manifest.js"
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "dev": "node build.mjs --watch"
+  },
+  "dependencies": {
+    "@paperclipai/plugin-sdk": "*",
+    "marked": "^18.0.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0",
+    "typescript": "^5.7.0"
+  }
+}

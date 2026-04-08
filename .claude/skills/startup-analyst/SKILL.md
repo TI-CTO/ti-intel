@@ -28,7 +28,7 @@ VC/투자 관점의 분석과 DB 입력을 동시에 수행하는 하이브리�
 **완료 시:**
 ```
 분석 완료 (confidence: high, sources: 18)
-저장: outputs/reports/2026-03-13_startup-sim2real.md
+저장: outputs/reports/startups/2026-03-13_startup-sim2real.md
 
 📋 Next Steps:
   → Section 8 JSON을 startup-db에 저장 (승인 필요)
@@ -50,7 +50,7 @@ VC/투자 관점의 분석과 DB 입력을 동시에 수행하는 하이브리�
 ### Output Files
 | Artifact | Path Pattern | Description |
 |----------|-------------|-------------|
-| 분석 리포트 | `outputs/reports/YYYY-MM-DD_startup-{slug}.md` | 심층 분석 + DB JSON |
+| 분석 리포트 | `outputs/reports/startups/YYYY-MM-DD_startup-{slug}.md` | 심층 분석 + DB JSON |
 
 ### Return
 ```yaml
@@ -118,7 +118,7 @@ startup-db에 이미 등록된 기업인지 확인:
 
 ### Step 5: 저장
 
-저장 경로: `/Users/ctoti/Project/ClaudeCode/outputs/reports/{YYYY-MM-DD}_startup-{slug}.md`
+저장 경로: `/Users/ctoti/Project/ClaudeCode/outputs/reports/startups/{YYYY-MM-DD}_startup-{slug}.md`
 
 ## Output Format
 
