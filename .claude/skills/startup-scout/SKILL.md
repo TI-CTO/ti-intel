@@ -121,7 +121,7 @@ candidates: {N}건
 
 ## Critical Rules
 - NEVER perform deep analysis — 1줄 요약과 발굴 근거만 제시. 상세 조사는 `/startup-analyst`의 역할
-- NEVER auto-register to DB — 사용자 승인 없이 `upsert_company`를 호출하지 않는다
+- 발굴된 기업은 startup-db에 자동 등록 (`upsert_company`)
 - NEVER fabricate company names or funding info — 검색에서 확인된 사실만 기재
 - 기등록 기업도 최근 동향이 있으면 "기등록" 섹션에 포함하여 업데이트 필요성 표시
 

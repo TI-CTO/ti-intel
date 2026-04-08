@@ -3,12 +3,16 @@ import { usePluginData } from "@paperclipai/plugin-sdk/ui";
 import { TabNav } from "./components/TabNav.js";
 import { TeamOverview } from "./components/TeamOverview.js";
 import { AgentDetail } from "./components/AgentDetail.js";
+import { Comparison } from "./components/Comparison.js";
+import { OutputsBrowser } from "./components/OutputsBrowser.js";
 import { buildTeamOverview, buildAgentDetail } from "./utils/metrics.js";
 import type { Agent } from "./types.js";
 
 const TABS = [
   { id: "overview", label: "Team Overview" },
   { id: "detail", label: "Agent Detail" },
+  { id: "comparison", label: "Comparison" },
+  { id: "outputs", label: "Outputs" },
 ];
 
 function parseHash(): { tab: string; agentId: string | null } {
@@ -100,7 +104,7 @@ export function AgentPerfPage({ context }: { context: { companyId?: string } }) 
       <TabNav tabs={TABS} activeTab={activeTab} onTabChange={handleTabChange} />
 
       {activeTab === "overview" && (
-        <TeamOverview data={teamData} onSelectAgent={handleSelectAgent} />
+        <TeamOverview data={teamData} issues={rawData.issues} onSelectAgent={handleSelectAgent} />
       )}
 
       {activeTab === "detail" && (() => {
@@ -125,6 +129,14 @@ export function AgentPerfPage({ context }: { context: { companyId?: string } }) 
           />
         );
       })()}
+
+      {activeTab === "comparison" && (
+        <Comparison allMetrics={teamData.rankings} runs={rawData.runs} />
+      )}
+
+      {activeTab === "outputs" && (
+        <OutputsBrowser />
+      )}
     </div>
   );
 }

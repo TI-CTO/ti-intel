@@ -80,8 +80,8 @@
 | **wtis** (all) | Phase 2 | research-deep 에이전트 | Brief + domain-params → 심층 리서치 |
 | **research-session** | 기술 검증 필요 | wtis standard | 주제 → 200점 채점 |
 | **research-session** | 넓은 탐색 필요 | discover | 도메인 → 기회 발굴 |
-| **startup-scout** | 사용자 승인 | startup-analyst | 기업명 + 초기 정보 → 심층 분석 |
-| **startup-analyst** | 분석 완료 | startup-db MCP | Section 8 JSON → upsert_company / add_funding_round |
+| **startup-scout** | 심층 분석 필요 | startup-analyst | 기업명 + 초기 정보 → 심층 분석 |
+| **startup-analyst** | 분석 완료 | startup-db MCP | 자동 → upsert_company / add_funding_round |
 | **startup-analyst** | WTIS 검증 필요 | wtis standard | 기업의 핵심 기술 → Go/No-Go 검증 |
 | **discover** | 플레이어 탐색 | startup-scout | 도메인 키워드 → 스타트업 후보 발굴 |
 | **wtis** (standard) | Go/Conditional Go | wtis full | Standard 리포트 → 종합 기술 전략 제안서 |
@@ -178,8 +178,7 @@ file_path: "주요 산출물 절대 경로"
 /startup-scout voice AI security        ← 또는 "voice AI security 스타트업 찾아줘"
   → 후보 5건 발굴
   → /startup-analyst {선택 기업}          ← 또는 "{기업명} 심층 분석해줘"
-  → 분석 리포트 + DB 입력용 JSON
-  → 사용자 승인 → upsert_company + add_funding_round
+  → 분석 리포트 + 자동 DB 저장 (upsert_company + add_funding_round)
   → /obsidian-bridge {리포트} research
   → /work-log
 ```

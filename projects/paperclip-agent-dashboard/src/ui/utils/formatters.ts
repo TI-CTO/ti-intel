@@ -20,6 +20,14 @@ export function formatNumber(value: number): string {
   return value.toLocaleString();
 }
 
+export function toKST(isoDate: string): Date {
+  return new Date(new Date(isoDate).getTime() + 9 * 60 * 60 * 1000);
+}
+
+export function toKSTDateString(isoDate: string): string {
+  return toKST(isoDate).toISOString().slice(0, 10);
+}
+
 export function timeAgo(isoDate: string | null): string {
   if (!isoDate) return "-";
   const diff = Date.now() - new Date(isoDate).getTime();

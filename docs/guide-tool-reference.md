@@ -393,7 +393,7 @@ search_companies(l3_slug="adaptive-rag", country="한국")  ← L3 기술 + 국�
 ```
 [발굴] /startup-scout {도메인} (또는 자연어) → 후보 쇼트리스트
 [분석] /startup-analyst {기업명} (또는 자연어) → 심층 리포트 + DB 입력용 JSON
-[저장] 사용자 승인 → upsert_company + add_funding_round
+[저장] 자동 → upsert_company + add_funding_round
 [조회] search_companies / get_company → 대시보드 또는 즉석 검색
 ```
 

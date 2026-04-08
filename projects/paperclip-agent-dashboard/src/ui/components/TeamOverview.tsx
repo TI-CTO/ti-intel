@@ -1,6 +1,7 @@
 import React from "react";
-import type { TeamOverviewData, AgentMetrics } from "../types.js";
+import type { TeamOverviewData, AgentMetrics, Issue } from "../types.js";
 import { formatDuration, formatPercent } from "../utils/formatters.js";
+import { calcRoi, type RoiSummary } from "../utils/roi.js";
 
 const cardContainerStyle: React.CSSProperties = {
   display: "grid",
@@ -90,12 +91,15 @@ function statusBadge(status: string): React.ReactNode {
 
 export function TeamOverview({
   data,
+  issues,
   onSelectAgent,
 }: {
   data: TeamOverviewData;
+  issues: Issue[];
   onSelectAgent: (agentId: string) => void;
 }) {
   const { summary, rankings } = data;
+  const roi = calcRoi(issues);
 
   return (
     <div>
@@ -111,6 +115,34 @@ export function TeamOverview({
           value={`${summary.activeAgents}/${summary.totalAgents}`}
         />
       </div>
+
+      {roi.issueCount > 0 && (
+        <>
+          <h2 style={{ fontSize: "16px", color: "#e0e0e0", marginBottom: "16px" }}>ROI — 시간 절감 효과</h2>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "16px", marginBottom: "32px" }}>
+            <div style={{ ...cardStyle, borderLeft: "3px solid #10b981" }}>
+              <div style={cardLabel}>누적 절감 시간</div>
+              <div style={cardValue}>
+                {roi.totalSavedHours > 0 ? "+" : ""}{roi.totalSavedHours}h
+              </div>
+              <div style={{ color: "#666", fontSize: "11px" }}>{roi.totalSavedWorkingDays} 워킹일</div>
+            </div>
+            <div style={{ ...cardStyle, borderLeft: "3px solid #3b82f6" }}>
+              <div style={cardLabel}>이번 주 절감</div>
+              <div style={cardValue}>
+                {roi.thisWeekSavedHours > 0 ? "+" : ""}{roi.thisWeekSavedHours}h
+              </div>
+            </div>
+            <div style={{ ...cardStyle, borderLeft: "3px solid #7c6ef0" }}>
+              <div style={cardLabel}>건당 평균 절감</div>
+              <div style={cardValue}>
+                {roi.avgSavedPerIssueHours > 0 ? "+" : ""}{roi.avgSavedPerIssueHours}h
+              </div>
+              <div style={{ color: "#666", fontSize: "11px" }}>{roi.issueCount}건 기준</div>
+            </div>
+          </div>
+        </>
+      )}
 
       <h2 style={{ fontSize: "16px", color: "#e0e0e0", marginBottom: "16px" }}>에이전트 랭킹</h2>
       <table style={tableStyle}>

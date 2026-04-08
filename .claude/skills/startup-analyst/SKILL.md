@@ -8,7 +8,7 @@ argument-hint: "[company name]"
 # Startup Analyst — 스타트업 심층 분석 스킬
 
 특정 기업을 심층 조사하여 팩트 기반 분석 리포트를 생성하고,
-startup-db MCP에 저장 가능한 정규화된 데이터(Section 8)를 함께 산출한다.
+리포트 생성 후 startup-db MCP에 정규화 데이터를 저장한다.
 VC/투자 관점의 분석과 DB 입력을 동시에 수행하는 하이브리드 역할.
 
 ## 빠른 시작
@@ -31,7 +31,7 @@ VC/투자 관점의 분석과 DB 입력을 동시에 수행하는 하이브리�
 저장: outputs/reports/startups/2026-03-13_startup-sim2real.md
 
 📋 Next Steps:
-  → Section 8 JSON을 startup-db에 저장 (승인 필요)
+  → startup-db에 자동 저장
   → /wtis standard {핵심 기술} Go/No-Go 검증
 ```
 
@@ -230,50 +230,6 @@ sources_count: {N}
 **리스크 요인:**
 - 시장 규제, 경쟁 심화, 번레이트, 핵심 인력 이탈 등
 
-## 8. DB 등록용 정규화 데이터
-
-> 아래 데이터는 사용자 승인 후 startup-db MCP 도구로 저장한다.
-
-### upsert_company
-```json
-{
-  "name": "",
-  "slug": "",
-  "description": "",
-  "website": "",
-  "status": "active",
-  "main_category": "",
-  "sub_category": "",
-  "tags": [],
-  "country": "",
-  "city": "",
-  "technology": "",
-  "main_product": "",
-  "discovery_source": "",
-  "metadata": {}
-}
-```
-
-### add_funding_round (라운드별)
-```json
-[
-  {
-    "company_slug": "",
-    "round_type": "seed",
-    "raised_amount": null,
-    "currency": "KRW",
-    "announced_date": "YYYY-MM-DD"
-  }
-]
-```
-
-### upsert_person (인물별)
-```json
-[
-  {"name": "", "title": "", "role": "ceo"}
-]
-```
-
 ## References
 | # | 출처 | URL | 유형 | 날짜 | 신뢰도 |
 |---|------|-----|------|------|--------|
@@ -285,7 +241,7 @@ sources_count: {N}
 - NEVER present single-source claims as confirmed facts — 반드시 [D] 태그 명시
 - NEVER skip the References table — 출처 없는 주장은 삭제한다
 - NEVER guess financial data — 투자 금액, 밸류에이션, 매출은 확인된 수치만 기재. 불확실하면 "공개 정보 없음"
-- NEVER auto-save to DB — Section 8의 JSON은 사용자 승인 후에만 MCP 도구로 실행
+- 리포트 생성 완료 후 startup-db MCP 도구로 자동 저장 (upsert_company + add_funding_round)
 - "성장세가 가파르다" 같은 정성적 표현 금지 — "최근 6개월간 MAU 150% 증가 [B-03]" 같이 수치 + 출처로 기술
 - 한국 비상장 스타트업은 TheVC + 혁신의숲 필수 조회 — 스킵하면 데이터 품질 보증 불가
 
@@ -293,7 +249,7 @@ sources_count: {N}
 - References 최소 15건 (한국 비상장은 국내 소스 5건+)
 - 단일 소스([D]) 비율 20% 미만
 - 투자 금액: 2건+ 교차 검증 완료
-- Section 8 JSON이 startup-db 스키마와 100% 호환
+- DB 저장 시 startup-db 스키마와 100% 호환
 - 5차원 스코어 전 항목에 1줄 이상 근거 명시
 - 정보 부재 항목은 "공개 정보 없음" 명시 (빈 칸 방치 금지)
 
@@ -303,8 +259,8 @@ sources_count: {N}
 
 ```
 📋 Next Steps:
-  💾 DB 저장 (승인 필요):
-    → Section 8 JSON으로 upsert_company + add_funding_round 실행
+  💾 DB 저장 (자동):
+    → 리포트 데이터로 upsert_company + add_funding_round 실행
   🔬 핵심 기술 검증:
     → /wtis standard {핵심 기술}               — Go/No-Go 200점 채점
   📄 PDF 변환:

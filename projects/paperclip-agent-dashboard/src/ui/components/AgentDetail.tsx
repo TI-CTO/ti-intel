@@ -45,15 +45,62 @@ function statusColor(status: string): string {
   return colors[status] || "#888";
 }
 
+// 에이전트 → 담당 도메인/키워드 매핑
+const AGENT_DOMAIN_MAP: Record<string, string[]> = {
+  "안춘수": ["voice-ai", "voice"],
+  "김보경": ["secure-ai", "secure"],
+  "서진": ["agentic-ai", "agentic"],
+  "장재현": ["competitor", "경쟁사"],
+  "선우혜자": ["startup"],
+  "탁현욱": ["secure-ai"],
+  "황경민": ["weekly"],
+};
+
+function getAgentOutputs(agentName: string, issues: Issue[], files: OutputFile[]): OutputFile[] {
+  const mdFiles = files.filter((f) => f.type === "md");
+  const found = new Set<string>();
+
+  // 1차: 도메인 매핑 기반
+  const domains = AGENT_DOMAIN_MAP[agentName];
+  if (domains) {
+    for (const f of mdFiles) {
+      if (domains.some((d) => f.path.toLowerCase().includes(d) || f.name.toLowerCase().includes(d))) {
+        found.add(f.path);
+      }
+    }
+  }
+
+  // 2차: 이슈 기반 매칭 (할당된 이슈의 산출물)
+  for (const issue of issues) {
+    const matched = matchFilesToIssue(issue, mdFiles);
+    for (const f of matched) {
+      found.add(f.path);
+    }
+  }
+
+  return mdFiles
+    .filter((f) => found.has(f.path))
+    .sort((a, b) => new Date(b.modified).getTime() - new Date(a.modified).getTime())
+    .slice(0, 8);
+}
+
+function toKSTDate(isoDate: string): string {
+  const d = new Date(isoDate);
+  const kst = new Date(d.getTime() + 9 * 60 * 60 * 1000);
+  return kst.toISOString().slice(0, 10);
+}
+
 function matchFilesToIssue(issue: Issue, files: OutputFile[]): OutputFile[] {
   if (!issue.completedAt && !issue.startedAt) return [];
-  const issueDate = (issue.completedAt || issue.startedAt || "").slice(0, 10);
-  if (!issueDate) return [];
+  const refDate = issue.completedAt || issue.startedAt || "";
+  if (!refDate) return [];
 
+  const issueDate = toKSTDate(refDate);
   const titleLower = issue.title.toLowerCase();
   return files.filter((f) => {
-    if (f.type !== "md") return false; // PDF 제외
-    if (!f.name.startsWith(issueDate)) return false;
+    if (f.type !== "md") return false;
+    const fileDate = f.name.slice(0, 10);
+    if (fileDate !== issueDate) return false;
     const keywords = titleLower
       .replace(/[^\w\s가-힣]/g, "")
       .split(/\s+/)
@@ -155,23 +202,29 @@ export function AgentDetail({
 
   return (
     <div>
-      <div style={{ marginBottom: "24px" }}>
-        <select
-          value={agent.id}
-          onChange={(e) => onSelectAgent(e.target.value)}
-          style={{
-            background: "#1a1a1a",
-            color: "#e0e0e0",
-            border: "1px solid #333",
-            borderRadius: "6px",
-            padding: "8px 12px",
-            fontSize: "14px",
-          }}
-        >
-          {agents.filter((a) => a.role !== "ceo" && a.role !== "cto").map((a) => (
-            <option key={a.id} value={a.id}>{a.name} — {a.title || a.role}</option>
-          ))}
-        </select>
+      <div style={{ display: "flex", gap: "8px", marginBottom: "24px", flexWrap: "wrap" as const }}>
+        {agents.filter((a) => a.role !== "ceo" && a.role !== "cto").map((a) => {
+          const isActive = a.id === agent.id;
+          return (
+            <button
+              key={a.id}
+              onClick={() => onSelectAgent(a.id)}
+              style={{
+                padding: "6px 14px",
+                borderRadius: "20px",
+                border: isActive ? "1px solid #7c6ef0" : "1px solid #333",
+                background: isActive ? "#7c6ef018" : "transparent",
+                color: isActive ? "#e0e0e0" : "#888",
+                cursor: "pointer",
+                fontSize: "12px",
+                fontWeight: isActive ? 600 : 400,
+                transition: "all 0.15s",
+              }}
+            >
+              {a.name}
+            </button>
+          );
+        })}
       </div>
 
       <div style={{
@@ -229,6 +282,46 @@ export function AgentDetail({
           </div>
         </div>
       </div>
+
+      {/* 주요 산출물 */}
+      {(() => {
+        const agentOutputs = getAgentOutputs(agent.name, recentIssues, allFiles);
+        if (agentOutputs.length === 0) return null;
+        return (
+          <>
+            <h3 style={{ fontSize: "14px", color: "#e0e0e0", marginBottom: "12px" }}>주요 산출물</h3>
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+              gap: "8px",
+              marginBottom: "32px",
+            }}>
+              {agentOutputs.map((f) => (
+                <button
+                  key={f.path}
+                  onClick={() => setViewingFile(viewingFile === f.path ? null : f.path)}
+                  style={{
+                    padding: "12px 14px",
+                    background: viewingFile === f.path ? "#7c6ef015" : "#111",
+                    border: viewingFile === f.path ? "1px solid #7c6ef060" : "1px solid #2a2a2a",
+                    borderRadius: "8px",
+                    cursor: "pointer",
+                    textAlign: "left" as const,
+                    transition: "all 0.15s",
+                  }}
+                >
+                  <div style={{ fontSize: "12px", color: "#e0e0e0", marginBottom: "4px", lineHeight: "1.4" }}>
+                    {f.name.replace(/\.md$/, "").slice(11)}
+                  </div>
+                  <div style={{ fontSize: "10px", color: "#555" }}>
+                    {new Date(f.modified).toLocaleDateString("ko-KR")} · {(f.size / 1024).toFixed(0)}KB
+                  </div>
+                </button>
+              ))}
+            </div>
+          </>
+        );
+      })()}
 
       <h3 style={{ fontSize: "14px", color: "#e0e0e0", marginBottom: "12px" }}>최근 이슈</h3>
       <table style={{ width: "100%", borderCollapse: "collapse" as const, marginBottom: "16px" }}>
