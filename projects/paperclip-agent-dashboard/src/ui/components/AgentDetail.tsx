@@ -465,7 +465,11 @@ export function AgentDetail({
                   <span style={{ color: statusColor(run.status) }}>{run.status}</span>
                 </td>
                 <td style={tdStyle}>
-                  {run.resultJson?.duration_ms ? formatDuration(run.resultJson.duration_ms) : "-"}
+                  {(() => {
+                    const d = run.resultJson?.duration_ms
+                      || (run.startedAt && run.finishedAt ? new Date(run.finishedAt).getTime() - new Date(run.startedAt).getTime() : 0);
+                    return d > 0 ? formatDuration(d) : "-";
+                  })()}
                 </td>
                 <td style={tdStyle}>{run.resultJson?.num_turns ?? "-"}</td>
                 <td style={tdStyle}>

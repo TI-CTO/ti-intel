@@ -56,6 +56,28 @@ if [[ -n "$BACKLOG_IDS" ]]; then
   done <<< "$BACKLOG_IDS"
 fi
 
+# ─── Auto-assign unassigned issues to CTO (장재현) ───
+CTO_AGENT_ID="d3fc30d8-6480-41bf-a80a-087ddef5bc74"
+UNASSIGNED_IDS=$(echo "$ISSUES_JSON" | python3 -c "
+import json, sys
+issues = json.load(sys.stdin)
+for i in issues:
+    if not i.get('assigneeAgentId'):
+        print(i['id'])
+" 2>/dev/null)
+
+if [[ -n "$UNASSIGNED_IDS" ]]; then
+  while IFS= read -r ISSUE_ID; do
+    [[ -z "$ISSUE_ID" ]] && continue
+    curl -sf --max-time 5 -X PATCH "$API_BASE/issues/$ISSUE_ID" \
+      -H "Content-Type: application/json" \
+      -d "{\"assigneeAgentId\":\"$CTO_AGENT_ID\",\"status\":\"todo\"}" >/dev/null 2>&1 && \
+      log "ASSIGN-CTO: $ISSUE_ID → 장재현"
+  done <<< "$UNASSIGNED_IDS"
+  # Re-fetch issues after assignment
+  ISSUES_JSON=$(curl -sf --max-time 10 "$API_BASE/issues?status=backlog,todo" 2>/dev/null) || exit 0
+fi
+
 # ─── Extract unique assignee agent IDs with pending work ───
 AGENT_IDS=$(echo "$ISSUES_JSON" | python3 -c "
 import json, sys

@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import type { TeamOverviewData, AgentMetrics, Issue } from "../types.js";
 import { formatDuration, formatPercent } from "../utils/formatters.js";
-import { calcRoi, type RoiSummary } from "../utils/roi.js";
+import { calcRoi, getTaskTypes, getBaselines, saveBaselines, getDefaultBaselineHours } from "../utils/roi.js";
 
 const cardContainerStyle: React.CSSProperties = {
   display: "grid",
@@ -99,7 +99,29 @@ export function TeamOverview({
   onSelectAgent: (agentId: string) => void;
 }) {
   const { summary, rankings } = data;
+  const [showRoiSettings, setShowRoiSettings] = useState(false);
+  const [roiVersion, setRoiVersion] = useState(0);
   const roi = calcRoi(issues);
+
+  const inputStyle: React.CSSProperties = {
+    background: "#111",
+    color: "#e0e0e0",
+    border: "1px solid #333",
+    borderRadius: "4px",
+    padding: "4px 8px",
+    fontSize: "13px",
+    width: "60px",
+    textAlign: "right" as const,
+  };
+
+  function handleBaselineChange(name: string, value: string) {
+    const hours = parseFloat(value);
+    if (isNaN(hours) || hours < 0) return;
+    const baselines = getBaselines();
+    baselines[name] = hours;
+    saveBaselines(baselines);
+    setRoiVersion((v) => v + 1);
+  }
 
   return (
     <div>
@@ -118,7 +140,68 @@ export function TeamOverview({
 
       {roi.issueCount > 0 && (
         <>
-          <h2 style={{ fontSize: "16px", color: "#e0e0e0", marginBottom: "16px" }}>ROI — 시간 절감 효과</h2>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+            <h2 style={{ fontSize: "16px", color: "#e0e0e0", margin: 0 }}>ROI — 시간 절감 효과</h2>
+            <button
+              onClick={() => setShowRoiSettings(!showRoiSettings)}
+              style={{
+                background: showRoiSettings ? "#7c6ef030" : "#7c6ef015",
+                border: showRoiSettings ? "1px solid #7c6ef0" : "1px solid #7c6ef060",
+                borderRadius: "20px",
+                color: showRoiSettings ? "#e0e0e0" : "#7c6ef0",
+                cursor: "pointer",
+                fontSize: "12px",
+                fontWeight: 600,
+                padding: "6px 16px",
+                transition: "all 0.15s",
+              }}
+            >
+              {showRoiSettings ? "Close" : "기준 시간 설정"}
+            </button>
+          </div>
+
+          {showRoiSettings && (
+            <div style={{
+              padding: "16px",
+              background: "#111",
+              borderRadius: "8px",
+              border: "1px solid #2a2a2a",
+              marginBottom: "16px",
+            }}>
+              <div style={{ fontSize: "12px", color: "#888", marginBottom: "12px" }}>
+                사람이 같은 작업을 했을 때의 예상 소요 시간 (시간 단위)
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "10px" }}>
+                {getTaskTypes().map((t) => (
+                  <div key={t.name} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <span style={{ fontSize: "13px", color: "#aaa", flex: 1 }}>{t.label}</span>
+                    <input
+                      type="number"
+                      step="0.5"
+                      min="0"
+                      defaultValue={t.baselineHours}
+                      onBlur={(e) => handleBaselineChange(t.name, e.target.value)}
+                      style={inputStyle}
+                    />
+                    <span style={{ fontSize: "11px", color: "#555" }}>h</span>
+                  </div>
+                ))}
+                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  <span style={{ fontSize: "13px", color: "#aaa", flex: 1 }}>기타</span>
+                  <input
+                    type="number"
+                    step="0.5"
+                    min="0"
+                    defaultValue={getDefaultBaselineHours()}
+                    onBlur={(e) => handleBaselineChange("other", e.target.value)}
+                    style={inputStyle}
+                  />
+                  <span style={{ fontSize: "11px", color: "#555" }}>h</span>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "16px", marginBottom: "32px" }}>
             <div style={{ ...cardStyle, borderLeft: "3px solid #10b981" }}>
               <div style={cardLabel}>누적 절감 시간</div>

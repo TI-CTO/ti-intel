@@ -27,7 +27,14 @@ function calcAgentMetrics(
     .filter((t) => t > 0);
 
   const runDurations = agentRuns
-    .map((r) => r.resultJson?.duration_ms)
+    .map((r) => {
+      // Prefer resultJson.duration_ms, fallback to finishedAt - startedAt
+      if (r.resultJson?.duration_ms) return r.resultJson.duration_ms;
+      if (r.startedAt && r.finishedAt) {
+        return new Date(r.finishedAt).getTime() - new Date(r.startedAt).getTime();
+      }
+      return 0;
+    })
     .filter((d): d is number => typeof d === "number" && d > 0);
 
   const turns = agentRuns
@@ -162,9 +169,8 @@ export function buildAgentDetail(
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
     .slice(0, 10);
 
-  // Detail shows all runs (including heartbeat-only) for transparency
   const recentRuns = runs
-    .filter((r) => r.agentId === agent.id)
+    .filter((r) => r.agentId === agent.id && isMeaningfulRun(r))
     .sort((a, b) => new Date(b.startedAt).getTime() - new Date(a.startedAt).getTime())
     .slice(0, 10);
 
