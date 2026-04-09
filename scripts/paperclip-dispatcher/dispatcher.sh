@@ -49,7 +49,7 @@ for i in issues:
 if [[ -n "$BACKLOG_IDS" ]]; then
   while IFS= read -r ISSUE_ID; do
     [[ -z "$ISSUE_ID" ]] && continue
-    curl -sf --max-time 5 -X PATCH "$API_BASE/issues/$ISSUE_ID" \
+    curl -sf --max-time 5 -X PATCH "http://127.0.0.1:3100/api/issues/$ISSUE_ID" \
       -H "Content-Type: application/json" \
       -d '{"status":"todo"}' >/dev/null 2>&1 && \
       log "PROMOTE: $ISSUE_ID backlog→todo"
@@ -69,7 +69,7 @@ for i in issues:
 if [[ -n "$UNASSIGNED_IDS" ]]; then
   while IFS= read -r ISSUE_ID; do
     [[ -z "$ISSUE_ID" ]] && continue
-    curl -sf --max-time 5 -X PATCH "$API_BASE/issues/$ISSUE_ID" \
+    curl -sf --max-time 5 -X PATCH "http://127.0.0.1:3100/api/issues/$ISSUE_ID" \
       -H "Content-Type: application/json" \
       -d "{\"assigneeAgentId\":\"$CTO_AGENT_ID\",\"status\":\"todo\"}" >/dev/null 2>&1 && \
       log "ASSIGN-CTO: $ISSUE_ID → 장재현"
