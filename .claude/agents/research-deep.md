@@ -103,7 +103,10 @@ Apply Evidence Chain standard to all collected information:
 
 ### Step 5: Save Report
 
-Save to:
+Save using the caller-provided `output_path` when it is explicitly passed in.
+This is required for workflow-driven runs such as WTIS, where the report must land in a session directory.
+
+If `output_path` is not provided, fall back to:
 `/Users/ctoti/Project/ClaudeCode/outputs/reports/{YYYY-MM-DD}_research-{topic-slug}.md`
 
 ## Output Format
@@ -169,6 +172,8 @@ status: pass
 summary: (200자 이내 핵심 발견 요약)
 file_path: (절대 경로)
 ```
+
+If `output_path` was provided, `file_path` must exactly match that saved path.
 
 ## Critical Rules
 - Low confidence claims ([C]/[D]) must have inline badges: [추가확인 필요] or [미검증]

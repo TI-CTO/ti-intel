@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.ctoti.weekly-monitor.secure-ai</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/zsh</string>
+    <string>/Users/ctoti/Project/ClaudeCode/scripts/auto-monitor/run-domain.sh</string>
+    <string>secure-ai</string>
+  </array>
+  <key>StartCalendarInterval</key>
+  <dict>
+    <key>Weekday</key>
+    <integer>1</integer>
+    <key>Hour</key>
+    <integer>12</integer>
+    <key>Minute</key>
+    <integer>30</integer>
+  </dict>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/Users/ctoti/.local/bin:/Users/ctoti/.claude/local:/usr/local/bin:/usr/bin:/bin</string>
+    <key>HOME</key>
+    <string>/Users/ctoti</string>
+    <key>OBSIDIAN_VAULT_PATH</key>
+    <string>/Users/ctoti/Obsidian/Obsidian_Work</string>
+  </dict>
+  <key>WorkingDirectory</key>
+  <string>/Users/ctoti/Project/ClaudeCode</string>
+  <key>StandardOutPath</key>
+  <string>/Users/ctoti/Project/ClaudeCode/logs/auto-monitor/launchd-secure-ai.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/ctoti/Project/ClaudeCode/logs/auto-monitor/launchd-secure-ai.err</string>
+</dict>
+</plist>

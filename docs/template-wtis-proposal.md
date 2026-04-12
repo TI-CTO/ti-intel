@@ -1,6 +1,7 @@
 # [과제명] 과제 제안서
 
 > WTIS v4.0 입력 템플릿.
+> 현재 기준 버전: WTIS v4.1.
 > 이 양식을 채워 `/wtis proposal <파일경로>` 로 실행하면 심층 분석 리포트가 생성된다.
 > 출력 형식: `docs/template-wtis-report.md` 참조.
 

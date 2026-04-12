@@ -110,10 +110,12 @@
 모든 분석 스킬은 통일된 Return 형식을 사용한다:
 
 ```yaml
-status: pass | fail | partial | needs-followup
+status: pass | fail | uncertain | needs-followup
 summary: "200자 이내 요약"
 file_path: "주요 산출물 절대 경로"
 ```
+
+> 참고: 일부 과거 산출물과 구형 문서에는 `partial` 상태가 남아 있을 수 있다. 현재 WTIS/validator 실행 계약의 기준 상태값은 `pass | fail | uncertain | needs-followup`이다.
 
 ### 스킬별 추가 Return 필드
 

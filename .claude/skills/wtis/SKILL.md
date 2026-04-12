@@ -8,6 +8,7 @@ argument-hint: "[proposal|standard|deep|full] [query or file path]"
 # WTIS v4.1 Orchestrator
 
 Winning Tech Intelligence System의 오케스트레이터.
+이 문서는 WTIS의 실행 계약(source of truth)이다. 사람용 개념 설명과 의사결정 배경은 Obsidian의 `10-지식베이스/워크플로우/01-WTIS-2Tier-가이드.md`를 따른다.
 v4.1: L2 단위 분석 + 포트폴리오 구조 전환.
 - 분석 단위를 L1(도메인) → L2(기술)로 전환. "하나의 판정 = 하나의 의사결정"
 - L1 도메인별 포트폴리오로 L2 평가 결과를 종합
@@ -231,7 +232,7 @@ outputs/reports/{domain}/{domain}-portfolio.md       # 포트폴리오 종합
     │   └─ 결과 파일: outputs/reports/{domain}/{l2_slug}/{date}_wtis-skill0.md
     │
     ├─ [2] research-deep 에이전트 호출 (Layer 2 위임)
-    │   └─ 입력: SKILL-0 결과 파일 경로 + 도메인 파라미터
+    │   └─ 입력: SKILL-0 결과 파일 경로 + 도메인 파라미터 + 명시적 output_path
     │   └─ 지시: "WTIS 제안서 분석을 위한 심층 리서치. domain-params.md의 소스 우선순위 준수"
     │   └─ 결과 파일: outputs/reports/{domain}/{l2_slug}/{date}_wtis-research.md
     │
@@ -247,7 +248,7 @@ outputs/reports/{domain}/{domain}-portfolio.md       # 포트폴리오 종합
     │   └─ status: fail → SKILL-1 1회 재실행 후 재검증
     │
     ├─ [4-1] 보강 루프 (Reinforcement Loop) — 조건부 실행
-    │   └─ 조건: validator status가 "partial" 또는 "uncertain"이고 "단일 소스" 항목 존재
+    │   └─ 조건: validator status가 "uncertain"이고 "단일 소스" 항목 존재
     │   └─ research-deep 재호출: validator가 식별한 단일 소스 주장만 타겟 검색
     │   └─ 지시: "다음 주장들에 대해 독립 소스 1개 이상 추가 확보: {claims list}"
     │   └─ 결과: 기존 research.md에 보강 섹션 추가 (별도 파일 아님)
@@ -285,7 +286,7 @@ outputs/reports/{domain}/{domain}-portfolio.md       # 포트폴리오 종합
     │   └─ mkdir -p outputs/reports/{domain}/{l2_slug}/
     │
     ├─ research-deep 에이전트 호출 (Layer 2 위임)
-    │   └─ 입력: 검증 대상 + 도메인 파라미터 + prior_reports (있으면)
+    │   └─ 입력: 검증 대상 + 도메인 파라미터 + prior_reports (있으면) + 명시적 output_path
     │   └─ 결과 파일: outputs/reports/{domain}/{l2_slug}/{date}_wtis-research.md
     │
     ├─ SKILL-1 또는 SKILL-2 실행 (선정 또는 진행 검증)
@@ -319,7 +320,7 @@ outputs/reports/{domain}/{domain}-portfolio.md       # 포트폴리오 종합
     │   └─ 결과 파일: outputs/reports/{domain}/{l2_slug}/{date}_wtis-discover.md
     │
     ├─ [2] research-deep 에이전트 호출 (Layer 2 위임) — SKILL-4 대체
-    │   └─ 입력: discover 결과 파일 + 도메인 파라미터 + prior_reports (있으면)
+    │   └─ 입력: discover 결과 파일 + 도메인 파라미터 + prior_reports (있으면) + 명시적 output_path
     │   └─ 결과 파일: outputs/reports/{domain}/{l2_slug}/{date}_wtis-research.md
     │
     ├─ [3] SKILL-1 실행 (subagent_type: researcher, model: opus)
@@ -485,6 +486,7 @@ payback_period: "{N}년"
 - MCP 토픽 우선 사용 (ai-network, 6g, network-slicing, edge-computing 등)
 - 데이터 소스 우선순위: telco-factbook > intel-store > trend-tracker > WebSearch
 - 분석 결과는 자사 전략 관점에서 해석
+- WTIS 세션 산출물은 항상 명시적 `output_path`를 전달
 
 ## 이전 분석 컨텍스트 (prior_reports가 있는 경우에만 포함)
 prior_reports:
@@ -632,8 +634,8 @@ prior_report_date: {이전 분석 날짜 — 없으면 생략}
 | SKILL-1: "부적합" 판정 | 파이프라인 중단, 사유 보고 |
 | research-deep: 유의미한 데이터 없음 | 사용자에게 키워드 조정 요청 |
 | validator: 2회 연속 FAIL | 사용자에게 판단 위임 |
-| validator: partial + 단일 소스 ≤ 3건 | 보강 루프 [4-1] 실행 |
-| validator: partial + 단일 소스 > 3건 | 보강 루프 [4-1] 실행 + 최종 보고서에 경고 |
+| validator: uncertain + 단일 소스 ≤ 3건 | 보강 루프 [4-1] 실행 |
+| validator: uncertain + 단일 소스 > 3건 | 보강 루프 [4-1] 실행 + 최종 보고서에 경고 |
 
 ## Post-Report
 
