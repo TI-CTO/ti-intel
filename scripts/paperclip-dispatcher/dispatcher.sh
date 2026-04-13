@@ -65,15 +65,23 @@ for r in routines:
     checkout_run = li.get('checkoutRunId') or lr.get('checkoutRunId')
     execution_run = li.get('executionRunId')
     started_at = li.get('startedAt')
+    updated_at = li.get('updatedAt') or ''
     # 처리 대상:
     #   1) todo/backlog: 정상 대기 중
-    #   2) in_progress + checkout/execution/startedAt 모두 없음: 서버 재시작·sleep 후 누락된 진짜 stale
-    #      startedAt이 있으면 에이전트가 이미 실행을 시작한 것 → 스킵 (중복 트리거 방지)
+    #   2) in_progress + checkout/execution 없음: stale 상태 (서버 재시작·sleep 후 누락)
+    #      단, updatedAt이 2시간 이내이면 에이전트가 실행 중으로 간주 → 스킵
+    #      (startedAt은 checkout 시점에 설정되므로 실행 여부 판단에 부적합)
     is_pending = issue_status in ('todo', 'backlog')
-    is_stale_inprogress = (issue_status == 'in_progress'
-                           and not checkout_run
-                           and not execution_run
-                           and not started_at)
+    if issue_status == 'in_progress' and not checkout_run and not execution_run:
+        from datetime import datetime, timezone, timedelta
+        try:
+            updated = datetime.fromisoformat(updated_at.replace('Z', '+00:00'))
+            age_min = (datetime.now(timezone.utc) - updated).total_seconds() / 60
+            is_stale_inprogress = age_min > 120  # 2시간 넘게 업데이트 없으면 stale
+        except Exception:
+            is_stale_inprogress = True
+    else:
+        is_stale_inprogress = False
     if issue_id and agent_id and (is_pending or is_stale_inprogress):
         print(f'{issue_id}|{agent_id}|{r.get(\"title\",\"?\")[:30]}')
 " 2>/dev/null)
