@@ -31,7 +31,14 @@ if [[ -f "$LOCKFILE" ]]; then
   rm -f "$LOCKFILE"
 fi
 
+# ─── Paperclip 서버 프로세스 확인 ───
+# 서버가 실행 중이지 않으면 에러 로그 없이 조용히 종료
+if ! pgrep -f "paperclipai" > /dev/null 2>&1; then
+  exit 0
+fi
+
 # ─── API 가용성 확인 ───
+# 서버 프로세스는 있지만 아직 준비 안 된 경우만 로그
 curl -sf --max-time 5 "$API_BASE/agents" >/dev/null 2>&1 || {
   log "ERROR: API unreachable"
   exit 0
@@ -55,10 +62,16 @@ for r in routines:
     issue_id = lr.get('linkedIssueId')
     issue_status = li.get('status')
     agent_id = r.get('assigneeAgentId')
-    # 미처리: linkedIssue가 todo 또는 in_progress이고 executionRunId 없음
-    # checkoutRunId가 없으면 checkout 필요
     checkout_run = li.get('checkoutRunId') or lr.get('checkoutRunId')
-    if issue_id and agent_id and issue_status in ('todo', 'backlog'):
+    execution_run = li.get('executionRunId')
+    # 처리 대상:
+    #   1) todo/backlog: 정상 대기 중
+    #   2) in_progress + checkout/execution 없음: stale 상태 (서버 재시작·sleep 후 누락된 이슈)
+    is_pending = issue_status in ('todo', 'backlog')
+    is_stale_inprogress = (issue_status == 'in_progress'
+                           and not checkout_run
+                           and not execution_run)
+    if issue_id and agent_id and (is_pending or is_stale_inprogress):
         print(f'{issue_id}|{agent_id}|{r.get(\"title\",\"?\")[:30]}')
 " 2>/dev/null)
 
@@ -73,7 +86,7 @@ if [[ -n "$ROUTINE_WORK" ]]; then
     log "ROUTINE-CHECKOUT: $ISSUE_ID ($TITLE) → agent $AGENT_ID"
     $NPX paperclipai issue checkout "$ISSUE_ID" \
       --agent-id "$AGENT_ID" \
-      --expected-statuses "todo,backlog,blocked" \
+      --expected-statuses "todo,backlog,blocked,in_progress" \
       2>/dev/null && log "ROUTINE-CHECKOUT-OK: $ISSUE_ID" || \
       log "ROUTINE-CHECKOUT-FAIL: $ISSUE_ID"
   done <<< "$ROUTINE_WORK"
