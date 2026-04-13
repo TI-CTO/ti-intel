@@ -197,7 +197,7 @@ while IFS= read -r AGENT_ID; do
     -a "$AGENT_ID" \
     --source assignment \
     --trigger system \
-    --timeout-ms 600000 \
+    --timeout-ms 7200000 \
     >> "$LOG_DIR/heartbeat-$(date +%Y-%m-%d).log" 2>&1 &
 
   PIDS+=($!)
