@@ -1,6 +1,6 @@
 #!/bin/zsh
 # Paperclip Issue Dispatcher
-# Polls for backlog/todo issues and triggers heartbeat for assigned agents.
+# Polls regular issues + routine-generated issues and triggers heartbeat for assigned agents.
 # Runs every 3 minutes via LaunchAgent.
 
 set -euo pipefail
@@ -31,13 +31,58 @@ if [[ -f "$LOCKFILE" ]]; then
   rm -f "$LOCKFILE"
 fi
 
-# ─── Fetch pending issues (single API call) ───
-ISSUES_JSON=$(curl -sf --max-time 10 "$API_BASE/issues?status=backlog,todo" 2>/dev/null) || {
+# ─── API 가용성 확인 ───
+curl -sf --max-time 5 "$API_BASE/agents" >/dev/null 2>&1 || {
   log "ERROR: API unreachable"
   exit 0
 }
 
-# ─── Promote backlog → todo (agents only see todo in inbox) ───
+# ─── [A] Routine 이슈 처리 ───
+# GET /issues 는 done 이슈만 반환하는 Paperclip 버그가 있음.
+# Routine 생성 이슈(originKind=routine_execution)는 /routines 엔드포인트의
+# lastRun.linkedIssueId 를 통해서만 접근 가능. checkout 후 heartbeat 필요.
+ROUTINES_JSON=$(curl -sf --max-time 10 "$API_BASE/routines" 2>/dev/null) || {
+  log "ERROR: routines API unreachable"
+  ROUTINES_JSON="[]"
+}
+
+ROUTINE_WORK=$(echo "$ROUTINES_JSON" | python3 -c "
+import json, sys
+routines = json.load(sys.stdin)
+for r in routines:
+    lr = r.get('lastRun') or {}
+    li = lr.get('linkedIssue') or {}
+    issue_id = lr.get('linkedIssueId')
+    issue_status = li.get('status')
+    agent_id = r.get('assigneeAgentId')
+    # 미처리: linkedIssue가 todo 또는 in_progress이고 executionRunId 없음
+    # checkoutRunId가 없으면 checkout 필요
+    checkout_run = li.get('checkoutRunId') or lr.get('checkoutRunId')
+    if issue_id and agent_id and issue_status in ('todo', 'backlog'):
+        print(f'{issue_id}|{agent_id}|{r.get(\"title\",\"?\")[:30]}')
+" 2>/dev/null)
+
+if [[ -n "$ROUTINE_WORK" ]]; then
+  while IFS= read -r LINE; do
+    [[ -z "$LINE" ]] && continue
+    ISSUE_ID="${LINE%%|*}"
+    REST="${LINE#*|}"
+    AGENT_ID="${REST%%|*}"
+    TITLE="${REST#*|}"
+
+    log "ROUTINE-CHECKOUT: $ISSUE_ID ($TITLE) → agent $AGENT_ID"
+    $NPX paperclipai issue checkout "$ISSUE_ID" \
+      --agent-id "$AGENT_ID" \
+      --expected-statuses "todo,backlog,blocked" \
+      2>/dev/null && log "ROUTINE-CHECKOUT-OK: $ISSUE_ID" || \
+      log "ROUTINE-CHECKOUT-FAIL: $ISSUE_ID"
+  done <<< "$ROUTINE_WORK"
+fi
+
+# ─── [B] 일반 이슈 처리 (GET /issues 는 done만 반환하므로 현재 효과 없음, 구조 유지) ───
+ISSUES_JSON=$(curl -sf --max-time 10 "$API_BASE/issues?status=backlog,todo" 2>/dev/null) || ISSUES_JSON="[]"
+
+# ─── Promote backlog → todo ───
 BACKLOG_IDS=$(echo "$ISSUES_JSON" | python3 -c "
 import json, sys
 issues = json.load(sys.stdin)
@@ -74,12 +119,23 @@ if [[ -n "$UNASSIGNED_IDS" ]]; then
       -d "{\"assigneeAgentId\":\"$CTO_AGENT_ID\",\"status\":\"todo\"}" >/dev/null 2>&1 && \
       log "ASSIGN-CTO: $ISSUE_ID → 장재현"
   done <<< "$UNASSIGNED_IDS"
-  # Re-fetch issues after assignment
-  ISSUES_JSON=$(curl -sf --max-time 10 "$API_BASE/issues?status=backlog,todo" 2>/dev/null) || exit 0
+  ISSUES_JSON=$(curl -sf --max-time 10 "$API_BASE/issues?status=backlog,todo" 2>/dev/null) || ISSUES_JSON="[]"
 fi
 
-# ─── Extract unique assignee agent IDs with pending work ───
-AGENT_IDS=$(echo "$ISSUES_JSON" | python3 -c "
+# ─── Extract unique assignee agent IDs with pending work (일반 이슈 + Routine checkout된 에이전트) ───
+ROUTINE_AGENT_IDS=$(echo "$ROUTINE_WORK" | python3 -c "
+import sys
+seen = set()
+for line in sys.stdin:
+    line = line.strip()
+    if not line: continue
+    parts = line.split('|')
+    if len(parts) >= 2 and parts[1] not in seen:
+        seen.add(parts[1])
+        print(parts[1])
+" 2>/dev/null)
+
+ISSUE_AGENT_IDS=$(echo "$ISSUES_JSON" | python3 -c "
 import json, sys
 issues = json.load(sys.stdin)
 seen = set()
@@ -89,6 +145,8 @@ for i in issues:
         seen.add(aid)
         print(aid)
 " 2>/dev/null)
+
+AGENT_IDS=$(printf '%s\n%s' "$ROUTINE_AGENT_IDS" "$ISSUE_AGENT_IDS" | sort -u | grep -v '^$' || true)
 
 if [[ -z "$AGENT_IDS" ]]; then
   exit 0
