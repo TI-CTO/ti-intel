@@ -64,13 +64,16 @@ for r in routines:
     agent_id = r.get('assigneeAgentId')
     checkout_run = li.get('checkoutRunId') or lr.get('checkoutRunId')
     execution_run = li.get('executionRunId')
+    started_at = li.get('startedAt')
     # 처리 대상:
     #   1) todo/backlog: 정상 대기 중
-    #   2) in_progress + checkout/execution 없음: stale 상태 (서버 재시작·sleep 후 누락된 이슈)
+    #   2) in_progress + checkout/execution/startedAt 모두 없음: 서버 재시작·sleep 후 누락된 진짜 stale
+    #      startedAt이 있으면 에이전트가 이미 실행을 시작한 것 → 스킵 (중복 트리거 방지)
     is_pending = issue_status in ('todo', 'backlog')
     is_stale_inprogress = (issue_status == 'in_progress'
                            and not checkout_run
-                           and not execution_run)
+                           and not execution_run
+                           and not started_at)
     if issue_id and agent_id and (is_pending or is_stale_inprogress):
         print(f'{issue_id}|{agent_id}|{r.get(\"title\",\"?\")[:30]}')
 " 2>/dev/null)
