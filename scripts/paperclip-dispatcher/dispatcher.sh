@@ -11,10 +11,43 @@ LOG_FILE="$LOG_DIR/$(date +%Y-%m-%d).log"
 API_BASE="http://127.0.0.1:3100/api/companies/a8aeda24-7cd4-47d2-b235-ac4dbf09b22a"
 NPX="/Users/ctoti/.nvm/versions/node/v24.14.0/bin/npx"
 LOCKFILE="$LOG_DIR/.dispatcher.lock"
+HEALTH_FAIL_COUNTER="$LOG_DIR/.health-fail-count"
+HEALTH_ALERT_SENT="$LOG_DIR/.health-alert-sent"
+HEALTH_FAIL_THRESHOLD=10  # 10회 연속 실패 = ~30분 (3분 간격)
+WORKSPACE="/Users/ctoti/Project/ClaudeCode"
+UV="$HOME/.local/bin/uv"
 
 mkdir -p "$LOG_DIR"
 
 log() { echo "[$(date '+%H:%M:%S')] $*" >> "$LOG_FILE"; }
+
+health_ok() {
+  # 서버 복구 시 카운터·알림 플래그 리셋
+  if [[ -f "$HEALTH_FAIL_COUNTER" ]]; then
+    local prev_count
+    prev_count=$(cat "$HEALTH_FAIL_COUNTER" 2>/dev/null || echo "0")
+    rm -f "$HEALTH_FAIL_COUNTER" "$HEALTH_ALERT_SENT"
+    if [[ "$prev_count" -ge "$HEALTH_FAIL_THRESHOLD" ]]; then
+      log "HEALTH-RECOVERED: Paperclip server back online after $prev_count failed checks"
+    fi
+  fi
+}
+
+health_fail() {
+  local reason="$1"
+  local count=1
+  [[ -f "$HEALTH_FAIL_COUNTER" ]] && count=$(( $(cat "$HEALTH_FAIL_COUNTER") + 1 ))
+  echo "$count" > "$HEALTH_FAIL_COUNTER"
+
+  if [[ "$count" -ge "$HEALTH_FAIL_THRESHOLD" && ! -f "$HEALTH_ALERT_SENT" ]]; then
+    log "HEALTH-ALERT: $reason ($count consecutive failures, sending alert)"
+    "$UV" run "$WORKSPACE/scripts/auto-monitor/send-alert.py" \
+      --script "paperclip-health" \
+      --failures "paperclip-server:$reason" \
+      --log-file "$LOG_FILE" 2>/dev/null || log "HEALTH-ALERT-SEND-FAIL"
+    touch "$HEALTH_ALERT_SENT"
+  fi
+}
 
 # ─── Pause check ───
 if [[ -f "$PAUSE_FLAG" ]]; then
@@ -32,17 +65,20 @@ if [[ -f "$LOCKFILE" ]]; then
 fi
 
 # ─── Paperclip 서버 프로세스 확인 ───
-# 서버가 실행 중이지 않으면 에러 로그 없이 조용히 종료
 if ! pgrep -f "paperclipai" > /dev/null 2>&1; then
+  health_fail "process-not-found"
   exit 0
 fi
 
 # ─── API 가용성 확인 ───
-# 서버 프로세스는 있지만 아직 준비 안 된 경우만 로그
 curl -sf --max-time 5 "$API_BASE/agents" >/dev/null 2>&1 || {
   log "ERROR: API unreachable"
+  health_fail "api-unreachable"
   exit 0
 }
+
+# ─── 서버 정상: 카운터 리셋 ───
+health_ok
 
 # ─── [A] Routine 이슈 처리 ───
 # GET /issues 는 done 이슈만 반환하는 Paperclip 버그가 있음.
