@@ -150,3 +150,27 @@ wtis_version: v4.1
 | 11 | Agentic AI | Self Evolving Architecture | — | Conditional Go | Build+Borrow | 02-24 |
 
 > 점수 내림차순 정렬. 평균 128.3/200 (점수 보유 10건 기준).
+
+---
+
+## 5. 5월 WTIS 재평가 확정 (2026-04-17 결정)
+
+> 4월 포트폴리오 리뷰(§3) 제안 3건 + 주간 모니터링(W16) 신호 분석 결과, 아래 3건을 5월 재평가 대상으로 확정한다.
+
+| 우선순위 | L2 기술 | 도메인 | 현재 점수 | 경과일 | 재평가 사유 | 목표 시기 |
+|---------|---------|--------|----------|-------|-----------|---------|
+| **1** | Self Evolving Architecture | Agentic AI | —/200 | 52일 | 유일한 미채점 L2. ACE ICLR 2026 채택, Context Engineering 주류화 | 5월 1주차 |
+| **2** | Speech Generation | Voice AI | 138/200 | 21일 | 최고 모멘텀. VoxCPM2 오픈소스, Voice Cloning TRL 9, Resemble DETECT-3B | 5월 1~2주차 |
+| **3** | 양자동형암호 | Secure AI | 134/200 | 18일 | Google 2029 PQC 데드라인, CryptoLab GS 1등급, Android 17 ML-DSA | 5월 2주차 |
+
+### 선정 근거
+
+- **Self Evolving Architecture**: 4월 리뷰 시점 38일 → 현재 52일 경과. Proposal 모드에서 Standard 전환이 시급. W16에서 ACE 프레임워크 ICLR 채택, Anthropic Context Engineering 가이드 공식 발행으로 정량 평가 기반 확보.
+- **Speech Generation**: 3월 +10점(128→138) 상승에 이어 4월에도 VoxCPM2(tokenizer-free, Apache 2.0), Voice Cloning TRL 9 공식 도달, Resemble DETECT-3B 출시 등 모멘텀 지속. +3~5점 추가 상향 가능.
+- **양자동형암호**: 3월 +9점(125→134) 상승 후 Google 2029 PQC 전환 데드라인 공식 발표, CryptoLab HEaaN GS 1등급 확보, KT 6G 동형암호 내재화 발표. FHE <1초 PoC 진행률이 Go 전환 핵심 변수.
+
+### 4월 리뷰 대비 변경점
+
+- **온디바이스 AI**(4월 리뷰 3순위) → 5월 제외. B2B 전환 PoC 미착수 상태로 재평가 시점 유효성 낮음. 6월 재평가 유지.
+- **Trusted Multi-Agent Orchestration**(4월 리뷰 2순위) → 5월 제외. 155점으로 이미 최고점이나, Go 전환 조건(내부 역량 데이터) 미충족 상태가 지속되어 점수 변동보다 조건 해소가 선행 과제.
+- **Speech Generation, 양자동형암호** 추가. 4주간 외부 시그널 폭증으로 점수 갱신 필요성 대두.

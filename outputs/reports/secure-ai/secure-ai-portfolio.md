@@ -1,7 +1,7 @@
 ---
 domain: secure-ai
 domain_name: Secure AI
-updated: 2026-03-30
+updated: 2026-04-17
 wtis_version: v4.1
 total_l2: 3
 evaluated: 3
@@ -12,7 +12,7 @@ evaluated: 3
 | L2 기술 | 최근 평가일 | 점수 | 판정 | 전략 | 세션 링크 |
 |---------|-----------|------|------|------|----------|
 | 온디바이스 AI | **2026-03-10** | **107/200** | **재검토** | **Borrow(SDK) + Build(한국어) + B2B 선회** | [[ondevice-ai/2026-03-10_wtis-ondevice-ai]] |
-| 스팸/피싱/탐지 | **2026-03-18** | **115/200** | **재검토** | **Borrow+Build (경찰청연계+고령자PSTN)** | [[spam-phishing-detection/2026-03-18_wtis-spam-phishing-detection]] |
+| 스팸/피싱/탐지 | **2026-04-13** | **118/200** | **재검토** | **Borrow+Build (경찰청연계+고령자PSTN·ASAP 참여)** | [[spam-phishing-detection/2026-04-13_wtis-spam-phishing-detection]] |
 | 양자동형암호 | **2026-03-30** | **134/200** | **Conditional** | **Borrow(CryptoLab)+Build(AICC/PQC)+Watch(HW)** | [[he-keyword-search/2026-03-30_wtis-he-keyword-search]] |
 
 > **참고**: 온디바이스 AI는 v4.1에서 L2 단위 독립 분석 완료 (v4.0 통합 분석 120점 → v4.1 독립 분석 107점). 스팸/피싱/탐지, 양자동형암호는 v4.0 통합 분석 점수 유지 중 (개별 재평가 시 점수 변동 가능).
@@ -65,4 +65,15 @@ evaluated: 3
 | **2026-03-10** | **온디바이스 AI** | **107/200** | **재검토** | **v4.1 L2 독립 분석, B2C→B2B 전략 전환 권고** |
 | **2026-03-18** | **양자동형암호 (HE 키워드검색)** | **125/200** | **Conditional Go** | **TRL 2~3→3~4 상향. Borrow(CryptoLab)+Build(AICC). 비실시간 AICC 유스케이스 전환** |
 | **2026-03-18** | **스팸/피싱/탐지** | **115/200** | **재검토** | **3중 압박(Samsung+Meta+MS) 심화. 경찰청 연계+고령자 PSTN 특화가 유일 차별화** |
+| **2026-04-13** | **스팸/피싱/탐지** | **118/200** | **재검토** | **+3점. ASAP 가동 확인(발생 31.6%↓), SKT USIM 집단소송. Conditional Go 문턱 118→120 2점 미달** |
 | **2026-03-30** | **양자동형암호** | **134/200** | **Conditional Go** | **+9점. Google 2029 PQC 데드라인, CryptoLab GS 1등급, EuroS&P 피어리뷰. Borrow 경로 강화** |
+
+## 5월 WTIS 재평가 계획
+
+| 우선순위 | L2 기술 | 경과일 | 재평가 사유 |
+|---------|---------|-------|-----------|
+| **3** | 양자동형암호 | 18일 (03-30) | 규제 드라이버(Google 2029 PQC 데드라인) + CryptoLab GS 1등급 확보. Android 17 ML-DSA 공식 지원, KT 6G 동형암호 내재화. FHE <1초 PoC 진행률 검증 |
+
+- **재평가 시기**: 2026년 5월 2주차
+- **모드**: Standard (점수 갱신)
+- **반영할 신호**: Android 17 ML-DSA(FIPS 204), Google 2029 PQC 전환 데드라인, CryptoLab HEaaN GS 1등급, QCI+Ciena 1.6Tb/s PQC+QKD, LGU+ AICC enVector 실증, SKT BPFDoor 집단소송, KT MWC 6G 동형암호

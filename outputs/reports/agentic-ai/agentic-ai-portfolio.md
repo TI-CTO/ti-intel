@@ -2,7 +2,7 @@
 type: portfolio
 domain: agentic-ai
 domain_name: Agentic AI
-updated: 2026-03-27
+updated: 2026-04-17
 wtis_version: v4.1
 total_l2: 5
 evaluated: 5
@@ -49,3 +49,13 @@ Go 전환을 위한 핵심 조건: 자사 AI 인력·특허·파트너십 현황
 | 2026-03-16 | Hybrid AI Infra | 131/200 | Conditional Go | Standard 모드, 3B: Borrow+Build (L3별 차등) |
 | 2026-03-16 | 의도 파악 기술 | 131/200 | Conditional Go | Standard 모드, 3B: Borrow+Build |
 | 2026-03-27 | Model & Delta Foundry | 126/200 | Conditional Go | Standard 모드, 3B: Borrow+Build. SKT GPUaaS 선점 대응 |
+
+## 5월 WTIS 재평가 계획
+
+| 우선순위 | L2 기술 | 경과일 | 재평가 사유 |
+|---------|---------|-------|-----------|
+| **1** | Self Evolving Architecture | 52일 (02-24) | 유일한 미채점 L2. ACE ICLR 2026 채택, Context Engineering 엔터프라이즈 주류화. Standard 모드 정량 평가 필수 |
+
+- **재평가 시기**: 2026년 5월 1주차
+- **모드**: Standard (Proposal → Standard 전환)
+- **반영할 신호**: ACE 프레임워크, Zep v3 Context Engineering Platform, Context Rot 18개 모델 실증

@@ -1,7 +1,7 @@
 ---
 domain: voice-ai
 domain_name: Voice AI
-updated: 2026-03-27
+updated: 2026-04-17
 wtis_version: v4.1
 total_l2: 3
 evaluated: 3
@@ -34,3 +34,13 @@ created: 2026-03-17
 | 2026-03-24 | Speech Generation | 131/200 | Conditional Go | +3점 상향. Borrow+Build 전술 확장 (에이전트 플랫폼 + 딥페이크 탐지) |
 | **2026-03-27** | **Speech Generation** | **138/200** | **Conditional Go** | **+7점 상향. 딥페이크 임계점·INTERPOL 서밋·KT/SKT 실증으로 탐지 Build 격상** |
 | 2026-03-27 | Personal Intelligence | 128/200 | Conditional Go | Borrow+Build. 통신 데이터 차별화, 빅테크 무료화 리스크. 신뢰도 Low |
+
+## 5월 WTIS 재평가 계획
+
+| 우선순위 | L2 기술 | 경과일 | 재평가 사유 |
+|---------|---------|-------|-----------|
+| **2** | Speech Generation | 21일 (03-27) | 4주간 최고 모멘텀. VoxCPM2 오픈소스(Apache 2.0), Voice Cloning TRL 9, Resemble DETECT-3B 출시. 딥페이크 탐지 Build 전략 반영 재평가 (+3~5점 추가 가능) |
+
+- **재평가 시기**: 2026년 5월 1~2주차
+- **모드**: Standard (점수 갱신)
+- **반영할 신호**: VoxCPM2 tokenizer-free TTS, Voice Cloning TRL 9 공식 선언, ElevenLabs v3 에이전트 통합, Resemble DETECT-3B, 미국인 25% 딥페이크 피해, EU AI Act Article 50 (D-111)
