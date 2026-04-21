@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from datetime import date, timedelta
 
 import streamlit as st
 
@@ -518,6 +519,145 @@ def cached_intel_items_by_topic(topic_slug: str, limit: int = 50) -> list[dict]:
 
 
 @st.cache_data(ttl=600)
+def cached_intel_filter_options() -> dict:
+    """Fetch filter option lists for intel search."""
+    client = _intel_client()
+
+    type_rows = (
+        client.table("intel_items")
+        .select("item_type")
+        .limit(5000)
+        .execute()
+    ).data or []
+    source_rows = (
+        client.table("intel_items")
+        .select("source_name")
+        .limit(5000)
+        .execute()
+    ).data or []
+    topics = cached_intel_by_topic()
+
+    return {
+        "types": sorted({row.get("item_type") for row in type_rows if row.get("item_type")}),
+        "sources": sorted(
+            {row.get("source_name") for row in source_rows if row.get("source_name")}
+        ),
+        "topics": topics,
+    }
+
+
+@st.cache_data(ttl=300)
+def cached_intel_search(
+    query_text: str = "",
+    item_types: tuple[str, ...] = (),
+    source_names: tuple[str, ...] = (),
+    topic_slug: str | None = None,
+    collected_from: str | None = None,
+    collected_to: str | None = None,
+    limit: int = 100,
+) -> list[dict]:
+    """Search and filter intel items for dashboard browsing."""
+    client = _intel_client()
+    query = client.table("intel_items").select(
+        "id,item_type,title,abstract,source_name,source_url,published_date,"
+        "collected_date,reliability,metadata,external_id"
+    )
+
+    if query_text.strip():
+        query = query.text_search(
+            "search_text",
+            query_text.strip(),
+            options={"config": "simple", "type": "plain"},
+        )
+    if item_types:
+        query = query.in_("item_type", list(item_types))
+    if source_names:
+        query = query.in_("source_name", list(source_names))
+    if collected_from:
+        query = query.gte("collected_date", collected_from)
+    if collected_to:
+        query = query.lte("collected_date", collected_to)
+
+    if topic_slug:
+        item_ids = _intel_item_ids_for_topic(topic_slug)
+        if not item_ids:
+            return []
+        query = query.in_("id", item_ids)
+
+    rows = query.order("collected_date", desc=True).limit(limit).execute().data or []
+    return _parse_intel_metadata(rows)
+
+
+@st.cache_data(ttl=300)
+def cached_intel_item_detail(item_id: int) -> dict:
+    """Fetch one intel item with parsed metadata and topic assignments."""
+    client = _intel_client()
+    item = (
+        client.table("intel_items")
+        .select(
+            "id,item_type,external_id,content_hash,title,abstract,source_name,source_url,"
+            "published_date,collected_date,language,reliability,metadata"
+        )
+        .eq("id", item_id)
+        .limit(1)
+        .execute()
+    ).data
+    if not item:
+        return {}
+
+    detail = _parse_intel_metadata([item[0]])[0]
+    links = (
+        client.table("intel_item_topics")
+        .select("topic_id")
+        .eq("item_id", item_id)
+        .execute()
+    ).data or []
+    topic_ids = [row["topic_id"] for row in links]
+    if topic_ids:
+        topics = (
+            client.table("topics")
+            .select("id,slug,display_name")
+            .in_("id", topic_ids)
+            .execute()
+        ).data or []
+        detail["topics"] = topics
+    else:
+        detail["topics"] = []
+    return detail
+
+
+@st.cache_data(ttl=600)
+def cached_intel_weekly_diff(topic_slug: str, days: int = 7) -> dict:
+    """Compare recent vs previous collected intel items for a topic."""
+    item_ids = _intel_item_ids_for_topic(topic_slug)
+    if not item_ids:
+        return {"this_week": [], "last_week": [], "this_week_count": 0, "last_week_count": 0}
+
+    today = date.today()
+    this_start = today - timedelta(days=days)
+    last_start = today - timedelta(days=days * 2)
+    rows = _fetch_intel_items_by_ids(item_ids, limit=500)
+
+    this_week = []
+    last_week = []
+    for row in rows:
+        collected = _parse_date(row.get("collected_date"))
+        if not collected:
+            continue
+        if collected >= this_start:
+            this_week.append(row)
+        elif last_start <= collected < this_start:
+            last_week.append(row)
+
+    return {
+        "this_week": this_week,
+        "last_week": last_week,
+        "this_week_count": len(this_week),
+        "last_week_count": len(last_week),
+    }
+
+
+@st.cache_data(ttl=600)
 def cached_intel_recent(limit: int = 20) -> list[dict]:
     """Fetch most recent intel items across all topics."""
     client = _intel_client()
@@ -571,3 +711,65 @@ def cached_intel_community_engagement() -> list[dict]:
             "comments": meta.get("comments", meta.get("num_comments", 0)),
         })
     return items
+
+
+def _intel_item_ids_for_topic(topic_slug: str) -> list[int]:
+    client = _intel_client()
+    topic_result = (
+        client.table("topics")
+        .select("id")
+        .eq("slug", topic_slug)
+        .limit(1)
+        .execute()
+    )
+    if not topic_result.data:
+        return []
+    topic_id = topic_result.data[0]["id"]
+    links = (
+        client.table("intel_item_topics")
+        .select("item_id")
+        .eq("topic_id", topic_id)
+        .execute()
+    ).data or []
+    return [row["item_id"] for row in links]
+
+
+def _fetch_intel_items_by_ids(item_ids: list[int], limit: int = 500) -> list[dict]:
+    client = _intel_client()
+    items: list[dict] = []
+    for i in range(0, min(len(item_ids), limit), 50):
+        chunk = item_ids[i : i + 50]
+        result = (
+            client.table("intel_items")
+            .select(
+                "id,title,item_type,source_name,source_url,published_date,"
+                "collected_date,reliability,metadata"
+            )
+            .in_("id", chunk)
+            .execute()
+        )
+        items.extend(result.data or [])
+    items.sort(key=lambda x: x.get("collected_date", ""), reverse=True)
+    return _parse_intel_metadata(items)
+
+
+def _parse_intel_metadata(items: list[dict]) -> list[dict]:
+    for item in items:
+        meta = item.get("metadata")
+        if isinstance(meta, str):
+            try:
+                item["metadata"] = json.loads(meta)
+            except (json.JSONDecodeError, TypeError):
+                item["metadata"] = {}
+        elif meta is None:
+            item["metadata"] = {}
+    return items
+
+
+def _parse_date(value: str | None) -> date | None:
+    if not value:
+        return None
+    try:
+        return date.fromisoformat(value[:10])
+    except ValueError:
+        return None

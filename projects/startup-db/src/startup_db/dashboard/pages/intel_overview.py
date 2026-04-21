@@ -13,9 +13,13 @@ from startup_db.dashboard.components import is_dark_mode
 from startup_db.dashboard.data import (
     cached_intel_by_topic,
     cached_intel_community_engagement,
+    cached_intel_filter_options,
+    cached_intel_item_detail,
     cached_intel_items_by_topic,
     cached_intel_recent,
+    cached_intel_search,
     cached_intel_stats,
+    cached_intel_weekly_diff,
 )
 from startup_db.dashboard.theme import (
     CHART_COLORS,
@@ -38,6 +42,99 @@ TYPE_KO = {
     "report": "리포트",
     "standard": "표준",
 }
+
+
+def _format_item_rows(items: list[dict]) -> pd.DataFrame:
+    """Convert intel item records into a compact display dataframe."""
+    rows = []
+    for item in items:
+        rows.append(
+            {
+                "ID": item.get("id"),
+                "제목": item.get("title", ""),
+                "유형": TYPE_KO.get(item.get("item_type"), item.get("item_type")),
+                "소스": item.get("source_name", ""),
+                "발행일": item.get("published_date") or "",
+                "수집일": item.get("collected_date") or "",
+                "신뢰도": item.get("reliability") or "",
+                "URL": item.get("source_url") or "",
+            }
+        )
+    return pd.DataFrame(rows)
+
+
+def _render_item_table(items: list[dict], *, key: str) -> None:
+    """Render a filterable item table with URL columns."""
+    if not items:
+        st.info("조건에 맞는 아이템이 없습니다.")
+        return
+
+    df = _format_item_rows(items)
+    st.dataframe(
+        df,
+        width="stretch",
+        hide_index=True,
+        column_config={
+            "ID": st.column_config.NumberColumn("ID", width="small"),
+            "제목": st.column_config.TextColumn("제목", width="large"),
+            "URL": st.column_config.LinkColumn("URL", display_text="열기"),
+        },
+    )
+
+    item_ids = [int(item["id"]) for item in items if item.get("id") is not None]
+    selected_id = st.selectbox(
+        "상세 보기",
+        options=item_ids,
+        index=0,
+        key=f"{key}_detail_id",
+        format_func=lambda item_id: _title_for_id(items, item_id),
+    )
+    if selected_id:
+        _render_item_detail(selected_id)
+
+
+def _render_item_detail(item_id: int) -> None:
+    """Render raw detail for one intel item."""
+    item = cached_intel_item_detail(item_id)
+    if not item:
+        st.warning("아이템을 찾을 수 없습니다.")
+        return
+
+    with st.expander(f"Raw detail · #{item_id}", expanded=False):
+        st.markdown(f"**{item.get('title', '')}**")
+        cols = st.columns(4)
+        cols[0].metric("유형", TYPE_KO.get(item.get("item_type"), item.get("item_type", "")))
+        cols[1].metric("신뢰도", item.get("reliability") or "—")
+        cols[2].metric("발행일", item.get("published_date") or "—")
+        cols[3].metric("수집일", item.get("collected_date") or "—")
+
+        if item.get("source_url"):
+            st.link_button("원문 열기", item["source_url"])
+
+        topic_names = [
+            topic.get("display_name") or topic.get("slug")
+            for topic in item.get("topics", [])
+        ]
+        if topic_names:
+            st.caption("Topics: " + ", ".join(topic_names))
+
+        if item.get("abstract"):
+            st.markdown("**Abstract / Summary**")
+            st.write(item["abstract"])
+
+        st.markdown("**Metadata**")
+        st.json(item.get("metadata", {}), expanded=False)
+
+
+def _title_for_id(items: list[dict], item_id: int) -> str:
+    for item in items:
+        if item.get("id") == item_id:
+            return f"#{item_id} · {item.get('title', '')[:80]}"
+    return f"#{item_id}"
+
+
+def _topic_options(topics: list[dict]) -> dict[str, str]:
+    return {topic["topic_name"]: topic["topic_slug"] for topic in topics}
 
 dark = is_dark_mode()
 PL = get_plotly_layout(dark)
@@ -68,11 +165,12 @@ render_countup_js()
 st.divider()
 
 # ── Tabs ─────────────────────────────────────────────────────
-tab_timeline, tab_sources, tab_recent, tab_topics = st.tabs([
+tab_timeline, tab_sources, tab_recent, tab_topics, tab_search = st.tabs([
     "수집 타임라인",
     "소스 & 유형",
     "최근 수집",
     "토픽 탐색",
+    "검색",
 ])
 
 # ── Tab 1: 수집 타임라인 ─────────────────────────────────────
@@ -261,7 +359,7 @@ with tab_topics:
 
         # Topic selector + drill down
         st.subheader("토픽별 상세")
-        topic_options = {t["topic_name"]: t["topic_slug"] for t in topics}
+        topic_options = _topic_options(topics)
         selected_name = st.selectbox(
             "토픽 선택",
             options=list(topic_options.keys()),
@@ -270,6 +368,17 @@ with tab_topics:
         selected_slug = topic_options[selected_name]
 
         items = cached_intel_items_by_topic(selected_slug, limit=50)
+
+        diff = cached_intel_weekly_diff(selected_slug)
+        dcol1, dcol2 = st.columns(2)
+        dcol1.metric("최근 7일", diff["this_week_count"])
+        dcol2.metric("이전 7일", diff["last_week_count"])
+
+        with st.expander("Weekly diff 아이템 보기", expanded=False):
+            st.markdown("**최근 7일**")
+            _render_item_table(diff["this_week"][:30], key=f"{selected_slug}_this_week")
+            st.markdown("**이전 7일**")
+            _render_item_table(diff["last_week"][:30], key=f"{selected_slug}_last_week")
 
         if not items:
             st.info(f"'{selected_name}'에 해당하는 아이템이 없습니다.")
@@ -379,3 +488,48 @@ with tab_topics:
                 f'<tbody>{"".join(rows_html)}</tbody></table>',
                 unsafe_allow_html=True,
             )
+
+            _render_item_table(filtered, key=f"{selected_slug}_topic_items")
+
+
+# ── Tab 5: 검색 ──────────────────────────────────────────────
+with tab_search:
+    st.subheader("인텔 저장소 검색")
+    options = cached_intel_filter_options()
+    topics = options["topics"]
+    topic_options = {"전체 토픽": None} | _topic_options(topics)
+
+    qcol1, qcol2 = st.columns([2, 1])
+    query_text = qcol1.text_input("검색어", placeholder="예: voice cloning, AICC, PQC")
+    selected_topic_name = qcol2.selectbox("토픽", options=list(topic_options.keys()))
+
+    fcol1, fcol2 = st.columns(2)
+    selected_types = fcol1.multiselect(
+        "유형",
+        options=options["types"],
+        default=[],
+        format_func=lambda item_type: TYPE_KO.get(item_type, item_type),
+    )
+    selected_sources = fcol2.multiselect(
+        "소스",
+        options=options["sources"],
+        default=[],
+    )
+
+    dcol1, dcol2, lcol = st.columns([1, 1, 1])
+    collected_from = dcol1.date_input("수집일 시작", value=None)
+    collected_to = dcol2.date_input("수집일 종료", value=None)
+    limit = lcol.number_input("최대 결과", min_value=10, max_value=500, value=100, step=10)
+
+    results = cached_intel_search(
+        query_text=query_text,
+        item_types=tuple(selected_types),
+        source_names=tuple(selected_sources),
+        topic_slug=topic_options[selected_topic_name],
+        collected_from=collected_from.isoformat() if collected_from else None,
+        collected_to=collected_to.isoformat() if collected_to else None,
+        limit=int(limit),
+    )
+
+    st.caption(f"검색 결과 {len(results):,}건")
+    _render_item_table(results, key="intel_search")
