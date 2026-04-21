@@ -15,7 +15,20 @@ argument-hint: "[file-path-or-folder] [type: wtis|weekly|research|reference|devl
 /obsidian-bridge outputs/reports/agentic-ai/2026-03-09_multi-agent wtis
 /obsidian-bridge outputs/reports/weekly/2026-03-09_weekly-agentic-ai.md weekly
 /obsidian-bridge outputs/reports/weekly/2026-03-09_research-adaptive-rag.md research
+/obsidian-bridge devlog      # 40-DevLog 존재 점검 (원본이므로 복사 없음)
 ```
+
+### 자연어 트리거 (사용자 명령 → 스킬 자동 실행)
+
+| 사용자 발화 예시 | 의미 | 스킬 동작 |
+|---|---|---|
+| "아웃풋파일과 옵시디언 동기화 해줘", "리포트 옵시디언에 옮겨줘" | outputs/ 산출물 전체 동기화 | 미동기화 파일 자동 탐지 후 타입별 복사 + devlog 존재 점검도 함께 수행 |
+| "워크로그 옵시디언에 옮겨줘", "데브로그 옮겨", "일지 동기화" | 40-DevLog 점검 | type=devlog로 실행 — 원본이므로 복사 생략, 존재만 보고 |
+| "WTIS 리포트 옵시디언 보내" | 최신 WTIS 세션 | type=wtis 자동 |
+| "포트폴리오 동기화" | 도메인 포트폴리오 | type=portfolio 자동 |
+| "가이드 문서 옵시디언 반영" | docs/guide-*.md | type=reference 자동 |
+
+**원칙**: "옵시디언/동기화/옮겨/반영/미러"가 포함된 명령은 스킬 진입. 범위가 불분명하면 `outputs/` 전체 + `40-DevLog` 존재 점검을 기본 스코프로 수행.
 
 ---
 
@@ -81,6 +94,14 @@ vault_paths: ["Obsidian 볼트 내 경로 목록"]
 - 파일명 패턴: `YYYY-MM-DD_research-{topic}.md`
 - PDF 없음 (마크다운만)
 
+### devlog (업무 일지)
+- **성격**: **Obsidian 원본 구조** — `40-DevLog/YYYY-MM-DD_daily-log.md`가 원본, git mirror 없음
+- **동작**: 사용자가 "워크로그/데브로그/일지 동기화"를 요청해도 **복사할 소스가 없음**. 스킬은 아래만 수행:
+  1. `40-DevLog/` 내 오늘·이번 주 daily-log 파일 존재 여부 확인
+  2. 파일 크기 0 바이트(편집 사고) 여부 검증
+  3. "원본이므로 추가 복사 없음 — 존재 확인 완료" 보고
+- **주의**: git 워크스페이스에 `40-DevLog/`를 만들지 말 것. 데브로그는 Obsidian에서 `Write`/`work-log` 스킬로만 생성·수정.
+
 ### reference
 - **파일**: `docs/guide-*.md`, `docs/spec-*.md`
 - **대상**: `10-지식베이스/{subfolder}/` (한글 파일명으로 변환)
@@ -107,7 +128,14 @@ vault_paths: ["Obsidian 볼트 내 경로 목록"]
    - 파일명 `*-portfolio.*` → `portfolio`
    - 파일명 `*_weekly-*` → `weekly`
    - 파일명 `*_research-*` → `research`
+   - 경로에 `40-DevLog/` 또는 파일명 `*_daily-log.md` → `devlog` (복사 없이 존재 점검만)
+   - 경로 `docs/guide-*.md`, `docs/spec-*.md` → `reference`
+   - 자연어 키워드 "워크로그/데브로그/일지/daily log" → `devlog`
    - 그 외 → 수동 지정 필요
+
+2.5. **포괄 동기화 요청 감지** ("아웃풋 전체 옮겨", "산출물 동기화" 등):
+   - 스코프: `outputs/reports/` 전체 + `40-DevLog/` 존재 점검
+   - 절차: git untracked/modified에서 outputs/ 파일 추출 → Obsidian 볼트 대조 → 누락·outdated만 타입별 복사 → 마지막에 devlog 존재 점검 → 통합 보고
 
 3. **기존 frontmatter 확인**: YAML frontmatter가 있으면 보존, 없으면 새로 생성
 
