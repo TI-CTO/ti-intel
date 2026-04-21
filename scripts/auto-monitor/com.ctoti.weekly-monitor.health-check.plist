@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.ctoti.weekly-monitor.health-check</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/zsh</string>
+    <string>/Users/ctoti/Project/ClaudeCode/scripts/auto-monitor/health-check.sh</string>
+  </array>
+  <key>StartCalendarInterval</key>
+  <dict>
+    <key>Hour</key>
+    <integer>7</integer>
+    <key>Minute</key>
+    <integer>0</integer>
+  </dict>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/Users/ctoti/.local/bin:/Users/ctoti/.claude/local:/usr/local/bin:/usr/bin:/bin</string>
+    <key>HOME</key>
+    <string>/Users/ctoti</string>
+  </dict>
+  <key>WorkingDirectory</key>
+  <string>/Users/ctoti/Project/ClaudeCode</string>
+  <key>StandardOutPath</key>
+  <string>/Users/ctoti/Project/ClaudeCode/logs/auto-monitor/launchd-health-check.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/ctoti/Project/ClaudeCode/logs/auto-monitor/launchd-health-check.err</string>
+</dict>
+</plist>

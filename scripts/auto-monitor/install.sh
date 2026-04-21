@@ -11,7 +11,7 @@ SRC_DIR="/Users/ctoti/Project/ClaudeCode/scripts/auto-monitor"
 LOG_DIR="/Users/ctoti/Project/ClaudeCode/logs/auto-monitor"
 
 # 현행 에이전트
-AGENTS=(voice-ai secure-ai competitor agentic-ai fri)
+AGENTS=(voice-ai secure-ai competitor agentic-ai fri health-check)
 
 # 이전 에이전트 (정리 대상)
 OLD_AGENTS=(mon tue wed thu)
@@ -21,6 +21,7 @@ case "$ACTION" in
     mkdir -p "$PLIST_DIR" "$LOG_DIR"
     chmod +x "$SRC_DIR/run-domain.sh"
     chmod +x "$SRC_DIR/run-friday.sh"
+    chmod +x "$SRC_DIR/health-check.sh"
 
     # 이전 에이전트 제거
     for old in "${OLD_AGENTS[@]}"; do
@@ -39,12 +40,13 @@ case "$ACTION" in
       fi
     done
     echo ""
-    echo "Installed 5 agents:"
+    echo "Installed 6 agents:"
     echo "  Mon 08:30  voice-ai"
     echo "  Mon 12:30  secure-ai"
     echo "  Mon 14:00  competitor (skt/kt strategy)"
     echo "  Tue 08:30  agentic-ai"
     echo "  Fri 09:00  주간 종합 + 데이터 체크 (+ 월간/분기 조건부)"
+    echo "  Daily 07:00  health-check (launchctl 7 agents + Gmail alert)"
     ;;
   uninstall)
     for agent in "${AGENTS[@]}" "${OLD_AGENTS[@]}"; do
