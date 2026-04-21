@@ -14,6 +14,9 @@ LOCKFILE="$LOG_DIR/.dispatcher.lock"
 HEALTH_FAIL_COUNTER="$LOG_DIR/.health-fail-count"
 HEALTH_ALERT_SENT="$LOG_DIR/.health-alert-sent"
 HEALTH_FAIL_THRESHOLD=10  # 10회 연속 실패 = ~30분 (3분 간격)
+HEALTH_RESTART_THRESHOLD=3  # 3회 연속 실패 시 (~9분) 자동 재시작 시도
+HEALTH_RESTART_SENTINEL="$LOG_DIR/.health-restart-attempted"
+PAPERCLIPAI="/Users/ctoti/.nvm/versions/node/v24.14.0/bin/npx"
 WORKSPACE="/Users/ctoti/Project/ClaudeCode"
 UV="$HOME/.local/bin/uv"
 
@@ -22,12 +25,12 @@ mkdir -p "$LOG_DIR"
 log() { echo "[$(date '+%H:%M:%S')] $*" >> "$LOG_FILE"; }
 
 health_ok() {
-  # 서버 복구 시 카운터·알림 플래그 리셋
+  # 서버 복구 시 카운터·플래그 전체 리셋
   if [[ -f "$HEALTH_FAIL_COUNTER" ]]; then
     local prev_count
     prev_count=$(cat "$HEALTH_FAIL_COUNTER" 2>/dev/null || echo "0")
-    rm -f "$HEALTH_FAIL_COUNTER" "$HEALTH_ALERT_SENT"
-    if [[ "$prev_count" -ge "$HEALTH_FAIL_THRESHOLD" ]]; then
+    rm -f "$HEALTH_FAIL_COUNTER" "$HEALTH_ALERT_SENT" "$HEALTH_RESTART_SENTINEL"
+    if [[ "$prev_count" -ge "$HEALTH_RESTART_THRESHOLD" ]]; then
       log "HEALTH-RECOVERED: Paperclip server back online after $prev_count failed checks"
     fi
   fi
@@ -39,6 +42,22 @@ health_fail() {
   [[ -f "$HEALTH_FAIL_COUNTER" ]] && count=$(( $(cat "$HEALTH_FAIL_COUNTER") + 1 ))
   echo "$count" > "$HEALTH_FAIL_COUNTER"
 
+  # 3회 연속 실패 시 서버 자동 재시작 시도 (1회만)
+  if [[ "$count" -ge "$HEALTH_RESTART_THRESHOLD" && ! -f "$HEALTH_RESTART_SENTINEL" ]]; then
+    log "HEALTH-RESTART: $reason ($count failures) — attempting auto-restart via launchctl"
+    touch "$HEALTH_RESTART_SENTINEL"
+    # launchctl kickstart 우선 시도, 실패 시 paperclipai run 직접 실행
+    if launchctl kickstart -k "gui/$(id -u)/com.ctoti.paperclip" >/dev/null 2>&1; then
+      log "HEALTH-RESTART-OK: launchctl kickstart succeeded"
+    else
+      log "HEALTH-RESTART-FALLBACK: launchctl failed, running paperclipai run directly"
+      nohup $PAPERCLIPAI paperclipai run \
+        >> "$LOG_DIR/paperclip-server.log" 2>&1 &
+      log "HEALTH-RESTART-FALLBACK-OK: PID=$!"
+    fi
+  fi
+
+  # 10회 연속 실패 시 사람에게 alert (자동 재시작 이후에도 발송)
   if [[ "$count" -ge "$HEALTH_FAIL_THRESHOLD" && ! -f "$HEALTH_ALERT_SENT" ]]; then
     log "HEALTH-ALERT: $reason ($count consecutive failures, sending alert)"
     "$UV" run "$WORKSPACE/scripts/auto-monitor/send-alert.py" \
